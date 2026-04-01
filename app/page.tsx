@@ -1,103 +1,195 @@
-import Image from "next/image";
+"use client";
 
-export default function Home() {
+import { useState, useEffect, useCallback } from "react";
+import CountryFlag from "@/components/shared/CountryFlag";
+import SplitFlapGroup from "@/components/split-flap/SplitFlapGroup";
+import ConverterInput from "@/components/converter/ConverterInput";
+import FlipButton from "@/components/converter/FlipButton";
+import QuickAmounts from "@/components/converter/QuickAmounts";
+import RateInfo from "@/components/converter/RateInfo";
+import Sparkline from "@/components/converter/Sparkline";
+import TripBanner from "@/components/trip/TripBanner";
+import CurrencySelector from "@/components/converter/CurrencySelector";
+import { fetchLatestRate } from "@/lib/api/frankfurter";
+import { formatAmount } from "@/lib/format";
+import { getSettings, addRecentCurrency } from "@/lib/settings";
+
+export default function ConverterPage() {
+  const [settings, setSettings] = useState(() => ({
+    homeCurrency: "GBP",
+    defaultForeignCurrency: "EUR",
+    nextTrip: null as ReturnType<typeof getSettings>["nextTrip"],
+    recentCurrencies: [] as string[],
+  }));
+
+  const [baseCurrency, setBaseCurrency] = useState("EUR");
+  const [quoteCurrency, setQuoteCurrency] = useState("GBP");
+  const [inputValue, setInputValue] = useState("");
+  const [rate, setRate] = useState<number | null>(null);
+  const [rateDate, setRateDate] = useState<string>("");
+  const [offline, setOffline] = useState(false);
+  const [pickerTarget, setPickerTarget] = useState<"base" | "quote" | null>(
+    null
+  );
+
+  // Load settings on mount
+  useEffect(() => {
+    const s = getSettings();
+    setSettings(s);
+    setBaseCurrency(s.defaultForeignCurrency || "EUR");
+    setQuoteCurrency(s.homeCurrency || "GBP");
+  }, []);
+
+  // Fetch rate when currencies change
+  useEffect(() => {
+    let cancelled = false;
+    async function loadRate() {
+      try {
+        const result = await fetchLatestRate(baseCurrency, quoteCurrency);
+        if (!cancelled) {
+          setRate(result.rate);
+          setRateDate(result.date);
+          setOffline(result.offline);
+        }
+      } catch {
+        if (!cancelled) {
+          setRate(null);
+          setOffline(false);
+        }
+      }
+    }
+    loadRate();
+    return () => {
+      cancelled = true;
+    };
+  }, [baseCurrency, quoteCurrency]);
+
+  const numericValue = inputValue ? parseFloat(inputValue) : 0;
+  const convertedAmount = rate ? numericValue * rate : null;
+
+  const displayResult = convertedAmount !== null && numericValue > 0
+    ? formatAmount(convertedAmount).padStart(12, " ")
+    : "       0.00";
+
+  const handleFlip = useCallback(() => {
+    const newBase = quoteCurrency;
+    const newQuote = baseCurrency;
+    setBaseCurrency(newBase);
+    setQuoteCurrency(newQuote);
+    // Invert the input to the converted amount
+    if (convertedAmount !== null && convertedAmount > 0) {
+      setInputValue(convertedAmount.toFixed(2));
+    }
+  }, [baseCurrency, quoteCurrency, convertedAmount]);
+
+  const handleQuickAmount = useCallback((amount: number) => {
+    setInputValue(amount.toString());
+  }, []);
+
+  const handleCurrencySelect = useCallback(
+    (code: string) => {
+      if (pickerTarget === "base") {
+        setBaseCurrency(code);
+        addRecentCurrency(code);
+      } else if (pickerTarget === "quote") {
+        setQuoteCurrency(code);
+        addRecentCurrency(code);
+      }
+      setPickerTarget(null);
+    },
+    [pickerTarget]
+  );
+
+  const quickActiveAmount = [5, 10, 20, 50, 100].includes(numericValue)
+    ? numericValue
+    : null;
+
   return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+    <div className="min-h-screen px-4 pt-4">
+      {/* Trip banner */}
+      {settings.nextTrip && <TripBanner trip={settings.nextTrip} />}
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+      {/* Header */}
+      <div className="mb-6">
+        <h1 className="text-text-muted text-xs font-sans tracking-widest uppercase">
+          MONETA
+        </h1>
+      </div>
+
+      {/* Source currency row */}
+      <div className="bg-bg-surface rounded-[4px] border border-border-subtle p-4 mb-2">
+        <div className="flex items-center gap-3">
+          <button
+            onClick={() => setPickerTarget("base")}
+            className="flex items-center gap-2 min-h-[44px] px-2 -ml-2 active:bg-bg-raised rounded-[4px] transition-colors duration-100"
           >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+            <CountryFlag currencyCode={baseCurrency} />
+            <span className="font-mono text-text-primary tracking-wider text-lg">
+              {baseCurrency}
+            </span>
+          </button>
+          <div className="flex-1">
+            <ConverterInput value={inputValue} onChange={setInputValue} />
+          </div>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+      </div>
+
+      {/* Flip button */}
+      <div className="flex justify-center -my-1 relative z-10">
+        <FlipButton onFlip={handleFlip} />
+      </div>
+
+      {/* Target currency row */}
+      <div className="bg-bg-surface rounded-[4px] border border-border-subtle p-4 mt-2 mb-4">
+        <div className="flex items-center gap-3">
+          <button
+            onClick={() => setPickerTarget("quote")}
+            className="flex items-center gap-2 min-h-[44px] px-2 -ml-2 active:bg-bg-raised rounded-[4px] transition-colors duration-100"
+          >
+            <CountryFlag currencyCode={quoteCurrency} />
+            <span className="font-mono text-text-primary tracking-wider text-lg">
+              {quoteCurrency}
+            </span>
+          </button>
+          <div className="flex-1 flex justify-end">
+            <SplitFlapGroup value={displayResult} size="lg" />
+          </div>
+        </div>
+      </div>
+
+      {/* Rate info */}
+      <div className="mb-4">
+        <RateInfo
+          base={baseCurrency}
+          quote={quoteCurrency}
+          rate={rate}
+          offline={offline}
+          cacheDate={rateDate}
+        />
+      </div>
+
+      {/* Quick amounts */}
+      <div className="mb-6">
+        <QuickAmounts
+          onSelect={handleQuickAmount}
+          activeAmount={quickActiveAmount}
+        />
+      </div>
+
+      {/* Sparkline */}
+      <div className="mb-4">
+        <Sparkline base={baseCurrency} quote={quoteCurrency} />
+      </div>
+
+      {/* Currency Picker */}
+      <CurrencySelector
+        isOpen={pickerTarget !== null}
+        onClose={() => setPickerTarget(null)}
+        onSelect={handleCurrencySelect}
+        selectedCode={
+          pickerTarget === "base" ? baseCurrency : quoteCurrency
+        }
+      />
     </div>
   );
 }

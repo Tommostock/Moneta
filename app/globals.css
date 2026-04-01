@@ -1,26 +1,88 @@
 @import "tailwindcss";
-
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+@import "flag-icons/css/flag-icons.min.css";
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  /* Backgrounds */
+  --color-bg-primary: #0C0C0C;
+  --color-bg-surface: #161616;
+  --color-bg-raised: #1C1C1C;
+
+  /* Flap */
+  --color-flap-face: #1C1C1C;
+  --color-flap-shadow: #111111;
+  --color-flap-split: #0A0A0A;
+
+  /* Borders */
+  --color-border-subtle: #2A2A2A;
+  --color-border-warm: #2A2520;
+
+  /* Text */
+  --color-text-primary: #F0E6D3;
+  --color-text-secondary: #8A8070;
+  --color-text-muted: #4A4540;
+
+  /* Accent */
+  --color-accent: #D4A843;
+  --color-accent-dim: #9B7A30;
+
+  /* Semantic */
+  --color-positive: #6BBF6B;
+  --color-negative: #D45B5B;
+
+  /* Typography */
+  --font-sans: var(--font-dm-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-roboto-mono), ui-monospace, monospace;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+/* Split-flap animations */
+@keyframes flipDown {
+  from {
+    transform: rotateX(0deg);
+  }
+  to {
+    transform: rotateX(-90deg);
   }
 }
 
+@keyframes flipUp {
+  from {
+    transform: rotateX(90deg);
+  }
+  to {
+    transform: rotateX(0deg);
+  }
+}
+
+/* Base styles */
+html {
+  background: #0C0C0C;
+}
+
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: #0C0C0C;
+  color: #F0E6D3;
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  min-height: 100dvh;
+  padding-top: env(safe-area-inset-top);
+}
+
+/* Prevent iOS zoom on input focus */
+input[type="text"],
+input[type="number"],
+input[inputmode="decimal"] {
+  font-size: 16px;
+}
+
+/* Flag icon sizing override */
+.fi {
+  width: 24px;
+  height: 16px;
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+  display: inline-block;
+  line-height: 16px;
+  border-radius: 2px;
 }
