@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { DM_Sans, Roboto_Mono } from "next/font/google";
+import { DM_Sans, Roboto_Mono, Inter } from "next/font/google";
 import BottomNav from "@/components/shared/BottomNav";
 import ThemeProvider from "@/components/shared/ThemeProvider";
 import "./globals.css";
@@ -12,6 +12,12 @@ const dmSans = DM_Sans({
 
 const robotoMono = Roboto_Mono({
   variable: "--font-roboto-mono",
+  subsets: ["latin"],
+  display: "swap",
+});
+
+const inter = Inter({
+  variable: "--font-inter",
   subsets: ["latin"],
   display: "swap",
 });
@@ -56,7 +62,7 @@ export default function RootLayout({
         />
       </head>
       <body
-        className={`${dmSans.variable} ${robotoMono.variable} font-sans bg-bg-primary text-text-primary antialiased`}
+        className={`${dmSans.variable} ${robotoMono.variable} ${inter.variable} font-sans bg-bg-primary text-text-primary antialiased`}
       >
         <ThemeProvider />
         <main className="pb-16">{children}</main>

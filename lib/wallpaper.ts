@@ -74,8 +74,9 @@ export async function renderWallpaper(config: WallpaperConfig): Promise<Blob> {
   const rowH = 42 * scale;
   const cardH = headerH + rowH * 10 + 2 * scale;
   const cardX = cardMargin;
-  // Position: below the clock (~28% from top), above bottom buttons (~88%)
-  const topZone = height * 0.28;
+  // Position: below the clock (~26% from top), above bottom buttons (~88%)
+  // Centered in the safe zone between clock bottom and torch/camera buttons
+  const topZone = height * 0.26;
   const bottomZone = height * 0.88;
   const safeHeight = bottomZone - topZone;
   const cardY = topZone + (safeHeight - cardH) / 2;
@@ -111,7 +112,7 @@ export async function renderWallpaper(config: WallpaperConfig): Promise<Blob> {
 
   // Header text
   const headerFontSize = Math.round(14 * scale);
-  ctx.font = `500 ${headerFontSize}px "Roboto Mono", monospace`;
+  ctx.font = `500 ${headerFontSize}px "Inter", system-ui, sans-serif`;
   ctx.textAlign = "center";
   ctx.textBaseline = "middle";
   ctx.fillStyle = "#D45B5B";
@@ -138,7 +139,7 @@ export async function renderWallpaper(config: WallpaperConfig): Promise<Blob> {
   // Scale font down for large multipliers
   const baseFontSize = multiplier >= 10000 ? 13 : multiplier >= 100 ? 15 : 16;
   const rowFontSize = Math.round(baseFontSize * scale);
-  ctx.font = `400 ${rowFontSize}px "Roboto Mono", monospace`;
+  ctx.font = `400 ${rowFontSize}px "Inter", system-ui, sans-serif`;
 
   for (let i = 0; i < 10; i++) {
     const baseAmount = (i + 1) * multiplier;

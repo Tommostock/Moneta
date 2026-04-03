@@ -58,14 +58,14 @@ export default function ConversionTablePage({
       {rows.map(({ baseAmount, convertedAmount }, i) => (
         <div key={i} className="flex border-t border-border-subtle">
           <div className="flex-1 bg-bg-surface py-1.5 flex items-center justify-center">
-            <span className="text-text-secondary mr-0.5" style={{ fontSize: segSize * 0.6 }}>
+            <span className="text-text-secondary mr-0.5" style={{ fontSize: segSize * 0.75, fontFamily: "var(--font-inter)" }}>
               {baseSymbol}
             </span>
             <SegmentDisplay value={formatCompact(baseAmount)} size={segSize} />
           </div>
           <div className="w-px bg-border-subtle" />
           <div className="flex-1 bg-bg-raised py-1.5 flex items-center justify-center">
-            <span className="text-text-secondary mr-0.5" style={{ fontSize: segSize * 0.6 }}>
+            <span className="text-text-secondary mr-0.5" style={{ fontSize: segSize * 0.75, fontFamily: "var(--font-inter)" }}>
               {quoteSymbol}
             </span>
             <SegmentDisplay value={formatCompact(convertedAmount)} size={segSize} />
