@@ -68,14 +68,15 @@ export default function ConverterPage() {
     return () => { cancelled = true; };
   }, [baseCurrency, quoteCurrency]);
 
-  const numericValue = inputValue ? parseFloat(inputValue) : 0;
+  const parsed = parseFloat(inputValue);
+  const numericValue = isNaN(parsed) ? 0 : parsed;
   const convertedAmount = rate ? numericValue * rate : null;
 
-  const displayResult = convertedAmount !== null && numericValue > 0
-    ? formatAmount(convertedAmount)
-    : rate !== null
-      ? "0.00"
-      : "--.--";
+  const displayResult = rate === null
+    ? "--.--"
+    : convertedAmount !== null && numericValue > 0
+      ? formatAmount(convertedAmount)
+      : "0.00";
 
   const handleFlip = useCallback(() => {
     setBaseCurrency(quoteCurrency);
@@ -156,7 +157,7 @@ export default function ConverterPage() {
       )}
 
       {/* Converter — card with depth shadow */}
-      <div className="relative mb-2 shrink-0" style={{ boxShadow: "0 1px 3px rgba(0,0,0,0.12)" }}>
+      <div className="relative mb-2 shrink-0" style={{ boxShadow: "0 1px 3px var(--theme-flap-shadow)" }}>
         {/* Source row */}
         <div className="bg-bg-surface rounded-t-[4px] border border-border-subtle px-3 py-2">
           <div className="flex items-center gap-2">

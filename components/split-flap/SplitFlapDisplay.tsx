@@ -19,7 +19,7 @@ export default function SplitFlapDisplay({
 
   return (
     <div className="flex items-center gap-3">
-      <span className="font-mono text-text-secondary tracking-wider text-sm">
+      <span className="font-sans text-text-secondary tracking-wider text-sm">
         {currencyCode}
       </span>
       <SplitFlapGroup value={displayValue} size={size} />

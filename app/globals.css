@@ -93,7 +93,7 @@
 
 /* Number flash animation — amber flash then back to normal */
 @keyframes numberFlash {
-  0% { color: #D4A843; }
+  0% { color: var(--color-accent); }
   100% { color: var(--theme-text-primary); }
 }
 .animate-number-flash { animation: numberFlash 600ms ease-out; }
@@ -131,7 +131,7 @@ input[type="text"],
 input[type="number"],
 input[inputmode="decimal"] {
   font-size: 16px;
-  caret-color: #D4A843;
+  caret-color: var(--color-accent);
 }
 
 /* Page slide transitions */
@@ -149,6 +149,18 @@ input[inputmode="decimal"] {
 .page-transition-back {
   animation: slideInFromLeft 200ms ease-out both;
 }
+
+/* Expansion sheet slide up */
+@keyframes slideUp {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
+@keyframes fadeOverlay {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+.animate-slide-up { animation: slideUp 250ms ease-out both; }
+.animate-overlay { animation: fadeOverlay 200ms ease-out both; }
 
 /* Hide scrollbar for horizontal scroll areas */
 .no-scrollbar::-webkit-scrollbar { display: none; }

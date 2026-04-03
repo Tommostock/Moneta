@@ -100,13 +100,13 @@ export default function RatesPage() {
   useEffect(() => {
     let cancelled = false;
     async function loadHistorical() {
-      const [r6m, r1y] = await Promise.all([
+      const results = await Promise.allSettled([
         fetchRateOnDate(base, quote, daysAgoDate(182)),
         fetchRateOnDate(base, quote, daysAgoDate(365)),
       ]);
       if (!cancelled) {
-        setRate6mAgo(r6m);
-        setRate1yAgo(r1y);
+        setRate6mAgo(results[0].status === "fulfilled" ? results[0].value : null);
+        setRate1yAgo(results[1].status === "fulfilled" ? results[1].value : null);
       }
     }
     loadHistorical();
