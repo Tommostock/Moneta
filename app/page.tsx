@@ -5,11 +5,11 @@ import CountryFlag from "@/components/shared/CountryFlag";
 import SplitFlapGroup from "@/components/split-flap/SplitFlapGroup";
 import ConverterInput from "@/components/converter/ConverterInput";
 import FlipButton from "@/components/converter/FlipButton";
-import QuickAmounts from "@/components/converter/QuickAmounts";
+import ConversionTable from "@/components/converter/ConversionTable";
 import Sparkline from "@/components/converter/Sparkline";
 import CurrencySelector from "@/components/converter/CurrencySelector";
-import MultiCurrencyGlance from "@/components/converter/MultiCurrencyGlance";
 import FavouritePairs from "@/components/converter/FavouritePairs";
+import WallpaperCreator from "@/components/converter/WallpaperCreator";
 import { fetchLatestRate } from "@/lib/api/frankfurter";
 import { formatAmount } from "@/lib/format";
 import { getSettings, addRecentCurrency, addFavouritePair, isFavouritePair, removeFavouritePair } from "@/lib/settings";
@@ -28,13 +28,12 @@ export default function ConverterPage() {
   const [quoteCurrency, setQuoteCurrency] = useState("GBP");
   const [inputValue, setInputValue] = useState("");
   const [rate, setRate] = useState<number | null>(null);
-  const [pickerTarget, setPickerTarget] = useState<"base" | "quote" | null>(
-    null
-  );
+  const [pickerTarget, setPickerTarget] = useState<"base" | "quote" | null>(null);
   const [showCopied, setShowCopied] = useState(false);
   const [isFavourite, setIsFavourite] = useState(false);
+  const [showWallpaper, setShowWallpaper] = useState(false);
+  const [wallpaperMultiplier, setWallpaperMultiplier] = useState(10);
 
-  // Load settings on mount
   useEffect(() => {
     const s = getSettings();
     setSettings(s);
@@ -42,30 +41,22 @@ export default function ConverterPage() {
     setQuoteCurrency(s.homeCurrency || "GBP");
   }, []);
 
-  // Check favourite status when currencies change
   useEffect(() => {
     setIsFavourite(isFavouritePair(baseCurrency, quoteCurrency));
   }, [baseCurrency, quoteCurrency]);
 
-  // Fetch rate when currencies change
   useEffect(() => {
     let cancelled = false;
     async function loadRate() {
       try {
         const result = await fetchLatestRate(baseCurrency, quoteCurrency);
-        if (!cancelled) {
-          setRate(result.rate);
-        }
+        if (!cancelled) setRate(result.rate);
       } catch {
-        if (!cancelled) {
-          setRate(null);
-        }
+        if (!cancelled) setRate(null);
       }
     }
     loadRate();
-    return () => {
-      cancelled = true;
-    };
+    return () => { cancelled = true; };
   }, [baseCurrency, quoteCurrency]);
 
   const numericValue = inputValue ? parseFloat(inputValue) : 0;
@@ -78,18 +69,12 @@ export default function ConverterPage() {
       : "--.--";
 
   const handleFlip = useCallback(() => {
-    const newBase = quoteCurrency;
-    const newQuote = baseCurrency;
-    setBaseCurrency(newBase);
-    setQuoteCurrency(newQuote);
+    setBaseCurrency(quoteCurrency);
+    setQuoteCurrency(baseCurrency);
     if (convertedAmount !== null && convertedAmount > 0) {
       setInputValue(convertedAmount.toFixed(2));
     }
   }, [baseCurrency, quoteCurrency, convertedAmount]);
-
-  const handleQuickAmount = useCallback((amount: number) => {
-    setInputValue(amount.toString());
-  }, []);
 
   const handleToggleFavourite = useCallback(() => {
     if (isFavourite) {
@@ -109,8 +94,7 @@ export default function ConverterPage() {
 
   const handleCopyResult = useCallback(() => {
     if (convertedAmount === null || numericValue <= 0) return;
-    const text = formatAmount(convertedAmount);
-    navigator.clipboard.writeText(text).then(() => {
+    navigator.clipboard.writeText(formatAmount(convertedAmount)).then(() => {
       setShowCopied(true);
       setTimeout(() => setShowCopied(false), 1500);
     }).catch(() => {});
@@ -129,10 +113,6 @@ export default function ConverterPage() {
     },
     [pickerTarget]
   );
-
-  const quickActiveAmount = [5, 10, 20, 50, 100].includes(numericValue)
-    ? numericValue
-    : null;
 
   return (
     <div className="min-h-screen px-4 pt-4">
@@ -217,26 +197,21 @@ export default function ConverterPage() {
         </div>
       </div>
 
-      {/* Quick amounts */}
-      <div className="mb-6 animate-fade-up stagger-4">
-        <QuickAmounts
-          onSelect={handleQuickAmount}
-          activeAmount={quickActiveAmount}
-        />
-      </div>
-
-      {/* Multi-currency glance */}
-      <div className="mb-4 animate-fade-up stagger-5">
-        <MultiCurrencyGlance
-          base={baseCurrency}
-          amount={numericValue}
-          excludeCurrency={quoteCurrency}
-          currencies={settings.glanceCurrencies}
+      {/* Conversion table */}
+      <div className="mb-4 animate-fade-up stagger-4">
+        <ConversionTable
+          baseCurrency={baseCurrency}
+          quoteCurrency={quoteCurrency}
+          rate={rate}
+          onRequestWallpaper={(multiplier) => {
+            setWallpaperMultiplier(multiplier);
+            setShowWallpaper(true);
+          }}
         />
       </div>
 
       {/* Sparkline */}
-      <div className="mb-4 animate-fade-up stagger-6">
+      <div className="mb-4 animate-fade-up stagger-5">
         <Sparkline base={baseCurrency} quote={quoteCurrency} />
       </div>
 
@@ -245,10 +220,20 @@ export default function ConverterPage() {
         isOpen={pickerTarget !== null}
         onClose={() => setPickerTarget(null)}
         onSelect={handleCurrencySelect}
-        selectedCode={
-          pickerTarget === "base" ? baseCurrency : quoteCurrency
-        }
+        selectedCode={pickerTarget === "base" ? baseCurrency : quoteCurrency}
       />
+
+      {/* Wallpaper Creator */}
+      {rate !== null && (
+        <WallpaperCreator
+          isOpen={showWallpaper}
+          onClose={() => setShowWallpaper(false)}
+          baseCurrency={baseCurrency}
+          quoteCurrency={quoteCurrency}
+          rate={rate}
+          multiplier={wallpaperMultiplier}
+        />
+      )}
     </div>
   );
 }
