@@ -120,7 +120,7 @@ export default function RatesPage() {
   return (
     <div className="min-h-screen px-4 pt-4">
       {/* Header */}
-      <div className="mb-6">
+      <div className="mb-6 animate-fade-up stagger-1">
         <h1 className="text-text-muted text-xs font-sans tracking-widest uppercase mb-4">
           Rate Watcher
         </h1>
@@ -155,17 +155,17 @@ export default function RatesPage() {
       </div>
 
       {/* Time period pills */}
-      <div className="mb-4">
+      <div className="mb-4 animate-fade-up stagger-2">
         <TimePeriodPills selected={period} onSelect={setPeriod} />
       </div>
 
       {/* Chart */}
-      <div className="mb-4 bg-bg-surface rounded-[4px] border border-border-subtle p-2">
+      <div className="mb-4 bg-bg-surface rounded-[4px] border border-border-subtle p-2 animate-fade-up stagger-3">
         <RateChart data={series} />
       </div>
 
       {/* Rate context */}
-      <div className="mb-4">
+      <div className="mb-4 animate-fade-up stagger-4">
         <RateContext
           base={base}
           quote={quote}
@@ -176,7 +176,7 @@ export default function RatesPage() {
 
       {/* Historical reference */}
       {(rate1yAgo !== null || rate6mAgo !== null) && (
-        <div className="mb-6 bg-bg-surface rounded-[4px] border border-border-subtle p-4">
+        <div className="mb-6 bg-bg-surface rounded-[4px] border border-border-subtle p-4 animate-fade-up stagger-5">
           <p className="text-text-muted text-xs font-sans tracking-widest uppercase mb-3">
             Historical Reference
           </p>

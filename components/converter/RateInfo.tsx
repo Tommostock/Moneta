@@ -9,6 +9,7 @@ interface RateInfoProps {
   rate: number | null;
   offline: boolean;
   cacheDate?: string;
+  fetchedAt?: number;
 }
 
 export default function RateInfo({
@@ -17,35 +18,49 @@ export default function RateInfo({
   rate,
   offline,
   cacheDate,
+  fetchedAt,
 }: RateInfoProps) {
   if (!rate) {
     return (
       <p className="text-text-muted text-sm font-sans">
-        Waiting for rate data
+        Waiting for rate data — check your connection
       </p>
     );
   }
 
   const rateStr = formatRate(rate);
-  const timeStr = formatTime(new Date());
+  const inverseRate = 1 / rate;
+  const inverseRateStr = formatRate(inverseRate);
+  // Use the actual fetch time when available, not render time
+  const timeStr = fetchedAt ? formatTime(new Date(fetchedAt)) : formatTime(new Date());
 
   return (
-    <div className="text-sm font-sans">
-      <span className="text-text-secondary">
-        1{" "}
-        <span className="font-mono tracking-wider">{base}</span>
-        {" = "}
-        <span className="font-mono tracking-wider">{rateStr}</span>
-        {" "}
-        <span className="font-mono tracking-wider">{quote}</span>
-      </span>
-      {offline && cacheDate ? (
-        <span className="text-text-muted ml-2">
-          Offline — rate from {formatDate(cacheDate)}
+    <div className="flex flex-col gap-1 text-sm font-sans">
+      <div className="flex flex-wrap items-baseline gap-x-2">
+        <span className="text-text-secondary">
+          1{" "}
+          <span className="font-mono tracking-wider">{base}</span>
+          {" = "}
+          <span className="font-mono tracking-wider">{rateStr}</span>
+          {" "}
+          <span className="font-mono tracking-wider">{quote}</span>
         </span>
-      ) : (
-        <span className="text-text-muted ml-2">Updated {timeStr}</span>
-      )}
+        {offline && cacheDate ? (
+          <span className="text-text-muted">
+            Offline — rate from {formatDate(cacheDate)}
+          </span>
+        ) : (
+          <span className="text-text-muted">Updated {timeStr}</span>
+        )}
+      </div>
+      <div className="text-text-muted text-xs">
+        1{" "}
+        <span className="font-mono tracking-wider">{quote}</span>
+        {" = "}
+        <span className="font-mono tracking-wider">{inverseRateStr}</span>
+        {" "}
+        <span className="font-mono tracking-wider">{base}</span>
+      </div>
     </div>
   );
 }

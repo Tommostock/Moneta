@@ -14,6 +14,7 @@ export default function ConverterInput({ value, onChange }: ConverterInputProps)
   const handleChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       const sanitized = sanitizeNumericInput(e.target.value);
+      // Limit to 12 chars before the decimal point + 2 after
       onChange(sanitized);
     },
     [onChange]
@@ -37,7 +38,8 @@ export default function ConverterInput({ value, onChange }: ConverterInputProps)
       value={value}
       onChange={handleChange}
       onPaste={handlePaste}
-      placeholder="0.00"
+      placeholder="0"
+      maxLength={16}
       className="w-full text-right font-mono text-2xl text-text-primary bg-transparent outline-none placeholder:text-text-muted"
       style={{ fontSize: "24px" }}
       autoComplete="off"

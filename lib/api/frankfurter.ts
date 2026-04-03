@@ -27,13 +27,13 @@ async function fetchWithTimeout(url: string): Promise<Response> {
 export async function fetchLatestRate(
   base: string,
   quote: string
-): Promise<{ rate: number; date: string; offline: boolean }> {
+): Promise<{ rate: number; date: string; fetchedAt: number; offline: boolean }> {
   const cacheKey = `rate:${base}:${quote}`;
   const cached = cacheGet<RateResponse[]>(cacheKey);
 
   if (cached && !isExpired(cached.fetchedAt, RATES_TTL)) {
     const entry = cached.data[0];
-    return { rate: entry.rate, date: entry.date, offline: false };
+    return { rate: entry.rate, date: entry.date, fetchedAt: cached.fetchedAt, offline: false };
   }
 
   try {
@@ -42,12 +42,13 @@ export async function fetchLatestRate(
     );
     const data: RateResponse[] = await res.json();
     cacheSet(cacheKey, data);
-    return { rate: data[0].rate, date: data[0].date, offline: false };
+    const now = Date.now();
+    return { rate: data[0].rate, date: data[0].date, fetchedAt: now, offline: false };
   } catch {
     // Fallback to cache even if expired
     if (cached) {
       const entry = cached.data[0];
-      return { rate: entry.rate, date: entry.date, offline: true };
+      return { rate: entry.rate, date: entry.date, fetchedAt: cached.fetchedAt, offline: true };
     }
     throw new Error("No rate data available");
   }
@@ -90,6 +91,33 @@ export async function fetchTimeSeries(
       };
     }
     throw new Error("No time series data available");
+  }
+}
+
+// Single rate on a specific date (for historical reference)
+export async function fetchRateOnDate(
+  base: string,
+  quote: string,
+  date: string
+): Promise<number | null> {
+  const cacheKey = `rate:${base}:${quote}:${date}`;
+  const cached = cacheGet<RateResponse[]>(cacheKey);
+
+  // Historical rates never change — cache indefinitely
+  if (cached) {
+    return cached.data[0]?.rate ?? null;
+  }
+
+  try {
+    const res = await fetchWithTimeout(
+      `${BASE_URL}/rates?base=${base}&quotes=${quote}&from=${date}&to=${date}`
+    );
+    const data: RateResponse[] = await res.json();
+    if (!data.length) return null;
+    cacheSet(cacheKey, data);
+    return data[0].rate;
+  } catch {
+    return null;
   }
 }
 

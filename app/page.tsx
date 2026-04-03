@@ -32,6 +32,7 @@ export default function ConverterPage() {
   const [pickerTarget, setPickerTarget] = useState<"base" | "quote" | null>(
     null
   );
+  const [showCopied, setShowCopied] = useState(false);
 
   // Load settings on mount
   useEffect(() => {
@@ -90,6 +91,17 @@ export default function ConverterPage() {
     setInputValue(amount.toString());
   }, []);
 
+  const handleCopyResult = useCallback(() => {
+    if (convertedAmount === null || numericValue <= 0) return;
+    const text = formatAmount(convertedAmount);
+    navigator.clipboard.writeText(text).then(() => {
+      setShowCopied(true);
+      setTimeout(() => setShowCopied(false), 1500);
+    }).catch(() => {
+      // silently fail on clipboard error
+    });
+  }, [convertedAmount, numericValue]);
+
   const handleCurrencySelect = useCallback(
     (code: string) => {
       if (pickerTarget === "base") {
@@ -114,14 +126,14 @@ export default function ConverterPage() {
       {settings.nextTrip && <TripBanner trip={settings.nextTrip} />}
 
       {/* Header */}
-      <div className="mb-6">
+      <div className="mb-6 animate-fade-up stagger-1">
         <h1 className="text-text-muted text-xs font-sans tracking-widest uppercase">
           MONETA
         </h1>
       </div>
 
       {/* Source currency row */}
-      <div className="bg-bg-surface rounded-[4px] border border-border-subtle p-4 mb-2">
+      <div className="bg-bg-surface rounded-[4px] border border-border-subtle p-4 mb-2 animate-fade-up stagger-2">
         <div className="flex items-center gap-3">
           <button
             onClick={() => setPickerTarget("base")}
@@ -139,12 +151,12 @@ export default function ConverterPage() {
       </div>
 
       {/* Flip button */}
-      <div className="flex justify-center -my-1 relative z-10">
+      <div className="flex justify-center -my-1 relative z-10 animate-fade-up stagger-3">
         <FlipButton onFlip={handleFlip} />
       </div>
 
       {/* Target currency row */}
-      <div className="bg-bg-surface rounded-[4px] border border-border-subtle p-4 mt-2 mb-4">
+      <div className="bg-bg-surface rounded-[4px] border border-border-subtle p-4 mt-2 mb-4 animate-fade-up stagger-3">
         <div className="flex items-center gap-3">
           <button
             onClick={() => setPickerTarget("quote")}
@@ -155,14 +167,25 @@ export default function ConverterPage() {
               {quoteCurrency}
             </span>
           </button>
-          <div className="flex-1 flex justify-end">
-            <SplitFlapGroup value={displayResult} size="lg" />
+          <div className="flex-1 flex justify-end relative">
+            <button
+              onClick={handleCopyResult}
+              className="flex items-center active:opacity-70 transition-opacity"
+              aria-label="Copy converted amount"
+            >
+              <SplitFlapGroup value={displayResult} size="lg" />
+            </button>
+            {showCopied && (
+              <span className="absolute -bottom-6 right-0 text-xs text-accent font-sans animate-fade-in">
+                Copied
+              </span>
+            )}
           </div>
         </div>
       </div>
 
       {/* Rate info */}
-      <div className="mb-4">
+      <div className="mb-4 animate-fade-up stagger-4">
         <RateInfo
           base={baseCurrency}
           quote={quoteCurrency}
@@ -174,7 +197,7 @@ export default function ConverterPage() {
       </div>
 
       {/* Quick amounts */}
-      <div className="mb-6">
+      <div className="mb-6 animate-fade-up stagger-5">
         <QuickAmounts
           onSelect={handleQuickAmount}
           activeAmount={quickActiveAmount}
@@ -182,7 +205,7 @@ export default function ConverterPage() {
       </div>
 
       {/* Sparkline */}
-      <div className="mb-4">
+      <div className="mb-4 animate-fade-up stagger-6">
         <Sparkline base={baseCurrency} quote={quoteCurrency} />
       </div>
 

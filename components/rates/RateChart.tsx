@@ -1,5 +1,6 @@
 "use client";
 
+import { useId } from "react";
 import {
   ResponsiveContainer,
   AreaChart,
@@ -18,6 +19,8 @@ interface RateChartProps {
 }
 
 export default function RateChart({ data }: RateChartProps) {
+  const gradientId = useId().replace(/:/g, "");
+
   if (data.length < 2) {
     return (
       <div className="h-[250px] flex items-center justify-center">
@@ -38,7 +41,7 @@ export default function RateChart({ data }: RateChartProps) {
       <ResponsiveContainer width="100%" height="100%">
         <AreaChart data={data} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
           <defs>
-            <linearGradient id="chartFill" x1="0" y1="0" x2="0" y2="1">
+            <linearGradient id={gradientId} x1="0" y1="0" x2="0" y2="1">
               <stop offset="0%" stopColor="#D4A843" stopOpacity={0.2} />
               <stop offset="100%" stopColor="#D4A843" stopOpacity={0} />
             </linearGradient>
@@ -77,24 +80,10 @@ export default function RateChart({ data }: RateChartProps) {
             dataKey="rate"
             stroke="#D4A843"
             strokeWidth={2}
-            fill="url(#chartFill)"
+            fill={`url(#${gradientId})`}
           />
-          {/* High point */}
-          <ReferenceDot
-            x={high.date}
-            y={high.rate}
-            r={4}
-            fill="#6BBF6B"
-            stroke="none"
-          />
-          {/* Low point */}
-          <ReferenceDot
-            x={low.date}
-            y={low.rate}
-            r={4}
-            fill="#D45B5B"
-            stroke="none"
-          />
+          <ReferenceDot x={high.date} y={high.rate} r={4} fill="#6BBF6B" stroke="none" />
+          <ReferenceDot x={low.date} y={low.rate} r={4} fill="#D45B5B" stroke="none" />
         </AreaChart>
       </ResponsiveContainer>
     </div>

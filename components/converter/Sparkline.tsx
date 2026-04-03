@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useId } from "react";
 import { fetchTimeSeries } from "@/lib/api/frankfurter";
 import { daysAgoDate, todayDate } from "@/lib/dates";
 import type { TimeSeriesPoint } from "@/types";
@@ -12,6 +12,7 @@ interface SparklineProps {
 
 export default function Sparkline({ base, quote }: SparklineProps) {
   const [data, setData] = useState<TimeSeriesPoint[]>([]);
+  const gradientId = useId().replace(/:/g, "");
 
   useEffect(() => {
     let cancelled = false;
@@ -54,9 +55,8 @@ export default function Sparkline({ base, quote }: SparklineProps) {
     })
     .join(" ");
 
-  // Fill area under the line
   const firstX = padding;
-  const lastX = padding + ((data.length - 1) / (data.length - 1)) * (width - padding * 2);
+  const lastX = padding + (width - padding * 2);
   const fillPoints = `${firstX},${height} ${points} ${lastX},${height}`;
 
   return (
@@ -64,14 +64,15 @@ export default function Sparkline({ base, quote }: SparklineProps) {
       viewBox={`0 0 ${width} ${height}`}
       className="w-full h-10"
       preserveAspectRatio="none"
+      aria-hidden="true"
     >
       <defs>
-        <linearGradient id="sparkFill" x1="0" y1="0" x2="0" y2="1">
+        <linearGradient id={gradientId} x1="0" y1="0" x2="0" y2="1">
           <stop offset="0%" stopColor="#D4A843" stopOpacity="0.15" />
           <stop offset="100%" stopColor="#D4A843" stopOpacity="0" />
         </linearGradient>
       </defs>
-      <polygon points={fillPoints} fill="url(#sparkFill)" />
+      <polygon points={fillPoints} fill={`url(#${gradientId})`} />
       <polyline
         points={points}
         fill="none"
