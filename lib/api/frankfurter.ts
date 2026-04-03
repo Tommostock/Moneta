@@ -93,6 +93,35 @@ export async function fetchTimeSeries(
   }
 }
 
+// Rate on a specific date (for historical reference)
+export async function fetchRateOnDate(
+  base: string,
+  quote: string,
+  date: string
+): Promise<number | null> {
+  const cacheKey = `rate:${base}:${quote}:${date}`;
+  const cached = cacheGet<RateResponse[]>(cacheKey);
+
+  if (cached && !isExpired(cached.fetchedAt, SERIES_TTL)) {
+    return cached.data[0]?.rate ?? null;
+  }
+
+  try {
+    const res = await fetchWithTimeout(
+      `${BASE_URL}/rates?base=${base}&quotes=${quote}&from=${date}&to=${date}`
+    );
+    const data: RateResponse[] = await res.json();
+    if (data.length === 0) return null;
+    cacheSet(cacheKey, data);
+    return data[0].rate;
+  } catch {
+    if (cached && cached.data[0]) {
+      return cached.data[0].rate;
+    }
+    return null;
+  }
+}
+
 // Full currency list
 export async function fetchCurrencies(): Promise<{
   data: CurrencyResponse[];
