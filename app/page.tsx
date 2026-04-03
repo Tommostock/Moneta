@@ -124,7 +124,7 @@ export default function ConverterPage() {
   );
 
   return (
-    <div className="h-[100dvh] px-3 pt-2 pb-16 flex flex-col" style={{ paddingBottom: "calc(env(safe-area-inset-bottom, 0px) + 60px)" }}>
+    <div className="h-[100dvh] px-3 pt-2 flex flex-col" style={{ paddingBottom: "calc(env(safe-area-inset-bottom, 0px) + 56px)" }}>
       {/* Header + favourite star */}
       <div className="mb-1.5 flex items-center justify-between shrink-0">
         <h1 className="text-text-muted text-xs font-sans tracking-widest uppercase">
@@ -213,7 +213,7 @@ export default function ConverterPage() {
       <div className="border-t border-border-subtle mb-1.5 shrink-0" />
 
       {/* Conversion table — grows to fill available space */}
-      <div className="flex-1 min-h-0 mb-1.5 flex flex-col">
+      <div className="flex-1 min-h-0 mb-1">
         <ConversionTable
           baseCurrency={baseCurrency}
           quoteCurrency={quoteCurrency}

@@ -42,7 +42,7 @@ export default function ConversionTablePage({
   const fontSize = multiplier >= 10000 ? "text-[11px]" : multiplier >= 100 ? "text-[13px]" : "text-[15px]";
 
   return (
-    <div className="rounded-[4px] overflow-hidden border border-border-subtle flex flex-col">
+    <div className="h-full rounded-[4px] overflow-hidden border border-border-subtle flex flex-col">
       {/* Header with reverse toggle */}
       <div className="flex">
         <div className="flex-1 bg-bg-surface py-1.5 flex items-center justify-center">

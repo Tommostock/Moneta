@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState, useEffect, useCallback } from "react";
+import { useRef, useState, useCallback } from "react";
 import ConversionTablePage from "./ConversionTablePage";
 
 interface ConversionTableProps {
@@ -23,23 +23,20 @@ export default function ConversionTable({
   const [activePage, setActivePage] = useState(0);
   const [reversed, setReversed] = useState(false);
 
-  // Track active page via scroll position — more reliable than IntersectionObserver
-  useEffect(() => {
+  // Detect which page is active after scrolling stops
+  const updateActivePage = useCallback(() => {
     const container = scrollRef.current;
     if (!container) return;
-
-    function onScroll() {
-      if (!container) return;
-      const scrollLeft = container.scrollLeft;
-      const pageWidth = container.offsetWidth;
-      if (pageWidth === 0) return;
-      const page = Math.round(scrollLeft / pageWidth);
-      setActivePage(Math.min(page, MULTIPLIERS.length - 1));
-    }
-
-    container.addEventListener("scroll", onScroll, { passive: true });
-    return () => container.removeEventListener("scroll", onScroll);
+    const w = container.offsetWidth;
+    if (w === 0) return;
+    const page = Math.round(container.scrollLeft / w);
+    setActivePage(Math.max(0, Math.min(page, MULTIPLIERS.length - 1)));
   }, []);
+
+  // Use both onScroll and onScrollEnd for maximum compatibility
+  const handleScroll = useCallback(() => {
+    updateActivePage();
+  }, [updateActivePage]);
 
   const handleDotClick = useCallback((index: number) => {
     const container = scrollRef.current;
@@ -52,7 +49,7 @@ export default function ConversionTable({
 
   if (rate === null) {
     return (
-      <div className="rounded-[4px] border border-border-subtle bg-bg-surface flex-1 flex items-center justify-center">
+      <div className="h-full rounded-[4px] border border-border-subtle bg-bg-surface flex items-center justify-center">
         <span className="text-text-muted font-sans text-sm">
           Waiting for rate data
         </span>
@@ -61,16 +58,17 @@ export default function ConversionTable({
   }
 
   return (
-    <div className="flex flex-col">
-      {/* Swipeable pages */}
+    <div className="h-full flex flex-col">
+      {/* Swipeable pages — takes all available height */}
       <div
         ref={scrollRef}
-        className="flex overflow-x-auto snap-x snap-mandatory no-scrollbar"
+        className="flex-1 min-h-0 flex overflow-x-auto snap-x snap-mandatory no-scrollbar"
+        onScroll={handleScroll}
       >
         {MULTIPLIERS.map((mult) => (
           <div
             key={mult}
-            className="min-w-full snap-start shrink-0"
+            className="min-w-full h-full snap-start shrink-0"
           >
             <ConversionTablePage
               baseCurrency={baseCurrency}
@@ -85,7 +83,7 @@ export default function ConversionTable({
       </div>
 
       {/* Dots + multiplier label */}
-      <div className="flex items-center justify-center gap-1.5 py-1.5">
+      <div className="flex items-center justify-center gap-1.5 py-1 shrink-0">
         {MULTIPLIERS.map((_, i) => (
           <button
             key={i}
@@ -105,7 +103,7 @@ export default function ConversionTable({
       {onRequestWallpaper && (
         <button
           onClick={() => onRequestWallpaper(MULTIPLIERS[activePage])}
-          className="w-full h-9 rounded-[4px] border border-border-subtle text-text-secondary font-sans text-xs tracking-wider active:bg-bg-raised haptic-tap transition-colors"
+          className="w-full h-8 rounded-[4px] border border-border-subtle text-text-secondary font-sans text-xs tracking-wider active:bg-bg-raised haptic-tap transition-colors shrink-0"
         >
           Create Wallpaper
         </button>
