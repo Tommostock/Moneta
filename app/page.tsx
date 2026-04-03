@@ -68,10 +68,10 @@ export default function ConverterPage() {
   const convertedAmount = rate ? numericValue * rate : null;
 
   const displayResult = convertedAmount !== null && numericValue > 0
-    ? formatAmount(convertedAmount).padStart(12, " ")
+    ? formatAmount(convertedAmount).padStart(9, " ")
     : rate !== null
-      ? "        0.00"
-      : "        --.--";
+      ? "     0.00"
+      : "     --.--";
 
   const handleFlip = useCallback(() => {
     const newBase = quoteCurrency;
@@ -153,8 +153,8 @@ export default function ConverterPage() {
               {quoteCurrency}
             </span>
           </button>
-          <div className="flex-1 flex justify-end">
-            <SplitFlapGroup value={displayResult} size="lg" />
+          <div className="flex-1 flex justify-end overflow-hidden">
+            <SplitFlapGroup value={displayResult} size="md" />
           </div>
         </div>
       </div>
