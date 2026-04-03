@@ -29,6 +29,7 @@ export interface AppSettings {
   defaultForeignCurrency: string;
   recentCurrencies: string[];
   favouritePairs: CurrencyPair[];
+  glanceCurrencies: string[];
 }
 
 export interface Currency {

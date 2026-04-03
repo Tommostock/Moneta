@@ -13,21 +13,20 @@ interface GlanceRate {
 interface MultiCurrencyGlanceProps {
   base: string;
   amount: number;
-  excludeCurrency: string; // The main target currency to exclude
+  excludeCurrency: string;
+  currencies: string[];
 }
-
-// Common currencies to show — will exclude the main pair currencies
-const GLANCE_CURRENCIES = ["USD", "EUR", "GBP", "JPY", "CHF", "AUD", "CAD"];
 
 export default function MultiCurrencyGlance({
   base,
   amount,
   excludeCurrency,
+  currencies,
 }: MultiCurrencyGlanceProps) {
   const [rates, setRates] = useState<GlanceRate[]>([]);
 
-  // Pick up to 3 currencies that aren't the base or main target
-  const currencies = GLANCE_CURRENCIES.filter(
+  // Filter out the base and main target, take up to 3
+  const filtered = currencies.filter(
     (c) => c !== base && c !== excludeCurrency
   ).slice(0, 3);
 
@@ -36,7 +35,7 @@ export default function MultiCurrencyGlance({
 
     async function loadRates() {
       const results = await Promise.all(
-        currencies.map(async (quote) => {
+        filtered.map(async (quote) => {
           try {
             const r = await fetchLatestRate(base, quote);
             return { quote, rate: r.rate };
@@ -53,7 +52,7 @@ export default function MultiCurrencyGlance({
       cancelled = true;
     };
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [base, excludeCurrency]);
+  }, [base, excludeCurrency, currencies.join(",")]);
 
   if (rates.length === 0) return null;
 

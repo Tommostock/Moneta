@@ -3,7 +3,6 @@
 import { useState, useEffect } from "react";
 import dynamic from "next/dynamic";
 import CountryFlag from "@/components/shared/CountryFlag";
-import SplitFlapGroup from "@/components/split-flap/SplitFlapGroup";
 import TimePeriodPills, {
   periodToDays,
   periodToGroup,
@@ -12,9 +11,9 @@ import type { Period } from "@/components/rates/TimePeriodPills";
 import RateContext from "@/components/rates/RateContext";
 import CurrencySelector from "@/components/converter/CurrencySelector";
 import { fetchLatestRate, fetchTimeSeries, fetchRateOnDate } from "@/lib/api/frankfurter";
-import { formatRate } from "@/lib/format";
 import { daysAgoDate, todayDate } from "@/lib/dates";
 import { getSettings } from "@/lib/settings";
+import { CURRENCY_SYMBOLS } from "@/lib/constants/currencies";
 import type { TimeSeriesPoint } from "@/types";
 
 // Dynamic import to keep Recharts out of the main bundle
@@ -34,6 +33,12 @@ const periodLabels: Record<Period, string> = {
   "6M": "6 months",
   "1Y": "1 year",
 };
+
+function formatFriendlyRate(base: string, quote: string, rate: number): string {
+  const baseSymbol = CURRENCY_SYMBOLS[base] || base;
+  const quoteSymbol = CURRENCY_SYMBOLS[quote] || quote;
+  return `${baseSymbol}1 = ${quoteSymbol}${rate.toFixed(2)}`;
+}
 
 export default function RatesPage() {
   const [base, setBase] = useState("GBP");
@@ -107,10 +112,6 @@ export default function RatesPage() {
     return () => { cancelled = true; };
   }, [base, quote]);
 
-  const rateDisplay = currentRate
-    ? formatRate(currentRate)
-    : "--.----";
-
   const handleCurrencySelect = (code: string) => {
     if (pickerTarget === "base") setBase(code);
     else if (pickerTarget === "quote") setQuote(code);
@@ -148,9 +149,17 @@ export default function RatesPage() {
           </button>
         </div>
 
-        {/* Current rate */}
+        {/* Current rate — friendly format */}
         <div className="mb-4">
-          <SplitFlapGroup value={rateDisplay} size="lg" />
+          {currentRate !== null ? (
+            <p className="font-mono text-text-primary text-2xl tracking-wide">
+              {formatFriendlyRate(base, quote, currentRate)}
+            </p>
+          ) : (
+            <p className="font-mono text-text-muted text-2xl tracking-wide">
+              --.--
+            </p>
+          )}
         </div>
       </div>
 
@@ -174,7 +183,7 @@ export default function RatesPage() {
         />
       </div>
 
-      {/* Historical reference */}
+      {/* Historical reference — friendly format */}
       {(rate1yAgo !== null || rate6mAgo !== null) && (
         <div className="mb-6 bg-bg-surface rounded-[4px] border border-border-subtle p-4 animate-fade-up stagger-5">
           <p className="text-text-muted text-xs font-sans tracking-widest uppercase mb-3">
@@ -184,19 +193,25 @@ export default function RatesPage() {
             {rate1yAgo !== null && (
               <div className="flex justify-between items-baseline">
                 <span className="text-text-secondary font-sans text-sm">1 year ago</span>
-                <span className="font-mono text-text-primary text-sm">{formatRate(rate1yAgo)}</span>
+                <span className="font-mono text-text-primary text-sm">
+                  {formatFriendlyRate(base, quote, rate1yAgo)}
+                </span>
               </div>
             )}
             {rate6mAgo !== null && (
               <div className="flex justify-between items-baseline">
                 <span className="text-text-secondary font-sans text-sm">6 months ago</span>
-                <span className="font-mono text-text-primary text-sm">{formatRate(rate6mAgo)}</span>
+                <span className="font-mono text-text-primary text-sm">
+                  {formatFriendlyRate(base, quote, rate6mAgo)}
+                </span>
               </div>
             )}
             {currentRate !== null && (
               <div className="flex justify-between items-baseline border-t border-border-subtle pt-2 mt-1">
                 <span className="text-text-secondary font-sans text-sm">Today</span>
-                <span className="font-mono text-accent text-sm">{formatRate(currentRate)}</span>
+                <span className="font-mono text-accent text-sm">
+                  {formatFriendlyRate(base, quote, currentRate)}
+                </span>
               </div>
             )}
           </div>

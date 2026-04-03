@@ -6,7 +6,6 @@ import SplitFlapGroup from "@/components/split-flap/SplitFlapGroup";
 import ConverterInput from "@/components/converter/ConverterInput";
 import FlipButton from "@/components/converter/FlipButton";
 import QuickAmounts from "@/components/converter/QuickAmounts";
-import RateInfo from "@/components/converter/RateInfo";
 import Sparkline from "@/components/converter/Sparkline";
 import CurrencySelector from "@/components/converter/CurrencySelector";
 import MultiCurrencyGlance from "@/components/converter/MultiCurrencyGlance";
@@ -22,15 +21,13 @@ export default function ConverterPage() {
     defaultForeignCurrency: "EUR",
     recentCurrencies: [] as string[],
     favouritePairs: [] as ReturnType<typeof getSettings>["favouritePairs"],
+    glanceCurrencies: ["USD", "EUR", "JPY"] as string[],
   }));
 
   const [baseCurrency, setBaseCurrency] = useState("EUR");
   const [quoteCurrency, setQuoteCurrency] = useState("GBP");
   const [inputValue, setInputValue] = useState("");
   const [rate, setRate] = useState<number | null>(null);
-  const [rateDate, setRateDate] = useState<string>("");
-  const [offline, setOffline] = useState(false);
-  const [fetchedAt, setFetchedAt] = useState<number | undefined>(undefined);
   const [pickerTarget, setPickerTarget] = useState<"base" | "quote" | null>(
     null
   );
@@ -58,14 +55,10 @@ export default function ConverterPage() {
         const result = await fetchLatestRate(baseCurrency, quoteCurrency);
         if (!cancelled) {
           setRate(result.rate);
-          setRateDate(result.date);
-          setOffline(result.offline);
-          setFetchedAt(result.fetchedAt);
         }
       } catch {
         if (!cancelled) {
           setRate(null);
-          setOffline(false);
         }
       }
     }
@@ -89,7 +82,6 @@ export default function ConverterPage() {
     const newQuote = baseCurrency;
     setBaseCurrency(newBase);
     setQuoteCurrency(newQuote);
-    // Invert the input to the converted amount
     if (convertedAmount !== null && convertedAmount > 0) {
       setInputValue(convertedAmount.toFixed(2));
     }
@@ -107,7 +99,6 @@ export default function ConverterPage() {
       addFavouritePair(baseCurrency, quoteCurrency);
       setIsFavourite(true);
     }
-    // Refresh settings to update the pairs list
     setSettings(getSettings());
   }, [baseCurrency, quoteCurrency, isFavourite]);
 
@@ -122,9 +113,7 @@ export default function ConverterPage() {
     navigator.clipboard.writeText(text).then(() => {
       setShowCopied(true);
       setTimeout(() => setShowCopied(false), 1500);
-    }).catch(() => {
-      // silently fail on clipboard error
-    });
+    }).catch(() => {});
   }, [convertedAmount, numericValue]);
 
   const handleCurrencySelect = useCallback(
@@ -147,11 +136,21 @@ export default function ConverterPage() {
 
   return (
     <div className="min-h-screen px-4 pt-4">
-      {/* Header */}
-      <div className="mb-6 animate-fade-up stagger-1">
+      {/* Header + favourite star */}
+      <div className="mb-6 animate-fade-up stagger-1 flex items-center justify-between">
         <h1 className="text-text-muted text-xs font-sans tracking-widest uppercase">
           MONETA
         </h1>
+        <button
+          onClick={handleToggleFavourite}
+          className="min-w-[44px] min-h-[44px] flex items-center justify-center -mr-2 active:opacity-70 transition-opacity"
+          aria-label={isFavourite ? "Remove from favourites" : "Add to favourites"}
+        >
+          <Star
+            size={16}
+            className={isFavourite ? "text-accent fill-accent" : "text-text-muted"}
+          />
+        </button>
       </div>
 
       {/* Favourite pairs */}
@@ -218,32 +217,8 @@ export default function ConverterPage() {
         </div>
       </div>
 
-      {/* Rate info + favourite star */}
-      <div className="mb-4 animate-fade-up stagger-4 flex items-start gap-2">
-        <div className="flex-1">
-          <RateInfo
-            base={baseCurrency}
-            quote={quoteCurrency}
-            rate={rate}
-            offline={offline}
-            cacheDate={rateDate}
-            fetchedAt={fetchedAt}
-          />
-        </div>
-        <button
-          onClick={handleToggleFavourite}
-          className="min-w-[44px] min-h-[44px] flex items-center justify-center -mr-2 active:opacity-70 transition-opacity"
-          aria-label={isFavourite ? "Remove from favourites" : "Add to favourites"}
-        >
-          <Star
-            size={18}
-            className={isFavourite ? "text-accent fill-accent" : "text-text-muted"}
-          />
-        </button>
-      </div>
-
       {/* Quick amounts */}
-      <div className="mb-6 animate-fade-up stagger-5">
+      <div className="mb-6 animate-fade-up stagger-4">
         <QuickAmounts
           onSelect={handleQuickAmount}
           activeAmount={quickActiveAmount}
@@ -251,16 +226,17 @@ export default function ConverterPage() {
       </div>
 
       {/* Multi-currency glance */}
-      <div className="mb-4 animate-fade-up stagger-6">
+      <div className="mb-4 animate-fade-up stagger-5">
         <MultiCurrencyGlance
           base={baseCurrency}
           amount={numericValue}
           excludeCurrency={quoteCurrency}
+          currencies={settings.glanceCurrencies}
         />
       </div>
 
       {/* Sparkline */}
-      <div className="mb-4 animate-fade-up stagger-7">
+      <div className="mb-4 animate-fade-up stagger-6">
         <Sparkline base={baseCurrency} quote={quoteCurrency} />
       </div>
 

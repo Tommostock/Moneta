@@ -11,7 +11,7 @@ import type { AppSettings } from "@/types";
 export default function SettingsPage() {
   const [settings, setSettings] = useState<AppSettings | null>(null);
   const [pickerTarget, setPickerTarget] = useState<
-    "home" | "foreign" | null
+    "home" | "foreign" | "glance0" | "glance1" | "glance2" | null
   >(null);
   const [showClearConfirm, setShowClearConfirm] = useState(false);
 
@@ -28,16 +28,37 @@ export default function SettingsPage() {
   };
 
   const handleCurrencySelect = (code: string) => {
-    if (pickerTarget === "home") update({ homeCurrency: code });
-    else if (pickerTarget === "foreign") update({ defaultForeignCurrency: code });
+    if (pickerTarget === "home") {
+      update({ homeCurrency: code });
+    } else if (pickerTarget === "foreign") {
+      update({ defaultForeignCurrency: code });
+    } else if (pickerTarget?.startsWith("glance")) {
+      const index = parseInt(pickerTarget.replace("glance", ""), 10);
+      const glance = [...(settings.glanceCurrencies || ["USD", "EUR", "JPY"])];
+      glance[index] = code;
+      update({ glanceCurrencies: glance });
+    }
     setPickerTarget(null);
   };
 
   const handleClearAll = () => {
     cacheClear();
     localStorage.removeItem("moneta:settings");
+    localStorage.removeItem("moneta:initialized");
     setSettings(getSettings());
     setShowClearConfirm(false);
+  };
+
+  const glance = settings.glanceCurrencies || ["USD", "EUR", "JPY"];
+
+  const getPickerSelected = () => {
+    if (pickerTarget === "home") return settings.homeCurrency;
+    if (pickerTarget === "foreign") return settings.defaultForeignCurrency;
+    if (pickerTarget?.startsWith("glance")) {
+      const index = parseInt(pickerTarget.replace("glance", ""), 10);
+      return glance[index] || "USD";
+    }
+    return settings.homeCurrency;
   };
 
   return (
@@ -74,6 +95,32 @@ export default function SettingsPage() {
               </span>
             </div>
           </SettingRow>
+        </div>
+      </section>
+
+      {/* Glance Currencies */}
+      <section className="mb-6">
+        <h2 className="text-text-secondary text-sm font-sans mb-1">
+          Quick Glance Currencies
+        </h2>
+        <p className="text-text-muted text-xs font-sans mb-3">
+          Shown below the converter for at-a-glance conversions
+        </p>
+        <div className="bg-bg-surface rounded-[4px] border border-border-subtle divide-y divide-border-subtle">
+          {glance.map((code, i) => (
+            <SettingRow
+              key={i}
+              label={`Currency ${i + 1}`}
+              onClick={() => setPickerTarget(`glance${i}` as "glance0" | "glance1" | "glance2")}
+            >
+              <div className="flex items-center gap-2">
+                <CountryFlag currencyCode={code} />
+                <span className="font-mono text-text-primary tracking-wider">
+                  {code}
+                </span>
+              </div>
+            </SettingRow>
+          ))}
         </div>
       </section>
 
@@ -133,11 +180,7 @@ export default function SettingsPage() {
         isOpen={pickerTarget !== null}
         onClose={() => setPickerTarget(null)}
         onSelect={handleCurrencySelect}
-        selectedCode={
-          pickerTarget === "home"
-            ? settings.homeCurrency
-            : settings.defaultForeignCurrency
-        }
+        selectedCode={getPickerSelected()}
       />
     </div>
   );

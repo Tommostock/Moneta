@@ -46,6 +46,7 @@ const DEFAULT_SETTINGS: AppSettings = {
   defaultForeignCurrency: "EUR",
   recentCurrencies: ["EUR", "USD", "JPY", "CHF"],
   favouritePairs: [],
+  glanceCurrencies: ["USD", "EUR", "JPY"],
 };
 
 export function getSettings(): AppSettings {

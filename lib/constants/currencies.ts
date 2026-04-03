@@ -69,4 +69,13 @@ export const CURRENCY_NAMES: Record<string, string> = {
   ZAR: "South African Rand",
 };
 
+export const CURRENCY_SYMBOLS: Record<string, string> = {
+  AUD: "A$", BGN: "лв", BRL: "R$", CAD: "C$", CHF: "CHF", CNY: "¥",
+  CZK: "Kč", DKK: "kr", EUR: "€", GBP: "£", HKD: "HK$", HUF: "Ft",
+  IDR: "Rp", ILS: "₪", INR: "₹", ISK: "kr", JPY: "¥", KRW: "₩",
+  MXN: "MX$", MYR: "RM", NOK: "kr", NZD: "NZ$", PHP: "₱", PLN: "zł",
+  RON: "lei", SEK: "kr", SGD: "S$", THB: "฿", TRY: "₺", USD: "$",
+  ZAR: "R",
+};
+
 export const ALL_CURRENCY_CODES = Object.keys(CURRENCY_COUNTRY_MAP).sort();
