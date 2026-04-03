@@ -145,53 +145,58 @@ export default function ConverterPage() {
         </div>
       )}
 
-      {/* Compact converter — source + flip + target in tighter layout */}
-      <div className="bg-bg-surface rounded-[4px] border border-border-subtle px-3 py-2 mb-1">
-        <div className="flex items-center gap-2">
-          <button
-            onClick={() => setPickerTarget("base")}
-            className="flex items-center gap-1.5 min-h-[36px] px-1.5 -ml-1.5 active:bg-bg-raised rounded-[4px] transition-colors duration-100"
-          >
-            <CountryFlag currencyCode={baseCurrency} />
-            <span className="font-mono text-text-primary tracking-wider text-base">
-              {baseCurrency}
-            </span>
-          </button>
-          <div className="flex-1">
-            <ConverterInput value={inputValue} onChange={setInputValue} />
+      {/* Converter — two boxes with overlapping flip button */}
+      <div className="relative mb-2">
+        {/* Source row */}
+        <div className="bg-bg-surface rounded-t-[4px] border border-border-subtle px-3 py-2">
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => setPickerTarget("base")}
+              className="flex items-center gap-1.5 min-h-[36px] px-1.5 -ml-1.5 active:bg-bg-raised rounded-[4px] transition-colors duration-100"
+            >
+              <CountryFlag currencyCode={baseCurrency} />
+              <span className="font-mono text-text-primary tracking-wider text-base">
+                {baseCurrency}
+              </span>
+            </button>
+            <div className="flex-1">
+              <ConverterInput value={inputValue} onChange={setInputValue} />
+            </div>
           </div>
         </div>
-      </div>
 
-      <div className="flex justify-center -my-0.5 relative z-10">
-        <FlipButton onFlip={handleFlip} />
-      </div>
-
-      <div className="bg-bg-surface rounded-[4px] border border-border-subtle px-3 py-2 mt-1 mb-2">
-        <div className="flex items-center gap-2">
-          <button
-            onClick={() => setPickerTarget("quote")}
-            className="flex items-center gap-1.5 min-h-[36px] px-1.5 -ml-1.5 active:bg-bg-raised rounded-[4px] transition-colors duration-100"
-          >
-            <CountryFlag currencyCode={quoteCurrency} />
-            <span className="font-mono text-text-primary tracking-wider text-base">
-              {quoteCurrency}
-            </span>
-          </button>
-          <div className="flex-1 flex justify-end relative">
+        {/* Target row — border-top removed, shares the border line */}
+        <div className="bg-bg-surface rounded-b-[4px] border border-t-0 border-border-subtle px-3 py-2">
+          <div className="flex items-center gap-2">
             <button
-              onClick={handleCopyResult}
-              className="flex items-center active:opacity-70 transition-opacity"
-              aria-label="Copy converted amount"
+              onClick={() => setPickerTarget("quote")}
+              className="flex items-center gap-1.5 min-h-[36px] px-1.5 -ml-1.5 active:bg-bg-raised rounded-[4px] transition-colors duration-100"
             >
-              <SegmentDisplay value={displayResult} size={28} />
-            </button>
-            {showCopied && (
-              <span className="absolute -bottom-5 right-0 text-xs text-accent font-sans animate-fade-in">
-                Copied
+              <CountryFlag currencyCode={quoteCurrency} />
+              <span className="font-mono text-text-primary tracking-wider text-base">
+                {quoteCurrency}
               </span>
-            )}
+            </button>
+            <div className="flex-1 flex justify-end relative">
+              <button
+                onClick={handleCopyResult}
+                className="flex items-center active:opacity-70 transition-opacity"
+                aria-label="Copy converted amount"
+              >
+                <SegmentDisplay value={displayResult} size={28} />
+              </button>
+              {showCopied && (
+                <span className="absolute -bottom-5 right-0 text-xs text-accent font-sans animate-fade-in">
+                  Copied
+                </span>
+              )}
+            </div>
           </div>
+        </div>
+
+        {/* Flip button — centered on the dividing line */}
+        <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-10">
+          <FlipButton onFlip={handleFlip} />
         </div>
       </div>
 

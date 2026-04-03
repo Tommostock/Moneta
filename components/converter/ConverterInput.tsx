@@ -2,6 +2,7 @@
 
 import { useCallback, useRef } from "react";
 import { sanitizeNumericInput } from "@/lib/format";
+import SegmentDisplay from "@/components/display/SegmentDisplay";
 
 interface ConverterInputProps {
   value: string;
@@ -14,7 +15,6 @@ export default function ConverterInput({ value, onChange }: ConverterInputProps)
   const handleChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       const sanitized = sanitizeNumericInput(e.target.value);
-      // Limit to 12 chars before the decimal point + 2 after
       onChange(sanitized);
     },
     [onChange]
@@ -30,19 +30,30 @@ export default function ConverterInput({ value, onChange }: ConverterInputProps)
     [onChange]
   );
 
+  const handleTap = () => {
+    inputRef.current?.focus();
+  };
+
+  const displayValue = value || "0";
+
   return (
-    <input
-      ref={inputRef}
-      type="text"
-      inputMode="decimal"
-      value={value}
-      onChange={handleChange}
-      onPaste={handlePaste}
-      placeholder="0"
-      maxLength={16}
-      className="w-full text-right font-mono text-2xl text-text-primary bg-transparent outline-none placeholder:text-text-muted"
-      style={{ fontSize: "24px" }}
-      autoComplete="off"
-    />
+    <div className="relative flex items-center justify-end" onClick={handleTap}>
+      {/* Hidden input for keyboard */}
+      <input
+        ref={inputRef}
+        type="text"
+        inputMode="decimal"
+        value={value}
+        onChange={handleChange}
+        onPaste={handlePaste}
+        placeholder="0"
+        maxLength={16}
+        className="absolute inset-0 w-full h-full opacity-0 cursor-text"
+        style={{ fontSize: "16px" }}
+        autoComplete="off"
+      />
+      {/* Visible segment display */}
+      <SegmentDisplay value={displayValue} size={28} />
+    </div>
   );
 }

@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import dynamic from "next/dynamic";
 import CountryFlag from "@/components/shared/CountryFlag";
+import SegmentDisplay from "@/components/display/SegmentDisplay";
 import TimePeriodPills, {
   periodToDays,
   periodToGroup,
@@ -149,16 +150,20 @@ export default function RatesPage() {
           </button>
         </div>
 
-        {/* Current rate — friendly format */}
-        <div className="mb-4">
+        {/* Current rate — friendly format with segment display */}
+        <div className="mb-4 flex items-end gap-1">
           {currentRate !== null ? (
-            <p className="font-mono text-text-primary text-2xl tracking-wide">
-              {formatFriendlyRate(base, quote, currentRate)}
-            </p>
+            <>
+              <span className="text-text-secondary text-lg font-sans">
+                {CURRENCY_SYMBOLS[base] || base}1 =
+              </span>
+              <span className="text-text-secondary text-lg font-sans ml-1">
+                {CURRENCY_SYMBOLS[quote] || quote}
+              </span>
+              <SegmentDisplay value={currentRate.toFixed(2)} size={28} />
+            </>
           ) : (
-            <p className="font-mono text-text-muted text-2xl tracking-wide">
-              --.--
-            </p>
+            <SegmentDisplay value="--.--" size={28} />
           )}
         </div>
       </div>
