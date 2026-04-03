@@ -13,6 +13,12 @@ interface FavouritePairsProps {
   onReorder?: () => void;
 }
 
+interface CachedRect {
+  left: number;
+  right: number;
+  index: number;
+}
+
 export default function FavouritePairs({
   pairs,
   currentBase,
@@ -25,6 +31,7 @@ export default function FavouritePairs({
   const longPressTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const startX = useRef(0);
   const dragIndex = useRef<number | null>(null);
+  const cachedRects = useRef<CachedRect[]>([]);
 
   const displayPairs = localPairs || pairs;
 
@@ -34,12 +41,21 @@ export default function FavouritePairs({
       setDragging(index);
       dragIndex.current = index;
       setLocalPairs([...pairs]);
+      // Cache element positions once at drag start
+      const elements = document.querySelectorAll("[data-pair-index]");
+      cachedRects.current = Array.from(elements).map((el) => {
+        const rect = el.getBoundingClientRect();
+        return {
+          left: rect.left,
+          right: rect.right,
+          index: parseInt(el.getAttribute("data-pair-index") || "0", 10),
+        };
+      });
     }, 400);
   }, [pairs]);
 
   const handleTouchMove = useCallback((e: React.TouchEvent) => {
     if (dragging === null || !localPairs) {
-      // If moved before long press triggered, cancel it
       if (longPressTimer.current) {
         const dx = Math.abs(e.touches[0].clientX - startX.current);
         if (dx > 10) {
@@ -51,19 +67,15 @@ export default function FavouritePairs({
     }
     e.preventDefault();
 
-    // Find which pill we're over
-    const touch = e.touches[0];
-    const elements = document.querySelectorAll("[data-pair-index]");
-    for (const el of elements) {
-      const rect = el.getBoundingClientRect();
-      if (touch.clientX >= rect.left && touch.clientX <= rect.right) {
-        const overIndex = parseInt(el.getAttribute("data-pair-index") || "0", 10);
-        if (overIndex !== dragIndex.current && dragIndex.current !== null) {
+    const touchX = e.touches[0].clientX;
+    for (const cached of cachedRects.current) {
+      if (touchX >= cached.left && touchX <= cached.right) {
+        if (cached.index !== dragIndex.current && dragIndex.current !== null) {
           const newPairs = [...localPairs];
           const [moved] = newPairs.splice(dragIndex.current, 1);
-          newPairs.splice(overIndex, 0, moved);
+          newPairs.splice(cached.index, 0, moved);
           setLocalPairs(newPairs);
-          dragIndex.current = overIndex;
+          dragIndex.current = cached.index;
         }
         break;
       }
@@ -82,6 +94,7 @@ export default function FavouritePairs({
     setDragging(null);
     setLocalPairs(null);
     dragIndex.current = null;
+    cachedRects.current = [];
   }, [dragging, localPairs, onReorder]);
 
   return (

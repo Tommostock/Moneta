@@ -129,7 +129,7 @@ export default function ConverterPage() {
   return (
     <div className="h-[100dvh] px-3 pt-2 flex flex-col" style={{ paddingBottom: "calc(env(safe-area-inset-bottom, 0px) + 56px)" }}>
       {/* Header + favourite star */}
-      <div className="mb-1.5 flex items-center justify-between shrink-0">
+      <div className="mb-1 flex items-center justify-between shrink-0">
         <h1 className="text-text-muted text-xs font-sans tracking-widest uppercase">
           MONETA
         </h1>
@@ -147,7 +147,7 @@ export default function ConverterPage() {
 
       {/* Favourite pairs */}
       {settings.favouritePairs.length > 0 && (
-        <div className="mb-1.5 shrink-0">
+        <div className="mb-1 shrink-0">
           <FavouritePairs
             pairs={settings.favouritePairs}
             currentBase={baseCurrency}
@@ -159,7 +159,7 @@ export default function ConverterPage() {
       )}
 
       {/* Converter — card with depth shadow */}
-      <div className="relative mb-2 shrink-0" style={{ boxShadow: "0 1px 3px var(--theme-flap-shadow)" }}>
+      <div className="relative mb-1.5 shrink-0" style={{ boxShadow: "0 1px 3px var(--theme-flap-shadow)" }}>
         {/* Source row */}
         <div className="bg-bg-surface rounded-t-[4px] border border-border-subtle px-3 py-2">
           <div className="flex items-center gap-2">
@@ -213,18 +213,6 @@ export default function ConverterPage() {
         </div>
       </div>
 
-      {/* Tip button */}
-      {convertedAmount !== null && numericValue > 0 && (
-        <div className="mb-1 shrink-0">
-          <button
-            onClick={() => setShowTip(true)}
-            className="w-full h-7 rounded-[4px] border border-border-subtle text-text-muted font-sans text-[10px] tracking-wider active:bg-bg-raised haptic-tap transition-colors"
-          >
-            Tip Calculator
-          </button>
-        </div>
-      )}
-
       {/* Separator */}
       <div className="border-t border-border-subtle mb-1 shrink-0" />
 
@@ -238,6 +226,8 @@ export default function ConverterPage() {
             setWallpaperMultiplier(multiplier);
             setShowWallpaper(true);
           }}
+          onRequestTip={() => setShowTip(true)}
+          showTipButton={numericValue > 0 && rate !== null}
         />
       </div>
 
@@ -259,14 +249,14 @@ export default function ConverterPage() {
         selectedCode={pickerTarget === "base" ? baseCurrency : quoteCurrency}
       />
 
-      {/* Tip Calculator */}
+      {/* Tip Calculator — uses the input amount in the base currency */}
       {rate !== null && (
         <TipCalculator
           isOpen={showTip}
           onClose={() => setShowTip(false)}
-          amount={convertedAmount ?? 0}
-          currency={quoteCurrency}
-          homeCurrency={baseCurrency}
+          amount={numericValue}
+          currency={baseCurrency}
+          homeCurrency={quoteCurrency}
           rate={rate}
         />
       )}

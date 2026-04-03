@@ -41,6 +41,15 @@ function formatWallpaperAmount(value: number): string {
 export async function renderWallpaper(config: WallpaperConfig): Promise<Blob> {
   const { width, height, baseCurrency, quoteCurrency, rate, multiplier, backgroundColor } = config;
 
+  // Ensure DM Sans is loaded before rendering to canvas
+  await document.fonts.ready;
+  // Force the font to be loaded by measuring a string with it
+  const testCtx = document.createElement("canvas").getContext("2d");
+  if (testCtx) {
+    testCtx.font = '500 16px "DM Sans", sans-serif';
+    testCtx.measureText("0123456789");
+  }
+  // Wait again in case font was lazy-loaded
   await document.fonts.ready;
 
   const canvas = document.createElement("canvas");

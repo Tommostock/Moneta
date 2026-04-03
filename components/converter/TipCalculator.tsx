@@ -33,10 +33,9 @@ export default function TipCalculator({
 
   const quoteSymbol = CURRENCY_SYMBOLS[currency] || currency;
   const homeSymbol = CURRENCY_SYMBOLS[homeCurrency] || homeCurrency;
-  // rate converts base -> quote, so to get home equivalent of the quote amount:
-  // if base=EUR, quote=GBP, rate=0.87, and amount is in GBP (the converted amount)
-  // we need to invert: home cost = amount / rate
-  const homeRate = 1 / rate;
+  // rate converts baseCurrency -> quoteCurrency
+  // amount is in baseCurrency (the input currency)
+  // homeCurrency here is quoteCurrency (the converted side)
 
   return (
     <div className="fixed inset-0 z-50 flex flex-col justify-end" onClick={onClose}>
@@ -107,8 +106,8 @@ export default function TipCalculator({
           </div>
 
           {/* Home currency equivalent note */}
-          <p className="text-text-muted text-[10px] font-sans mt-2 text-center">
-            Total at 20% = ~{homeSymbol}{formatVal((amount * 1.2) * homeRate)} in {homeCurrency}
+          <p className="text-text-secondary text-[11px] font-sans mt-2 text-center">
+            Total at 20% = ~{homeSymbol}{formatVal(amount * 1.2 * rate)} in {homeCurrency}
           </p>
         </div>
       </div>

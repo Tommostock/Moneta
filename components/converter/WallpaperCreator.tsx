@@ -43,6 +43,7 @@ export default function WallpaperCreator({
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
   const blobRef = useRef<Blob | null>(null);
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const generatePreview = useCallback(async () => {
     const preset = SIZE_PRESETS[sizeIndex];
@@ -69,8 +70,14 @@ export default function WallpaperCreator({
     }
   }, [sizeIndex, bgColor, baseCurrency, quoteCurrency, rate, multiplier]);
 
+  // Debounced preview — waits 300ms after last settings change to avoid re-rendering on every tap
   useEffect(() => {
-    if (isOpen) generatePreview();
+    if (!isOpen) return;
+    if (debounceRef.current) clearTimeout(debounceRef.current);
+    debounceRef.current = setTimeout(generatePreview, 300);
+    return () => {
+      if (debounceRef.current) clearTimeout(debounceRef.current);
+    };
   }, [isOpen, generatePreview]);
 
   useEffect(() => {
