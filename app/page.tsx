@@ -10,9 +10,12 @@ import RateInfo from "@/components/converter/RateInfo";
 import Sparkline from "@/components/converter/Sparkline";
 import TripBanner from "@/components/trip/TripBanner";
 import CurrencySelector from "@/components/converter/CurrencySelector";
+import MultiCurrencyGlance from "@/components/converter/MultiCurrencyGlance";
+import FavouritePairs from "@/components/converter/FavouritePairs";
 import { fetchLatestRate } from "@/lib/api/frankfurter";
 import { formatAmount } from "@/lib/format";
-import { getSettings, addRecentCurrency } from "@/lib/settings";
+import { getSettings, addRecentCurrency, addFavouritePair, isFavouritePair, removeFavouritePair } from "@/lib/settings";
+import { Star } from "lucide-react";
 
 export default function ConverterPage() {
   const [settings, setSettings] = useState(() => ({
@@ -20,6 +23,7 @@ export default function ConverterPage() {
     defaultForeignCurrency: "EUR",
     nextTrip: null as ReturnType<typeof getSettings>["nextTrip"],
     recentCurrencies: [] as string[],
+    favouritePairs: [] as ReturnType<typeof getSettings>["favouritePairs"],
   }));
 
   const [baseCurrency, setBaseCurrency] = useState("EUR");
@@ -33,6 +37,7 @@ export default function ConverterPage() {
     null
   );
   const [showCopied, setShowCopied] = useState(false);
+  const [isFavourite, setIsFavourite] = useState(false);
 
   // Load settings on mount
   useEffect(() => {
@@ -41,6 +46,11 @@ export default function ConverterPage() {
     setBaseCurrency(s.defaultForeignCurrency || "EUR");
     setQuoteCurrency(s.homeCurrency || "GBP");
   }, []);
+
+  // Check favourite status when currencies change
+  useEffect(() => {
+    setIsFavourite(isFavouritePair(baseCurrency, quoteCurrency));
+  }, [baseCurrency, quoteCurrency]);
 
   // Fetch rate when currencies change
   useEffect(() => {
@@ -91,6 +101,23 @@ export default function ConverterPage() {
     setInputValue(amount.toString());
   }, []);
 
+  const handleToggleFavourite = useCallback(() => {
+    if (isFavourite) {
+      removeFavouritePair(baseCurrency, quoteCurrency);
+      setIsFavourite(false);
+    } else {
+      addFavouritePair(baseCurrency, quoteCurrency);
+      setIsFavourite(true);
+    }
+    // Refresh settings to update the pairs list
+    setSettings(getSettings());
+  }, [baseCurrency, quoteCurrency, isFavourite]);
+
+  const handleSelectPair = useCallback((base: string, quote: string) => {
+    setBaseCurrency(base);
+    setQuoteCurrency(quote);
+  }, []);
+
   const handleCopyResult = useCallback(() => {
     if (convertedAmount === null || numericValue <= 0) return;
     const text = formatAmount(convertedAmount);
@@ -131,6 +158,18 @@ export default function ConverterPage() {
           MONETA
         </h1>
       </div>
+
+      {/* Favourite pairs */}
+      {settings.favouritePairs.length > 0 && (
+        <div className="mb-3 animate-fade-up stagger-2">
+          <FavouritePairs
+            pairs={settings.favouritePairs}
+            currentBase={baseCurrency}
+            currentQuote={quoteCurrency}
+            onSelect={handleSelectPair}
+          />
+        </div>
+      )}
 
       {/* Source currency row */}
       <div className="bg-bg-surface rounded-[4px] border border-border-subtle p-4 mb-2 animate-fade-up stagger-2">
@@ -184,16 +223,28 @@ export default function ConverterPage() {
         </div>
       </div>
 
-      {/* Rate info */}
-      <div className="mb-4 animate-fade-up stagger-4">
-        <RateInfo
-          base={baseCurrency}
-          quote={quoteCurrency}
-          rate={rate}
-          offline={offline}
-          cacheDate={rateDate}
-          fetchedAt={fetchedAt}
-        />
+      {/* Rate info + favourite star */}
+      <div className="mb-4 animate-fade-up stagger-4 flex items-start gap-2">
+        <div className="flex-1">
+          <RateInfo
+            base={baseCurrency}
+            quote={quoteCurrency}
+            rate={rate}
+            offline={offline}
+            cacheDate={rateDate}
+            fetchedAt={fetchedAt}
+          />
+        </div>
+        <button
+          onClick={handleToggleFavourite}
+          className="min-w-[44px] min-h-[44px] flex items-center justify-center -mr-2 active:opacity-70 transition-opacity"
+          aria-label={isFavourite ? "Remove from favourites" : "Add to favourites"}
+        >
+          <Star
+            size={18}
+            className={isFavourite ? "text-accent fill-accent" : "text-text-muted"}
+          />
+        </button>
       </div>
 
       {/* Quick amounts */}
@@ -204,8 +255,17 @@ export default function ConverterPage() {
         />
       </div>
 
-      {/* Sparkline */}
+      {/* Multi-currency glance */}
       <div className="mb-4 animate-fade-up stagger-6">
+        <MultiCurrencyGlance
+          base={baseCurrency}
+          amount={numericValue}
+          excludeCurrency={quoteCurrency}
+        />
+      </div>
+
+      {/* Sparkline */}
+      <div className="mb-4 animate-fade-up stagger-7">
         <Sparkline base={baseCurrency} quote={quoteCurrency} />
       </div>
 

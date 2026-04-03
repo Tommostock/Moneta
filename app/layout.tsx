@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { DM_Sans, Roboto_Mono } from "next/font/google";
 import BottomNav from "@/components/shared/BottomNav";
+import InstallPrompt from "@/components/shared/InstallPrompt";
 import "./globals.css";
 
 const dmSans = DM_Sans({
@@ -51,6 +52,7 @@ export default function RootLayout({
       <body
         className={`${dmSans.variable} ${robotoMono.variable} font-sans bg-bg-primary text-text-primary antialiased`}
       >
+        <InstallPrompt />
         <main className="pb-20">{children}</main>
         <BottomNav />
       </body>

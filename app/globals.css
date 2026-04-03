@@ -107,6 +107,10 @@ input[inputmode="decimal"] {
   font-size: 16px;
 }
 
+/* Hide scrollbar for horizontal scroll areas */
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
 /* Flag icon sizing override */
 .fi {
   width: 24px;

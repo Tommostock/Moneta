@@ -46,6 +46,7 @@ const DEFAULT_SETTINGS: AppSettings = {
   defaultForeignCurrency: "EUR",
   nextTrip: null,
   recentCurrencies: ["EUR", "USD", "JPY", "CHF"],
+  favouritePairs: [],
 };
 
 export function getSettings(): AppSettings {
@@ -105,4 +106,29 @@ export function addRecentCurrency(code: string): void {
 
 export function setNextTrip(trip: NextTrip | null): void {
   updateSetting("nextTrip", trip);
+}
+
+export function addFavouritePair(base: string, quote: string): void {
+  const settings = getSettings();
+  const pairs = settings.favouritePairs.filter(
+    (p) => !(p.base === base && p.quote === quote)
+  );
+  pairs.unshift({ base, quote });
+  settings.favouritePairs = pairs.slice(0, 5);
+  saveSettings(settings);
+}
+
+export function removeFavouritePair(base: string, quote: string): void {
+  const settings = getSettings();
+  settings.favouritePairs = settings.favouritePairs.filter(
+    (p) => !(p.base === base && p.quote === quote)
+  );
+  saveSettings(settings);
+}
+
+export function isFavouritePair(base: string, quote: string): boolean {
+  const settings = getSettings();
+  return settings.favouritePairs.some(
+    (p) => p.base === base && p.quote === quote
+  );
 }

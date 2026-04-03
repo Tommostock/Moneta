@@ -35,7 +35,13 @@ export default function Sparkline({ base, quote }: SparklineProps) {
     };
   }, [base, quote]);
 
-  if (data.length < 2) return null;
+  if (data.length < 2) {
+    return (
+      <div className="w-full h-10 flex items-center">
+        <div className="w-full h-[2px] bg-bg-raised animate-pulse rounded-full" />
+      </div>
+    );
+  }
 
   const rates = data.map((d) => d.rate);
   const min = Math.min(...rates);

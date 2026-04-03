@@ -26,11 +26,17 @@ export interface NextTrip {
   returnDate: string;
 }
 
+export interface CurrencyPair {
+  base: string;
+  quote: string;
+}
+
 export interface AppSettings {
   homeCurrency: string;
   defaultForeignCurrency: string;
   nextTrip: NextTrip | null;
   recentCurrencies: string[];
+  favouritePairs: CurrencyPair[];
 }
 
 export interface Currency {
