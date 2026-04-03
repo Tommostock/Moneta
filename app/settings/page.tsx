@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Trash2 } from "lucide-react";
+import { Trash2, Sun, Moon } from "lucide-react";
 import CountryFlag from "@/components/shared/CountryFlag";
 import CurrencySelector from "@/components/converter/CurrencySelector";
 import { getSettings, saveSettings } from "@/lib/settings";
@@ -27,6 +27,17 @@ export default function SettingsPage() {
     saveSettings(next);
   };
 
+  const handleThemeToggle = () => {
+    const newTheme = settings.theme === "light" ? "dark" : "light";
+    update({ theme: newTheme });
+    if (newTheme === "light") {
+      document.documentElement.classList.add("light");
+    } else {
+      document.documentElement.classList.remove("light");
+    }
+    window.dispatchEvent(new Event("moneta:theme-change"));
+  };
+
   const handleCurrencySelect = (code: string) => {
     if (pickerTarget === "home") {
       update({ homeCurrency: code });
@@ -45,11 +56,13 @@ export default function SettingsPage() {
     cacheClear();
     localStorage.removeItem("moneta:settings");
     localStorage.removeItem("moneta:initialized");
+    document.documentElement.classList.remove("light");
     setSettings(getSettings());
     setShowClearConfirm(false);
   };
 
   const glance = settings.glanceCurrencies || ["USD", "EUR", "JPY"];
+  const isDark = settings.theme !== "light";
 
   const getPickerSelected = () => {
     if (pickerTarget === "home") return settings.homeCurrency;
@@ -66,6 +79,27 @@ export default function SettingsPage() {
       <h1 className="text-text-muted text-xs font-sans tracking-widest uppercase mb-6">
         Settings
       </h1>
+
+      {/* Appearance */}
+      <section className="mb-6">
+        <h2 className="text-text-secondary text-sm font-sans mb-3">
+          Appearance
+        </h2>
+        <div className="bg-bg-surface rounded-[4px] border border-border-subtle">
+          <button
+            onClick={handleThemeToggle}
+            className="w-full flex items-center justify-between px-4 min-h-[48px] active:bg-bg-raised transition-colors duration-100"
+          >
+            <div className="flex items-center gap-3">
+              {isDark ? <Moon size={16} className="text-text-secondary" /> : <Sun size={16} className="text-text-secondary" />}
+              <span className="text-text-secondary text-sm font-sans">Theme</span>
+            </div>
+            <span className="font-mono text-text-primary tracking-wider text-sm">
+              {isDark ? "Dark" : "Light"}
+            </span>
+          </button>
+        </div>
+      </section>
 
       {/* Currency Preferences */}
       <section className="mb-6">

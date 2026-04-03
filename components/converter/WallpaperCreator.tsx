@@ -19,11 +19,18 @@ const SIZE_PRESETS = [
 ] as const;
 
 const BG_COLORS = [
-  { label: "Dark", value: "#0C0C0C" },
+  { label: "Black", value: "#0C0C0C" },
   { label: "Charcoal", value: "#1A1A2E" },
   { label: "Navy", value: "#0D1B2A" },
   { label: "Forest", value: "#0D1F0D" },
   { label: "Burgundy", value: "#1F0D0D" },
+  { label: "Grey", value: "#4A4A4A" },
+  { label: "Teal", value: "#0D4B4B" },
+  { label: "Gold", value: "#8B7535" },
+  { label: "Orange", value: "#9B4400" },
+  { label: "Pink", value: "#8B2252" },
+  { label: "Yellow", value: "#9B8A00" },
+  { label: "White", value: "#F5F2ED" },
 ] as const;
 
 export default function WallpaperCreator({
@@ -69,7 +76,6 @@ export default function WallpaperCreator({
     if (isOpen) generatePreview();
   }, [isOpen, generatePreview]);
 
-  // Cleanup blob URL on unmount
   useEffect(() => {
     return () => {
       if (previewUrl) URL.revokeObjectURL(previewUrl);
@@ -86,7 +92,6 @@ export default function WallpaperCreator({
         type: "image/png",
       });
 
-      // Try Web Share API (works on iOS PWA)
       if (navigator.share && navigator.canShare?.({ files: [file] })) {
         await navigator.share({
           files: [file],
@@ -96,7 +101,6 @@ export default function WallpaperCreator({
         return;
       }
 
-      // Fallback: download link
       const url = URL.createObjectURL(blobRef.current);
       const a = document.createElement("a");
       a.href = url;
@@ -131,15 +135,16 @@ export default function WallpaperCreator({
       </div>
 
       {/* Preview */}
-      <div className="flex-1 flex items-center justify-center px-8 py-4 overflow-hidden">
+      <div className="flex-1 flex items-center justify-center px-8 py-2 overflow-hidden">
         {previewUrl ? (
+          /* eslint-disable-next-line @next/next/no-img-element */
           <img
             src={previewUrl}
             alt="Wallpaper preview"
-            className="max-h-full max-w-[260px] rounded-[4px] border border-border-subtle object-contain"
+            className="max-h-full max-w-[240px] rounded-[4px] border border-border-subtle object-contain"
           />
         ) : (
-          <div className="w-[260px] h-[400px] bg-bg-surface rounded-[4px] border border-border-subtle flex items-center justify-center">
+          <div className="w-[240px] h-[360px] bg-bg-surface rounded-[4px] border border-border-subtle flex items-center justify-center">
             <span className="text-text-muted text-sm font-sans">
               Generating...
             </span>
@@ -148,16 +153,16 @@ export default function WallpaperCreator({
       </div>
 
       {/* Controls */}
-      <div className="px-4 pb-4 space-y-4" style={{ paddingBottom: "env(safe-area-inset-bottom, 16px)" }}>
+      <div className="px-4 pb-3 space-y-3" style={{ paddingBottom: "env(safe-area-inset-bottom, 12px)" }}>
         {/* Size presets */}
         <div>
-          <p className="text-text-muted text-xs font-sans mb-2">Size</p>
+          <p className="text-text-muted text-xs font-sans mb-1.5">Size</p>
           <div className="flex gap-2">
             {SIZE_PRESETS.map((preset, i) => (
               <button
                 key={preset.label}
                 onClick={() => setSizeIndex(i)}
-                className={`flex-1 h-11 rounded-[4px] font-sans text-sm transition-colors duration-100 ${
+                className={`flex-1 h-10 rounded-[4px] font-sans text-sm transition-colors duration-100 ${
                   i === sizeIndex
                     ? "bg-accent text-bg-primary"
                     : "bg-bg-raised text-text-secondary border border-border-subtle active:bg-bg-surface"
@@ -171,13 +176,13 @@ export default function WallpaperCreator({
 
         {/* Background colors */}
         <div>
-          <p className="text-text-muted text-xs font-sans mb-2">Background</p>
-          <div className="flex gap-3 justify-center">
+          <p className="text-text-muted text-xs font-sans mb-1.5">Background</p>
+          <div className="flex gap-2 flex-wrap justify-center">
             {BG_COLORS.map((color) => (
               <button
                 key={color.value}
                 onClick={() => setBgColor(color.value)}
-                className={`w-11 h-11 rounded-[4px] border-2 transition-colors ${
+                className={`w-9 h-9 rounded-[4px] border-2 transition-colors shrink-0 ${
                   bgColor === color.value
                     ? "border-accent"
                     : "border-border-subtle"
@@ -193,7 +198,7 @@ export default function WallpaperCreator({
         <button
           onClick={handleSave}
           disabled={saving || !previewUrl}
-          className="w-full h-12 rounded-[4px] bg-accent text-bg-primary font-sans text-sm font-medium active:opacity-80 disabled:opacity-50 transition-opacity"
+          className="w-full h-11 rounded-[4px] bg-accent text-bg-primary font-sans text-sm font-medium active:opacity-80 disabled:opacity-50 transition-opacity"
         >
           {saving ? "Saving..." : "Save Wallpaper"}
         </button>

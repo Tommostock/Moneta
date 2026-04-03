@@ -47,6 +47,7 @@ const DEFAULT_SETTINGS: AppSettings = {
   recentCurrencies: ["EUR", "USD", "JPY", "CHF"],
   favouritePairs: [],
   glanceCurrencies: ["USD", "EUR", "JPY"],
+  theme: "dark",
 };
 
 export function getSettings(): AppSettings {

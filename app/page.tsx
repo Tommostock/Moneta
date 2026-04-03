@@ -6,7 +6,6 @@ import SplitFlapGroup from "@/components/split-flap/SplitFlapGroup";
 import ConverterInput from "@/components/converter/ConverterInput";
 import FlipButton from "@/components/converter/FlipButton";
 import ConversionTable from "@/components/converter/ConversionTable";
-import Sparkline from "@/components/converter/Sparkline";
 import CurrencySelector from "@/components/converter/CurrencySelector";
 import FavouritePairs from "@/components/converter/FavouritePairs";
 import WallpaperCreator from "@/components/converter/WallpaperCreator";
@@ -22,11 +21,12 @@ export default function ConverterPage() {
     recentCurrencies: [] as string[],
     favouritePairs: [] as ReturnType<typeof getSettings>["favouritePairs"],
     glanceCurrencies: ["USD", "EUR", "JPY"] as string[],
+    theme: "dark" as "dark" | "light",
   }));
 
   const [baseCurrency, setBaseCurrency] = useState("EUR");
   const [quoteCurrency, setQuoteCurrency] = useState("GBP");
-  const [inputValue, setInputValue] = useState("");
+  const [inputValue, setInputValue] = useState("1");
   const [rate, setRate] = useState<number | null>(null);
   const [pickerTarget, setPickerTarget] = useState<"base" | "quote" | null>(null);
   const [showCopied, setShowCopied] = useState(false);
@@ -115,19 +115,19 @@ export default function ConverterPage() {
   );
 
   return (
-    <div className="min-h-screen px-4 pt-4">
+    <div className="min-h-screen px-3 pt-2">
       {/* Header + favourite star */}
-      <div className="mb-6 animate-fade-up stagger-1 flex items-center justify-between">
+      <div className="mb-2 flex items-center justify-between">
         <h1 className="text-text-muted text-xs font-sans tracking-widest uppercase">
           MONETA
         </h1>
         <button
           onClick={handleToggleFavourite}
-          className="min-w-[44px] min-h-[44px] flex items-center justify-center -mr-2 active:opacity-70 transition-opacity"
+          className="min-w-[44px] min-h-[36px] flex items-center justify-center -mr-2 active:opacity-70 transition-opacity"
           aria-label={isFavourite ? "Remove from favourites" : "Add to favourites"}
         >
           <Star
-            size={16}
+            size={14}
             className={isFavourite ? "text-accent fill-accent" : "text-text-muted"}
           />
         </button>
@@ -135,7 +135,7 @@ export default function ConverterPage() {
 
       {/* Favourite pairs */}
       {settings.favouritePairs.length > 0 && (
-        <div className="mb-3 animate-fade-up stagger-2">
+        <div className="mb-2">
           <FavouritePairs
             pairs={settings.favouritePairs}
             currentBase={baseCurrency}
@@ -145,15 +145,15 @@ export default function ConverterPage() {
         </div>
       )}
 
-      {/* Source currency row */}
-      <div className="bg-bg-surface rounded-[4px] border border-border-subtle p-4 mb-2 animate-fade-up stagger-2">
-        <div className="flex items-center gap-3">
+      {/* Compact converter — source + flip + target in tighter layout */}
+      <div className="bg-bg-surface rounded-[4px] border border-border-subtle px-3 py-2 mb-1">
+        <div className="flex items-center gap-2">
           <button
             onClick={() => setPickerTarget("base")}
-            className="flex items-center gap-2 min-h-[44px] px-2 -ml-2 active:bg-bg-raised rounded-[4px] transition-colors duration-100"
+            className="flex items-center gap-1.5 min-h-[36px] px-1.5 -ml-1.5 active:bg-bg-raised rounded-[4px] transition-colors duration-100"
           >
             <CountryFlag currencyCode={baseCurrency} />
-            <span className="font-mono text-text-primary tracking-wider text-lg">
+            <span className="font-mono text-text-primary tracking-wider text-base">
               {baseCurrency}
             </span>
           </button>
@@ -163,20 +163,18 @@ export default function ConverterPage() {
         </div>
       </div>
 
-      {/* Flip button */}
-      <div className="flex justify-center -my-1 relative z-10 animate-fade-up stagger-3">
+      <div className="flex justify-center -my-0.5 relative z-10">
         <FlipButton onFlip={handleFlip} />
       </div>
 
-      {/* Target currency row */}
-      <div className="bg-bg-surface rounded-[4px] border border-border-subtle p-4 mt-2 mb-4 animate-fade-up stagger-3">
-        <div className="flex items-center gap-3">
+      <div className="bg-bg-surface rounded-[4px] border border-border-subtle px-3 py-2 mt-1 mb-2">
+        <div className="flex items-center gap-2">
           <button
             onClick={() => setPickerTarget("quote")}
-            className="flex items-center gap-2 min-h-[44px] px-2 -ml-2 active:bg-bg-raised rounded-[4px] transition-colors duration-100"
+            className="flex items-center gap-1.5 min-h-[36px] px-1.5 -ml-1.5 active:bg-bg-raised rounded-[4px] transition-colors duration-100"
           >
             <CountryFlag currencyCode={quoteCurrency} />
-            <span className="font-mono text-text-primary tracking-wider text-lg">
+            <span className="font-mono text-text-primary tracking-wider text-base">
               {quoteCurrency}
             </span>
           </button>
@@ -186,10 +184,10 @@ export default function ConverterPage() {
               className="flex items-center active:opacity-70 transition-opacity"
               aria-label="Copy converted amount"
             >
-              <SplitFlapGroup value={displayResult} size="lg" />
+              <SplitFlapGroup value={displayResult} size="md" />
             </button>
             {showCopied && (
-              <span className="absolute -bottom-6 right-0 text-xs text-accent font-sans animate-fade-in">
+              <span className="absolute -bottom-5 right-0 text-xs text-accent font-sans animate-fade-in">
                 Copied
               </span>
             )}
@@ -198,7 +196,7 @@ export default function ConverterPage() {
       </div>
 
       {/* Conversion table */}
-      <div className="mb-4 animate-fade-up stagger-4">
+      <div className="mb-1">
         <ConversionTable
           baseCurrency={baseCurrency}
           quoteCurrency={quoteCurrency}
@@ -208,11 +206,6 @@ export default function ConverterPage() {
             setShowWallpaper(true);
           }}
         />
-      </div>
-
-      {/* Sparkline */}
-      <div className="mb-4 animate-fade-up stagger-5">
-        <Sparkline base={baseCurrency} quote={quoteCurrency} />
       </div>
 
       {/* Currency Picker */}

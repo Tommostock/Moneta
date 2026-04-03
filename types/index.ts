@@ -30,6 +30,7 @@ export interface AppSettings {
   recentCurrencies: string[];
   favouritePairs: CurrencyPair[];
   glanceCurrencies: string[];
+  theme: "dark" | "light";
 }
 
 export interface Currency {

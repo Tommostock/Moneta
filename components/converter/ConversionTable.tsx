@@ -11,7 +11,7 @@ interface ConversionTableProps {
   onRequestWallpaper?: (multiplier: number) => void;
 }
 
-const MULTIPLIERS = [1, 10, 100];
+const MULTIPLIERS = [1, 10, 100, 1000, 10000, 100000, 1000000];
 
 export default function ConversionTable({
   baseCurrency,
@@ -20,7 +20,7 @@ export default function ConversionTable({
   onRequestWallpaper,
 }: ConversionTableProps) {
   const scrollRef = useRef<HTMLDivElement>(null);
-  const pageRefs = useRef<(HTMLDivElement | null)[]>([null, null, null]);
+  const pageRefs = useRef<(HTMLDivElement | null)[]>(new Array(MULTIPLIERS.length).fill(null));
   const [activePage, setActivePage] = useState(0);
 
   useEffect(() => {
@@ -31,9 +31,7 @@ export default function ConversionTable({
       (entries) => {
         for (const entry of entries) {
           if (entry.isIntersecting) {
-            const index = pageRefs.current.indexOf(
-              entry.target as HTMLDivElement
-            );
+            const index = pageRefs.current.indexOf(entry.target as HTMLDivElement);
             if (index >= 0) setActivePage(index);
           }
         }
@@ -59,7 +57,7 @@ export default function ConversionTable({
 
   if (rate === null) {
     return (
-      <div className="rounded-[4px] border border-border-subtle bg-bg-surface h-[480px] flex items-center justify-center">
+      <div className="rounded-[4px] border border-border-subtle bg-bg-surface h-[360px] flex items-center justify-center">
         <span className="text-text-muted font-sans text-sm">
           Waiting for rate data
         </span>
@@ -91,8 +89,8 @@ export default function ConversionTable({
       </div>
 
       {/* Dots + wallpaper button */}
-      <div className="flex items-center justify-center gap-2 py-3">
-        <div className="flex items-center gap-2">
+      <div className="flex items-center justify-center gap-1.5 py-2">
+        <div className="flex items-center gap-1.5">
           {MULTIPLIERS.map((_, i) => (
             <button
               key={i}
@@ -107,10 +105,10 @@ export default function ConversionTable({
         {onRequestWallpaper && (
           <button
             onClick={() => onRequestWallpaper(MULTIPLIERS[activePage])}
-            className="ml-3 min-w-[44px] min-h-[44px] flex items-center justify-center text-text-muted active:text-accent transition-colors"
+            className="ml-2 min-w-[36px] min-h-[36px] flex items-center justify-center text-text-muted active:text-accent transition-colors"
             aria-label="Create wallpaper"
           >
-            <ImageIcon size={18} />
+            <ImageIcon size={16} />
           </button>
         )}
       </div>

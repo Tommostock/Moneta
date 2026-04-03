@@ -69,20 +69,20 @@ function CrosshairTooltip({
   return (
     <div
       style={{
-        backgroundColor: "#1C1C1C",
-        border: "1px solid #2A2A2A",
+        backgroundColor: "var(--theme-bg-raised)",
+        border: "1px solid var(--theme-border-subtle)",
         borderRadius: "4px",
         padding: "6px 10px",
         fontFamily: "var(--font-roboto-mono)",
         fontSize: "11px",
-        color: "#F0E6D3",
+        color: "var(--theme-text-primary)",
         lineHeight: 1.4,
       }}
     >
       <div style={{ color: "#D4A843", fontWeight: 500 }}>
         {formatRate(rate)}
       </div>
-      <div style={{ color: "#8A8070", fontSize: "10px" }}>{dateStr}</div>
+      <div style={{ color: "var(--theme-text-secondary)", fontSize: "10px" }}>{dateStr}</div>
     </div>
   );
 }
@@ -145,11 +145,11 @@ export default function RateChart({ data }: RateChartProps) {
             dataKey="date"
             tickFormatter={formatXAxis}
             tick={{
-              fill: "#4A4540",
+              fill: "var(--theme-text-muted)",
               fontFamily: "var(--font-roboto-mono)",
               fontSize: 10,
             }}
-            axisLine={{ stroke: "#2A2A2A" }}
+            axisLine={{ stroke: "var(--theme-border-subtle)" }}
             tickLine={false}
             minTickGap={40}
           />
@@ -157,7 +157,7 @@ export default function RateChart({ data }: RateChartProps) {
             orientation="right"
             tickFormatter={(v) => formatRate(v)}
             tick={{
-              fill: "#4A4540",
+              fill: "var(--theme-text-muted)",
               fontFamily: "var(--font-roboto-mono)",
               fontSize: 10,
             }}
@@ -168,13 +168,13 @@ export default function RateChart({ data }: RateChartProps) {
           />
           <Tooltip
             content={<CrosshairTooltip />}
-            cursor={{ stroke: "#4A4540", strokeWidth: 1, strokeDasharray: "3 3" }}
+            cursor={{ stroke: "var(--theme-text-muted)", strokeWidth: 1, strokeDasharray: "3 3" }}
           />
           {/* Crosshair vertical line */}
           {activeDate && (
             <ReferenceLine
               x={activeDate}
-              stroke="#4A4540"
+              stroke="var(--theme-text-muted)"
               strokeDasharray="3 3"
               strokeWidth={1}
             />
@@ -188,7 +188,7 @@ export default function RateChart({ data }: RateChartProps) {
             activeDot={{
               r: 4,
               fill: "#D4A843",
-              stroke: "#0C0C0C",
+              stroke: "var(--theme-bg-primary)",
               strokeWidth: 2,
             }}
           />
@@ -198,7 +198,7 @@ export default function RateChart({ data }: RateChartProps) {
             y={high.rate}
             r={4}
             fill="#6BBF6B"
-            stroke="#0C0C0C"
+            stroke="var(--theme-bg-primary)"
             strokeWidth={2}
           >
             <DotLabel
@@ -213,7 +213,7 @@ export default function RateChart({ data }: RateChartProps) {
             y={low.rate}
             r={4}
             fill="#D45B5B"
-            stroke="#0C0C0C"
+            stroke="var(--theme-bg-primary)"
             strokeWidth={2}
           >
             <DotLabel

@@ -37,7 +37,7 @@ function HalfChar({
         height: height / 2,
         top: half === "top" ? 0 : height / 2,
         overflow: "hidden",
-        background: "#1C1C1C",
+        background: "var(--theme-bg-raised)",
       }}
     >
       <div
@@ -55,7 +55,7 @@ function HalfChar({
           fontFamily: "var(--font-roboto-mono), monospace",
           fontSize,
           fontWeight: 500,
-          color: "#F0E6D3",
+          color: "var(--theme-text-primary)",
           userSelect: "none",
         }}
       >
@@ -135,7 +135,7 @@ export default function SplitFlap({
               top: 0,
               height: height / 2,
               overflow: "hidden",
-              background: "#1C1C1C",
+              background: "var(--theme-bg-raised)",
               zIndex: 3,
               transformOrigin: "center bottom",
               animation: `flipDown 180ms ease-out ${delay}ms both`,
@@ -155,7 +155,7 @@ export default function SplitFlap({
                 fontFamily: "var(--font-roboto-mono), monospace",
                 fontSize,
                 fontWeight: 500,
-                color: "#F0E6D3",
+                color: "var(--theme-text-primary)",
                 userSelect: "none",
               }}
             >
@@ -172,7 +172,7 @@ export default function SplitFlap({
               top: height / 2,
               height: height / 2,
               overflow: "hidden",
-              background: "#1C1C1C",
+              background: "var(--theme-bg-raised)",
               zIndex: 1,
             }}
           >
@@ -189,7 +189,7 @@ export default function SplitFlap({
                 fontFamily: "var(--font-roboto-mono), monospace",
                 fontSize,
                 fontWeight: 500,
-                color: "#F0E6D3",
+                color: "var(--theme-text-primary)",
                 userSelect: "none",
               }}
             >
@@ -206,7 +206,7 @@ export default function SplitFlap({
               top: height / 2,
               height: height / 2,
               overflow: "hidden",
-              background: "#1C1C1C",
+              background: "var(--theme-bg-raised)",
               zIndex: 3,
               transformOrigin: "center top",
               // `both` fill-mode: starts at rotateX(90deg) during the delay
@@ -228,7 +228,7 @@ export default function SplitFlap({
                 fontFamily: "var(--font-roboto-mono), monospace",
                 fontSize,
                 fontWeight: 500,
-                color: "#F0E6D3",
+                color: "var(--theme-text-primary)",
                 userSelect: "none",
               }}
             >
@@ -246,7 +246,7 @@ export default function SplitFlap({
           right: 0,
           top: height / 2 - 1,
           height: 2,
-          background: "#0A0A0A",
+          background: "var(--theme-flap-split)",
           zIndex: 20,
           pointerEvents: "none",
         }}

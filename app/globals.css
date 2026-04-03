@@ -3,23 +3,23 @@
 
 @theme inline {
   /* Backgrounds */
-  --color-bg-primary: #0C0C0C;
-  --color-bg-surface: #161616;
-  --color-bg-raised: #1C1C1C;
+  --color-bg-primary: var(--theme-bg-primary);
+  --color-bg-surface: var(--theme-bg-surface);
+  --color-bg-raised: var(--theme-bg-raised);
 
   /* Flap */
-  --color-flap-face: #1C1C1C;
-  --color-flap-shadow: #111111;
-  --color-flap-split: #0A0A0A;
+  --color-flap-face: var(--theme-bg-raised);
+  --color-flap-shadow: var(--theme-flap-shadow);
+  --color-flap-split: var(--theme-flap-split);
 
   /* Borders */
-  --color-border-subtle: #2A2A2A;
-  --color-border-warm: #2A2520;
+  --color-border-subtle: var(--theme-border-subtle);
+  --color-border-warm: var(--theme-border-warm);
 
   /* Text */
-  --color-text-primary: #F0E6D3;
-  --color-text-secondary: #8A8070;
-  --color-text-muted: #4A4540;
+  --color-text-primary: var(--theme-text-primary);
+  --color-text-secondary: var(--theme-text-secondary);
+  --color-text-muted: var(--theme-text-muted);
 
   /* Accent */
   --color-accent: #D4A843;
@@ -34,23 +34,43 @@
   --font-mono: var(--font-roboto-mono), ui-monospace, monospace;
 }
 
+/* Dark theme (default) */
+:root {
+  --theme-bg-primary: #0C0C0C;
+  --theme-bg-surface: #161616;
+  --theme-bg-raised: #1C1C1C;
+  --theme-flap-shadow: #111111;
+  --theme-flap-split: #0A0A0A;
+  --theme-border-subtle: #2A2A2A;
+  --theme-border-warm: #2A2520;
+  --theme-text-primary: #F0E6D3;
+  --theme-text-secondary: #8A8070;
+  --theme-text-muted: #4A4540;
+}
+
+/* Light theme */
+:root.light {
+  --theme-bg-primary: #F5F2ED;
+  --theme-bg-surface: #EDEAE4;
+  --theme-bg-raised: #E4E0D9;
+  --theme-flap-shadow: #D8D4CD;
+  --theme-flap-split: #CCC8C0;
+  --theme-border-subtle: #D0CCC5;
+  --theme-border-warm: #D4CFC6;
+  --theme-text-primary: #1A1814;
+  --theme-text-secondary: #6B655C;
+  --theme-text-muted: #9B958C;
+}
+
 /* Split-flap animations */
 @keyframes flipDown {
-  from {
-    transform: rotateX(0deg);
-  }
-  to {
-    transform: rotateX(-90deg);
-  }
+  from { transform: rotateX(0deg); }
+  to { transform: rotateX(-90deg); }
 }
 
 @keyframes flipUp {
-  from {
-    transform: rotateX(90deg);
-  }
-  to {
-    transform: rotateX(0deg);
-  }
+  from { transform: rotateX(90deg); }
+  to { transform: rotateX(0deg); }
 }
 
 @keyframes fadeIn {
@@ -64,17 +84,12 @@
 }
 
 @keyframes quickFlash {
-  0% { background-color: var(--color-accent); color: var(--color-bg-primary); }
+  0% { background-color: var(--color-accent); color: var(--theme-bg-primary); }
   100% { background-color: transparent; color: inherit; }
 }
 
-.animate-fade-in {
-  animation: fadeIn 200ms ease-out both;
-}
-
-.animate-fade-up {
-  animation: fadeUp 300ms ease-out both;
-}
+.animate-fade-in { animation: fadeIn 200ms ease-out both; }
+.animate-fade-up { animation: fadeUp 300ms ease-out both; }
 
 /* Staggered entrance delays */
 .stagger-1 { animation-delay: 0ms; }
@@ -87,12 +102,12 @@
 
 /* Base styles */
 html {
-  background: #0C0C0C;
+  background: var(--theme-bg-primary);
 }
 
 body {
-  background: #0C0C0C;
-  color: #F0E6D3;
+  background: var(--theme-bg-primary);
+  color: var(--theme-text-primary);
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
