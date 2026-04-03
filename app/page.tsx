@@ -53,7 +53,6 @@ export default function ConverterPage() {
         const result = await fetchLatestRate(baseCurrency, quoteCurrency);
         if (!cancelled) {
           setRate(result.rate);
-          // Store last update info for settings page
           try {
             localStorage.setItem("moneta:last_update", JSON.stringify({
               date: result.date,
@@ -124,6 +123,10 @@ export default function ConverterPage() {
     [pickerTarget]
   );
 
+  const handleRowTap = useCallback((amount: number) => {
+    setInputValue(amount.toString());
+  }, []);
+
   return (
     <div className="min-h-screen px-3 pt-2">
       {/* Header + favourite star */}
@@ -133,7 +136,7 @@ export default function ConverterPage() {
         </h1>
         <button
           onClick={handleToggleFavourite}
-          className="min-w-[44px] min-h-[36px] flex items-center justify-center -mr-2 active:opacity-70 transition-opacity"
+          className="min-w-[44px] min-h-[36px] flex items-center justify-center -mr-2 active:opacity-70 haptic-tap transition-opacity"
           aria-label={isFavourite ? "Remove from favourites" : "Add to favourites"}
         >
           <Star
@@ -155,14 +158,14 @@ export default function ConverterPage() {
         </div>
       )}
 
-      {/* Converter — two boxes with overlapping flip button */}
-      <div className="relative mb-2">
+      {/* Converter — card with depth shadow */}
+      <div className="relative mb-3" style={{ boxShadow: "0 1px 3px rgba(0,0,0,0.12)" }}>
         {/* Source row */}
         <div className="bg-bg-surface rounded-t-[4px] border border-border-subtle px-3 py-2">
           <div className="flex items-center gap-2">
             <button
               onClick={() => setPickerTarget("base")}
-              className="flex items-center gap-1.5 min-h-[36px] px-1.5 -ml-1.5 active:bg-bg-raised rounded-[4px] transition-colors duration-100"
+              className="flex items-center gap-1.5 min-h-[36px] px-1.5 -ml-1.5 active:bg-bg-raised rounded-[4px] haptic-tap transition-colors duration-100"
             >
               <CountryFlag currencyCode={baseCurrency} />
               <span className="font-mono text-text-primary tracking-wider text-base">
@@ -175,12 +178,12 @@ export default function ConverterPage() {
           </div>
         </div>
 
-        {/* Target row — border-top removed, shares the border line */}
+        {/* Target row */}
         <div className="bg-bg-surface rounded-b-[4px] border border-t-0 border-border-subtle px-3 py-2">
           <div className="flex items-center gap-2">
             <button
               onClick={() => setPickerTarget("quote")}
-              className="flex items-center gap-1.5 min-h-[36px] px-1.5 -ml-1.5 active:bg-bg-raised rounded-[4px] transition-colors duration-100"
+              className="flex items-center gap-1.5 min-h-[36px] px-1.5 -ml-1.5 active:bg-bg-raised rounded-[4px] haptic-tap transition-colors duration-100"
             >
               <CountryFlag currencyCode={quoteCurrency} />
               <span className="font-mono text-text-primary tracking-wider text-base">
@@ -190,10 +193,10 @@ export default function ConverterPage() {
             <div className="flex-1 flex justify-end relative">
               <button
                 onClick={handleCopyResult}
-                className="flex items-center active:opacity-70 transition-opacity"
+                className="flex items-center active:opacity-70 haptic-tap transition-opacity"
                 aria-label="Copy converted amount"
               >
-                <SegmentDisplay value={displayResult} size={28} />
+                <SegmentDisplay value={displayResult} size={28} flash />
               </button>
               {showCopied && (
                 <span className="absolute -bottom-5 right-0 text-xs text-accent font-sans animate-fade-in">
@@ -210,6 +213,9 @@ export default function ConverterPage() {
         </div>
       </div>
 
+      {/* Separator */}
+      <div className="border-t border-border-subtle mb-2" />
+
       {/* Conversion table */}
       <div className="mb-1">
         <ConversionTable
@@ -220,6 +226,7 @@ export default function ConverterPage() {
             setWallpaperMultiplier(multiplier);
             setShowWallpaper(true);
           }}
+          onRowTap={handleRowTap}
         />
       </div>
 

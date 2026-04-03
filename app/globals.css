@@ -91,6 +91,17 @@
 .animate-fade-in { animation: fadeIn 200ms ease-out both; }
 .animate-fade-up { animation: fadeUp 300ms ease-out both; }
 
+/* Number flash animation — amber flash then back to normal */
+@keyframes numberFlash {
+  0% { color: #D4A843; }
+  100% { color: var(--theme-text-primary); }
+}
+.animate-number-flash { animation: numberFlash 600ms ease-out; }
+
+/* Haptic tap — brief scale down and back */
+.haptic-tap:active { transform: scale(0.93); }
+.haptic-tap { transition: transform 100ms ease-out; }
+
 /* Staggered entrance delays */
 .stagger-1 { animation-delay: 0ms; }
 .stagger-2 { animation-delay: 50ms; }
@@ -135,5 +146,6 @@ input[inputmode="decimal"] {
   background-repeat: no-repeat;
   display: inline-block;
   line-height: 16px;
-  border-radius: 2px;
+  border-radius: 3px;
+  overflow: hidden;
 }

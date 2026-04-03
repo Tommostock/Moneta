@@ -1,7 +1,7 @@
 "use client";
 
 import { CURRENCY_SYMBOLS } from "@/lib/constants/currencies";
-import { ChevronRight } from "lucide-react";
+import { ArrowLeftRight } from "lucide-react";
 import SegmentDisplay from "@/components/display/SegmentDisplay";
 
 interface ConversionTablePageProps {
@@ -9,6 +9,9 @@ interface ConversionTablePageProps {
   quoteCurrency: string;
   rate: number;
   multiplier: number;
+  reversed?: boolean;
+  onToggleReverse?: () => void;
+  onRowTap?: (amount: number) => void;
 }
 
 function formatCompact(value: number): string {
@@ -23,54 +26,69 @@ export default function ConversionTablePage({
   quoteCurrency,
   rate,
   multiplier,
+  reversed = false,
+  onToggleReverse,
+  onRowTap,
 }: ConversionTablePageProps) {
-  const baseSymbol = CURRENCY_SYMBOLS[baseCurrency] || baseCurrency;
-  const quoteSymbol = CURRENCY_SYMBOLS[quoteCurrency] || quoteCurrency;
+  // When reversed, swap which side shows base vs quote
+  const leftCurrency = reversed ? quoteCurrency : baseCurrency;
+  const rightCurrency = reversed ? baseCurrency : quoteCurrency;
+  const leftSymbol = CURRENCY_SYMBOLS[leftCurrency] || leftCurrency;
+  const rightSymbol = CURRENCY_SYMBOLS[rightCurrency] || rightCurrency;
+  const effectiveRate = reversed ? (1 / rate) : rate;
+
   const rows = Array.from({ length: 10 }, (_, i) => {
-    const baseAmount = (i + 1) * multiplier;
-    const convertedAmount = baseAmount * rate;
-    return { baseAmount, convertedAmount };
+    const leftAmount = (i + 1) * multiplier;
+    const rightAmount = leftAmount * effectiveRate;
+    return { leftAmount, rightAmount };
   });
 
-  // Scale segment size for large numbers
   const segSize = multiplier >= 10000 ? 12 : multiplier >= 100 ? 14 : 16;
 
   return (
     <div className="rounded-[4px] overflow-hidden border border-border-subtle">
-      {/* Header */}
+      {/* Header with reverse toggle */}
       <div className="flex">
         <div className="flex-1 bg-bg-surface py-1.5 flex items-center justify-center">
           <span className="font-mono text-xs tracking-wider text-negative font-medium">
-            {baseCurrency}
+            {leftCurrency}
           </span>
         </div>
-        <div className="flex items-center bg-border-subtle px-0.5">
-          <ChevronRight size={10} className="text-text-muted" />
-        </div>
+        <button
+          onClick={onToggleReverse}
+          className="flex items-center bg-border-subtle px-1.5 haptic-tap active:bg-accent/20 transition-colors"
+          aria-label="Reverse table direction"
+        >
+          <ArrowLeftRight size={10} className="text-text-muted" />
+        </button>
         <div className="flex-1 bg-bg-raised py-1.5 flex items-center justify-center">
           <span className="font-mono text-xs tracking-wider text-accent font-medium">
-            {quoteCurrency}
+            {rightCurrency}
           </span>
         </div>
       </div>
 
       {/* Rows */}
-      {rows.map(({ baseAmount, convertedAmount }, i) => (
-        <div key={i} className="flex border-t border-border-subtle">
+      {rows.map(({ leftAmount, rightAmount }, i) => (
+        <button
+          key={i}
+          onClick={() => onRowTap?.(leftAmount)}
+          className="flex w-full border-t border-border-subtle haptic-tap active:bg-accent/5 transition-colors"
+        >
           <div className="flex-1 bg-bg-surface py-1.5 flex items-center justify-center">
             <span className="text-text-secondary mr-0.5" style={{ fontSize: segSize * 0.75, fontFamily: "var(--font-inter)" }}>
-              {baseSymbol}
+              {leftSymbol}
             </span>
-            <SegmentDisplay value={formatCompact(baseAmount)} size={segSize} />
+            <SegmentDisplay value={formatCompact(leftAmount)} size={segSize} />
           </div>
           <div className="w-px bg-border-subtle" />
           <div className="flex-1 bg-bg-raised py-1.5 flex items-center justify-center">
             <span className="text-text-secondary mr-0.5" style={{ fontSize: segSize * 0.75, fontFamily: "var(--font-inter)" }}>
-              {quoteSymbol}
+              {rightSymbol}
             </span>
-            <SegmentDisplay value={formatCompact(convertedAmount)} size={segSize} />
+            <SegmentDisplay value={formatCompact(rightAmount)} size={segSize} />
           </div>
-        </div>
+        </button>
       ))}
     </div>
   );
