@@ -150,6 +150,7 @@ export default function ConverterPage() {
             currentBase={baseCurrency}
             currentQuote={quoteCurrency}
             onSelect={handleSelectPair}
+            onReorder={() => setSettings(getSettings())}
           />
         </div>
       )}

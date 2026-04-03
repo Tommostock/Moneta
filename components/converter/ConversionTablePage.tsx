@@ -67,25 +67,28 @@ export default function ConversionTablePage({
       </div>
 
       {/* Rows */}
-      {rows.map(({ leftAmount, rightAmount }, i) => (
+      {rows.map(({ leftAmount, rightAmount }, i) => {
+        const evenTint = i % 2 === 1 ? "opacity-[0.97]" : "";
+        return (
         <button
           key={i}
           onClick={() => onRowTap?.(i)}
           className="flex border-t border-border-subtle flex-1 haptic-tap active:bg-accent/5 transition-colors"
         >
-          <div className="flex-1 bg-bg-surface flex items-center justify-center">
+          <div className={`flex-1 bg-bg-surface flex items-center justify-center ${evenTint}`}>
             <span className={`font-sans text-text-primary ${fontSize} tabular-nums`}>
               {leftSymbol}{formatCompact(leftAmount)}
             </span>
           </div>
           <div className="w-px bg-border-subtle" />
-          <div className="flex-1 bg-bg-raised flex items-center justify-center">
+          <div className={`flex-1 bg-bg-raised flex items-center justify-center ${evenTint}`}>
             <span className={`font-sans text-text-primary ${fontSize} tabular-nums`}>
               {rightSymbol}{formatCompact(rightAmount)}
             </span>
           </div>
         </button>
-      ))}
+        );
+      })}
     </div>
   );
 }

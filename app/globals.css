@@ -126,11 +126,28 @@ body {
   padding-top: env(safe-area-inset-top);
 }
 
-/* Prevent iOS zoom on input focus */
+/* Prevent iOS zoom on input focus + accent cursor */
 input[type="text"],
 input[type="number"],
 input[inputmode="decimal"] {
   font-size: 16px;
+  caret-color: #D4A843;
+}
+
+/* Page slide transitions */
+@keyframes slideInFromRight {
+  from { transform: translateX(30px); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+@keyframes slideInFromLeft {
+  from { transform: translateX(-30px); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+.page-transition {
+  animation: slideInFromRight 200ms ease-out both;
+}
+.page-transition-back {
+  animation: slideInFromLeft 200ms ease-out both;
 }
 
 /* Hide scrollbar for horizontal scroll areas */

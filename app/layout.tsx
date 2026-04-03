@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { DM_Sans, Roboto_Mono, Inter } from "next/font/google";
 import BottomNav from "@/components/shared/BottomNav";
 import ThemeProvider from "@/components/shared/ThemeProvider";
+import PageTransition from "@/components/shared/PageTransition";
 import "./globals.css";
 
 const dmSans = DM_Sans({
@@ -65,7 +66,7 @@ export default function RootLayout({
         className={`${dmSans.variable} ${robotoMono.variable} ${inter.variable} font-sans bg-bg-primary text-text-primary antialiased`}
       >
         <ThemeProvider />
-        <main className="pb-16">{children}</main>
+        <main className="pb-16"><PageTransition>{children}</PageTransition></main>
         <BottomNav />
       </body>
     </html>

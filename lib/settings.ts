@@ -123,6 +123,12 @@ export function removeFavouritePair(base: string, quote: string): void {
   saveSettings(settings);
 }
 
+export function reorderFavouritePairs(pairs: { base: string; quote: string }[]): void {
+  const settings = getSettings();
+  settings.favouritePairs = pairs;
+  saveSettings(settings);
+}
+
 export function isFavouritePair(base: string, quote: string): boolean {
   const settings = getSettings();
   return settings.favouritePairs.some(

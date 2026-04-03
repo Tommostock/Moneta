@@ -157,18 +157,26 @@ export default function ConversionTable({
         </div>
       )}
 
-      {/* Dots + multiplier label */}
+      {/* Dots with sliding indicator + multiplier label */}
       <div className="flex items-center justify-center gap-1.5 py-1 shrink-0">
-        {MULTIPLIERS.map((_, i) => (
-          <button
-            key={i}
-            onClick={() => { setExpandedRow(null); handleDotClick(i); }}
-            className={`w-1.5 h-1.5 rounded-full transition-colors duration-200 ${
-              i === activePage ? "bg-accent" : "bg-text-muted"
-            }`}
-            aria-label={`Page ${i + 1}`}
+        <div className="relative flex items-center gap-1.5">
+          {/* Sliding active dot */}
+          <div
+            className="absolute w-1.5 h-1.5 rounded-full bg-accent transition-transform duration-200 ease-out"
+            style={{ transform: `translateX(${activePage * 12}px)` }}
           />
-        ))}
+          {/* Background dots */}
+          {MULTIPLIERS.map((_, i) => (
+            <button
+              key={i}
+              onClick={() => { setExpandedRow(null); handleDotClick(i); }}
+              className={`w-1.5 h-1.5 rounded-full ${
+                i === activePage ? "bg-transparent" : "bg-text-muted"
+              }`}
+              aria-label={`Page ${i + 1}`}
+            />
+          ))}
+        </div>
         <span className="ml-1.5 text-text-muted font-sans text-[10px]">
           {MULTIPLIER_LABELS[activePage]}
         </span>
