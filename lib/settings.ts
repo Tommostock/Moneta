@@ -1,4 +1,4 @@
-import type { AppSettings, NextTrip } from "@/types";
+import type { AppSettings } from "@/types";
 
 const SETTINGS_KEY = "moneta:settings";
 const INITIALIZED_KEY = "moneta:initialized";
@@ -44,7 +44,6 @@ function getDefaultForeign(home: string): string {
 const DEFAULT_SETTINGS: AppSettings = {
   homeCurrency: "GBP",
   defaultForeignCurrency: "EUR",
-  nextTrip: null,
   recentCurrencies: ["EUR", "USD", "JPY", "CHF"],
   favouritePairs: [],
 };
@@ -102,10 +101,6 @@ export function addRecentCurrency(code: string): void {
   recent.unshift(code);
   settings.recentCurrencies = recent.slice(0, 8);
   saveSettings(settings);
-}
-
-export function setNextTrip(trip: NextTrip | null): void {
-  updateSetting("nextTrip", trip);
 }
 
 export function addFavouritePair(base: string, quote: string): void {

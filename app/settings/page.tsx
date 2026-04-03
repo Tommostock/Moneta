@@ -6,12 +6,12 @@ import CountryFlag from "@/components/shared/CountryFlag";
 import CurrencySelector from "@/components/converter/CurrencySelector";
 import { getSettings, saveSettings } from "@/lib/settings";
 import { cacheClear } from "@/lib/cache";
-import type { AppSettings, NextTrip } from "@/types";
+import type { AppSettings } from "@/types";
 
 export default function SettingsPage() {
   const [settings, setSettings] = useState<AppSettings | null>(null);
   const [pickerTarget, setPickerTarget] = useState<
-    "home" | "foreign" | "trip" | null
+    "home" | "foreign" | null
   >(null);
   const [showClearConfirm, setShowClearConfirm] = useState(false);
 
@@ -27,21 +27,9 @@ export default function SettingsPage() {
     saveSettings(next);
   };
 
-  const updateTrip = (partial: Partial<NextTrip>) => {
-    const trip = settings.nextTrip || {
-      name: "",
-      currency: "EUR",
-      departDate: "",
-      returnDate: "",
-    };
-    const nextTrip = { ...trip, ...partial };
-    update({ nextTrip });
-  };
-
   const handleCurrencySelect = (code: string) => {
     if (pickerTarget === "home") update({ homeCurrency: code });
     else if (pickerTarget === "foreign") update({ defaultForeignCurrency: code });
-    else if (pickerTarget === "trip") updateTrip({ currency: code });
     setPickerTarget(null);
   };
 
@@ -89,75 +77,6 @@ export default function SettingsPage() {
         </div>
       </section>
 
-      {/* Next Trip */}
-      <section className="mb-6">
-        <h2 className="text-text-secondary text-sm font-sans mb-3">
-          Next Trip
-        </h2>
-        <div className="bg-bg-surface rounded-[4px] border border-border-subtle divide-y divide-border-subtle">
-          <div className="px-4 py-3">
-            <label className="block text-text-secondary text-xs font-sans mb-1">
-              Destination
-            </label>
-            <input
-              type="text"
-              value={settings.nextTrip?.name || ""}
-              onChange={(e) => updateTrip({ name: e.target.value })}
-              placeholder="e.g. Rome"
-              className="w-full bg-transparent text-text-primary font-sans outline-none placeholder:text-text-muted"
-              style={{ fontSize: "16px" }}
-            />
-          </div>
-          <SettingRow
-            label="Currency"
-            onClick={() => setPickerTarget("trip")}
-          >
-            <div className="flex items-center gap-2">
-              <CountryFlag
-                currencyCode={settings.nextTrip?.currency || "EUR"}
-              />
-              <span className="font-mono text-text-primary tracking-wider">
-                {settings.nextTrip?.currency || "EUR"}
-              </span>
-            </div>
-          </SettingRow>
-          <div className="px-4 py-3">
-            <label className="block text-text-secondary text-xs font-sans mb-1">
-              Departure
-            </label>
-            <input
-              type="date"
-              value={settings.nextTrip?.departDate || ""}
-              onChange={(e) => updateTrip({ departDate: e.target.value })}
-              className="w-full bg-transparent text-text-primary font-mono outline-none"
-              style={{ fontSize: "16px", colorScheme: "dark" }}
-            />
-          </div>
-          <div className="px-4 py-3">
-            <label className="block text-text-secondary text-xs font-sans mb-1">
-              Return
-            </label>
-            <input
-              type="date"
-              value={settings.nextTrip?.returnDate || ""}
-              onChange={(e) => updateTrip({ returnDate: e.target.value })}
-              className="w-full bg-transparent text-text-primary font-mono outline-none"
-              style={{ fontSize: "16px", colorScheme: "dark" }}
-            />
-          </div>
-          {settings.nextTrip?.name && (
-            <div className="px-4 py-3">
-              <button
-                onClick={() => update({ nextTrip: null })}
-                className="text-negative text-sm font-sans active:opacity-70"
-              >
-                Remove trip
-              </button>
-            </div>
-          )}
-        </div>
-      </section>
-
       {/* About */}
       <section className="mb-6">
         <h2 className="text-text-secondary text-sm font-sans mb-3">About</h2>
@@ -188,7 +107,7 @@ export default function SettingsPage() {
           ) : (
             <div className="p-4 space-y-3">
               <p className="text-text-secondary text-sm font-sans">
-                This will clear all cached rates, settings, and trip data.
+                This will clear all cached rates and settings.
               </p>
               <div className="flex gap-3">
                 <button
@@ -217,9 +136,7 @@ export default function SettingsPage() {
         selectedCode={
           pickerTarget === "home"
             ? settings.homeCurrency
-            : pickerTarget === "foreign"
-              ? settings.defaultForeignCurrency
-              : settings.nextTrip?.currency || "EUR"
+            : settings.defaultForeignCurrency
         }
       />
     </div>

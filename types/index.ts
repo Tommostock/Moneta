@@ -19,13 +19,6 @@ export interface CachedTimeSeries {
   fetchedAt: number;
 }
 
-export interface NextTrip {
-  name: string;
-  currency: string;
-  departDate: string;
-  returnDate: string;
-}
-
 export interface CurrencyPair {
   base: string;
   quote: string;
@@ -34,7 +27,6 @@ export interface CurrencyPair {
 export interface AppSettings {
   homeCurrency: string;
   defaultForeignCurrency: string;
-  nextTrip: NextTrip | null;
   recentCurrencies: string[];
   favouritePairs: CurrencyPair[];
 }

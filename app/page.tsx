@@ -8,7 +8,6 @@ import FlipButton from "@/components/converter/FlipButton";
 import QuickAmounts from "@/components/converter/QuickAmounts";
 import RateInfo from "@/components/converter/RateInfo";
 import Sparkline from "@/components/converter/Sparkline";
-import TripBanner from "@/components/trip/TripBanner";
 import CurrencySelector from "@/components/converter/CurrencySelector";
 import MultiCurrencyGlance from "@/components/converter/MultiCurrencyGlance";
 import FavouritePairs from "@/components/converter/FavouritePairs";
@@ -21,7 +20,6 @@ export default function ConverterPage() {
   const [settings, setSettings] = useState(() => ({
     homeCurrency: "GBP",
     defaultForeignCurrency: "EUR",
-    nextTrip: null as ReturnType<typeof getSettings>["nextTrip"],
     recentCurrencies: [] as string[],
     favouritePairs: [] as ReturnType<typeof getSettings>["favouritePairs"],
   }));
@@ -149,9 +147,6 @@ export default function ConverterPage() {
 
   return (
     <div className="min-h-screen px-4 pt-4">
-      {/* Trip banner */}
-      {settings.nextTrip && <TripBanner trip={settings.nextTrip} />}
-
       {/* Header */}
       <div className="mb-6 animate-fade-up stagger-1">
         <h1 className="text-text-muted text-xs font-sans tracking-widest uppercase">
