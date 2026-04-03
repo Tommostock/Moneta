@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import CountryFlag from "@/components/shared/CountryFlag";
-import SplitFlapGroup from "@/components/split-flap/SplitFlapGroup";
+import SegmentDisplay from "@/components/display/SegmentDisplay";
 import ConverterInput from "@/components/converter/ConverterInput";
 import FlipButton from "@/components/converter/FlipButton";
 import ConversionTable from "@/components/converter/ConversionTable";
@@ -184,7 +184,7 @@ export default function ConverterPage() {
               className="flex items-center active:opacity-70 transition-opacity"
               aria-label="Copy converted amount"
             >
-              <SplitFlapGroup value={displayResult} size="md" />
+              <SegmentDisplay value={displayResult} size={28} />
             </button>
             {showCopied && (
               <span className="absolute -bottom-5 right-0 text-xs text-accent font-sans animate-fade-in">
