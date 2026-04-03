@@ -10,6 +10,7 @@ import MultiCurrencyGlance from "@/components/converter/MultiCurrencyGlance";
 import CurrencySelector from "@/components/converter/CurrencySelector";
 import FavouritePairs from "@/components/converter/FavouritePairs";
 import WallpaperCreator from "@/components/converter/WallpaperCreator";
+import TipCalculator from "@/components/converter/TipCalculator";
 import { fetchLatestRate } from "@/lib/api/frankfurter";
 import { formatAmount } from "@/lib/format";
 import { getSettings, addRecentCurrency, addFavouritePair, isFavouritePair, removeFavouritePair } from "@/lib/settings";
@@ -34,6 +35,7 @@ export default function ConverterPage() {
   const [isFavourite, setIsFavourite] = useState(false);
   const [showWallpaper, setShowWallpaper] = useState(false);
   const [wallpaperMultiplier, setWallpaperMultiplier] = useState(10);
+  const [showTip, setShowTip] = useState(false);
 
   useEffect(() => {
     const s = getSettings();
@@ -211,8 +213,20 @@ export default function ConverterPage() {
         </div>
       </div>
 
+      {/* Tip button */}
+      {convertedAmount !== null && numericValue > 0 && (
+        <div className="mb-1 shrink-0">
+          <button
+            onClick={() => setShowTip(true)}
+            className="w-full h-7 rounded-[4px] border border-border-subtle text-text-muted font-sans text-[10px] tracking-wider active:bg-bg-raised haptic-tap transition-colors"
+          >
+            Tip Calculator
+          </button>
+        </div>
+      )}
+
       {/* Separator */}
-      <div className="border-t border-border-subtle mb-1.5 shrink-0" />
+      <div className="border-t border-border-subtle mb-1 shrink-0" />
 
       {/* Conversion table — grows to fill available space */}
       <div className="flex-1 min-h-0 mb-1">
@@ -244,6 +258,18 @@ export default function ConverterPage() {
         onSelect={handleCurrencySelect}
         selectedCode={pickerTarget === "base" ? baseCurrency : quoteCurrency}
       />
+
+      {/* Tip Calculator */}
+      {rate !== null && (
+        <TipCalculator
+          isOpen={showTip}
+          onClose={() => setShowTip(false)}
+          amount={convertedAmount ?? 0}
+          currency={quoteCurrency}
+          homeCurrency={baseCurrency}
+          rate={rate}
+        />
+      )}
 
       {/* Wallpaper Creator */}
       {rate !== null && (

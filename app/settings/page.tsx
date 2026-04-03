@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Trash2, Sun, Moon } from "lucide-react";
+import { Trash2, Sun, Moon, AlertTriangle } from "lucide-react";
 import CountryFlag from "@/components/shared/CountryFlag";
 import CurrencySelector from "@/components/converter/CurrencySelector";
 import { getSettings, saveSettings } from "@/lib/settings";
@@ -14,6 +14,7 @@ export default function SettingsPage() {
     "home" | "foreign" | "glance0" | "glance1" | "glance2" | null
   >(null);
   const [showClearConfirm, setShowClearConfirm] = useState(false);
+  const [showAtmTip, setShowAtmTip] = useState(false);
 
   useEffect(() => {
     setSettings(getSettings());
@@ -75,143 +76,129 @@ export default function SettingsPage() {
   };
 
   return (
-    <div className="min-h-screen px-4 pt-4">
-      <h1 className="text-text-muted text-xs font-sans tracking-widest uppercase mb-6">
+    <div className="h-[100dvh] px-3 pt-2 flex flex-col" style={{ paddingBottom: "calc(env(safe-area-inset-bottom, 0px) + 56px)" }}>
+      <h1 className="text-text-muted text-xs font-sans tracking-widest uppercase mb-2 shrink-0">
         Settings
       </h1>
 
-      {/* Appearance */}
-      <section className="mb-6">
-        <h2 className="text-text-secondary text-sm font-sans mb-3">
-          Appearance
-        </h2>
-        <div className="bg-bg-surface rounded-[4px] border border-border-subtle">
-          <button
-            onClick={handleThemeToggle}
-            className="w-full flex items-center justify-between px-4 min-h-[48px] active:bg-bg-raised transition-colors duration-100"
-          >
-            <div className="flex items-center gap-3">
-              {isDark ? <Moon size={16} className="text-text-secondary" /> : <Sun size={16} className="text-text-secondary" />}
-              <span className="text-text-secondary text-sm font-sans">Theme</span>
-            </div>
-            <span className="font-sans text-text-primary tracking-wider font-medium text-sm">
-              {isDark ? "Dark" : "Light"}
+      {/* Appearance + Currency Preferences — combined */}
+      <div className="bg-bg-surface rounded-[4px] border border-border-subtle divide-y divide-border-subtle mb-2 shrink-0">
+        <button
+          onClick={handleThemeToggle}
+          className="w-full flex items-center justify-between px-3 min-h-[40px] active:bg-bg-raised transition-colors"
+        >
+          <div className="flex items-center gap-2">
+            {isDark ? <Moon size={14} className="text-text-secondary" /> : <Sun size={14} className="text-text-secondary" />}
+            <span className="text-text-secondary text-xs font-sans">Theme</span>
+          </div>
+          <span className="font-sans text-text-primary tracking-wider font-medium text-xs">
+            {isDark ? "Dark" : "Light"}
+          </span>
+        </button>
+        <SettingRow label="Home currency" onClick={() => setPickerTarget("home")}>
+          <div className="flex items-center gap-1.5">
+            <CountryFlag currencyCode={settings.homeCurrency} />
+            <span className="font-sans text-text-primary tracking-wider font-medium text-xs">
+              {settings.homeCurrency}
             </span>
-          </button>
-        </div>
-      </section>
+          </div>
+        </SettingRow>
+        <SettingRow label="Foreign currency" onClick={() => setPickerTarget("foreign")}>
+          <div className="flex items-center gap-1.5">
+            <CountryFlag currencyCode={settings.defaultForeignCurrency} />
+            <span className="font-sans text-text-primary tracking-wider font-medium text-xs">
+              {settings.defaultForeignCurrency}
+            </span>
+          </div>
+        </SettingRow>
+      </div>
 
-      {/* Currency Preferences */}
-      <section className="mb-6">
-        <h2 className="text-text-secondary text-sm font-sans mb-3">
-          Currency Preferences
-        </h2>
-        <div className="bg-bg-surface rounded-[4px] border border-border-subtle divide-y divide-border-subtle">
-          <SettingRow
-            label="Home currency"
-            onClick={() => setPickerTarget("home")}
-          >
-            <div className="flex items-center gap-2">
-              <CountryFlag currencyCode={settings.homeCurrency} />
-              <span className="font-sans text-text-primary tracking-wider font-medium">
-                {settings.homeCurrency}
-              </span>
-            </div>
-          </SettingRow>
-          <SettingRow
-            label="Default foreign currency"
-            onClick={() => setPickerTarget("foreign")}
-          >
-            <div className="flex items-center gap-2">
-              <CountryFlag currencyCode={settings.defaultForeignCurrency} />
-              <span className="font-sans text-text-primary tracking-wider font-medium">
-                {settings.defaultForeignCurrency}
-              </span>
-            </div>
-          </SettingRow>
-        </div>
-      </section>
-
-      {/* Glance Currencies */}
-      <section className="mb-6">
-        <h2 className="text-text-secondary text-sm font-sans mb-1">
-          Quick Glance Currencies
-        </h2>
-        <p className="text-text-muted text-xs font-sans mb-3">
-          Shown below the converter for at-a-glance conversions
-        </p>
+      {/* Glance Currencies — compact */}
+      <div className="mb-2 shrink-0">
+        <p className="text-text-muted text-[10px] font-sans mb-1">Quick Glance Currencies</p>
         <div className="bg-bg-surface rounded-[4px] border border-border-subtle divide-y divide-border-subtle">
           {glance.map((code, i) => (
             <SettingRow
               key={i}
-              label={`Currency ${i + 1}`}
+              label={`Slot ${i + 1}`}
               onClick={() => setPickerTarget(`glance${i}` as "glance0" | "glance1" | "glance2")}
             >
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-1.5">
                 <CountryFlag currencyCode={code} />
-                <span className="font-sans text-text-primary tracking-wider font-medium">
+                <span className="font-sans text-text-primary tracking-wider font-medium text-xs">
                   {code}
                 </span>
               </div>
             </SettingRow>
           ))}
         </div>
-      </section>
+      </div>
 
-      {/* About */}
-      <section className="mb-6">
-        <h2 className="text-text-secondary text-sm font-sans mb-3">About</h2>
-        <div className="bg-bg-surface rounded-[4px] border border-border-subtle p-4 space-y-2">
-          <p className="text-text-primary font-sans text-sm">MONETA</p>
-          <p className="text-text-muted text-xs font-sans">
-            Currency converter and rate tracker
-          </p>
-          <p className="text-text-muted text-xs font-sans">Version 1.0.0</p>
-          <p className="text-text-muted text-xs font-sans">
-            Rates from Frankfurter API / European Central Bank
-          </p>
-          <p className="text-text-muted text-xs font-sans">
-            Rates update once per business day (ECB, ~16:00 CET)
-          </p>
-          <LastUpdatedInfo />
+      {/* ATM Travel Tip */}
+      <div className="mb-2 shrink-0">
+        <button
+          onClick={() => setShowAtmTip(!showAtmTip)}
+          className="w-full bg-accent/10 rounded-[4px] border border-accent/20 px-3 py-2 flex items-center gap-2 active:bg-accent/15 haptic-tap transition-colors"
+        >
+          <AlertTriangle size={14} className="text-accent shrink-0" />
+          <span className="font-sans text-accent text-xs font-medium flex-1 text-left">
+            ATM Tip for Travellers
+          </span>
+          <span className="text-accent/50 text-xs">{showAtmTip ? "Hide" : "Show"}</span>
+        </button>
+        {showAtmTip && (
+          <div className="bg-bg-surface rounded-b-[4px] border border-t-0 border-border-subtle px-3 py-2 animate-fade-in">
+            <p className="text-text-secondary text-[11px] font-sans leading-relaxed">
+              When using ATMs abroad, always choose to be charged in the <span className="text-text-primary font-medium">local currency</span>.
+              If the ATM offers to convert to your home currency (Dynamic Currency Conversion), decline it — their rate is
+              always worse than your bank&apos;s. This simple choice can save you 3-5% on every withdrawal.
+            </p>
+          </div>
+        )}
+      </div>
+
+      {/* About — minimal */}
+      <div className="bg-bg-surface rounded-[4px] border border-border-subtle px-3 py-2 mb-2 shrink-0">
+        <div className="flex items-baseline justify-between">
+          <span className="text-text-primary font-sans text-xs font-medium">MONETA</span>
+          <span className="text-text-muted text-[10px] font-sans">v1.0.0</span>
         </div>
-      </section>
+        <p className="text-text-muted text-[10px] font-sans mt-0.5">
+          Rates from ECB via Frankfurter API. Updated once per business day ~16:00 CET.
+        </p>
+        <LastUpdatedInfo />
+      </div>
 
-      {/* Data */}
-      <section className="mb-6">
-        <h2 className="text-text-secondary text-sm font-sans mb-3">Data</h2>
-        <div className="bg-bg-surface rounded-[4px] border border-border-subtle">
-          {!showClearConfirm ? (
-            <button
-              onClick={() => setShowClearConfirm(true)}
-              className="w-full flex items-center gap-3 px-4 h-12 text-negative font-sans text-sm active:bg-bg-raised transition-colors"
-            >
-              <Trash2 size={16} />
-              Clear all data
-            </button>
-          ) : (
-            <div className="p-4 space-y-3">
-              <p className="text-text-secondary text-sm font-sans">
-                This will clear all cached rates and settings.
-              </p>
-              <div className="flex gap-3">
-                <button
-                  onClick={handleClearAll}
-                  className="flex-1 h-11 rounded-[4px] bg-negative text-bg-primary font-sans text-sm active:opacity-80"
-                >
-                  Confirm
-                </button>
-                <button
-                  onClick={() => setShowClearConfirm(false)}
-                  className="flex-1 h-11 rounded-[4px] bg-bg-raised text-text-secondary font-sans text-sm border border-border-subtle active:bg-bg-surface"
-                >
-                  Cancel
-                </button>
-              </div>
+      {/* Clear data — compact */}
+      <div className="shrink-0">
+        {!showClearConfirm ? (
+          <button
+            onClick={() => setShowClearConfirm(true)}
+            className="w-full flex items-center justify-center gap-2 h-9 rounded-[4px] border border-border-subtle text-negative font-sans text-xs active:bg-bg-raised transition-colors"
+          >
+            <Trash2 size={12} />
+            Clear all data
+          </button>
+        ) : (
+          <div className="bg-bg-surface rounded-[4px] border border-border-subtle p-3">
+            <p className="text-text-secondary text-xs font-sans mb-2">Clear all cached rates and settings?</p>
+            <div className="flex gap-2">
+              <button
+                onClick={handleClearAll}
+                className="flex-1 h-8 rounded-[4px] bg-negative text-bg-primary font-sans text-xs active:opacity-80"
+              >
+                Confirm
+              </button>
+              <button
+                onClick={() => setShowClearConfirm(false)}
+                className="flex-1 h-8 rounded-[4px] bg-bg-raised text-text-secondary font-sans text-xs border border-border-subtle active:bg-bg-surface"
+              >
+                Cancel
+              </button>
             </div>
-          )}
-        </div>
-      </section>
+          </div>
+        )}
+      </div>
 
       {/* Currency Picker */}
       <CurrencySelector
@@ -220,6 +207,9 @@ export default function SettingsPage() {
         onSelect={handleCurrencySelect}
         selectedCode={getPickerSelected()}
       />
+
+      {/* ATM Tip Bottom Sheet */}
+      {showAtmTip && false /* inline instead of sheet */}
     </div>
   );
 }
@@ -237,26 +227,16 @@ function LastUpdatedInfo() {
   if (!info) return null;
 
   const rateDate = new Date(info.date).toLocaleDateString("en-GB", {
-    day: "numeric",
-    month: "short",
-    year: "numeric",
+    day: "numeric", month: "short",
   });
-  const fetchedTime = new Date(info.fetchedAt).toLocaleString("en-GB", {
-    day: "numeric",
-    month: "short",
-    hour: "2-digit",
-    minute: "2-digit",
+  const fetchedTime = new Date(info.fetchedAt).toLocaleTimeString("en-GB", {
+    hour: "2-digit", minute: "2-digit",
   });
 
   return (
-    <div className="border-t border-border-subtle pt-2 mt-2 space-y-1">
-      <p className="text-text-secondary text-xs font-sans">
-        Rate date: <span className="font-sans tabular-nums">{rateDate}</span>
-      </p>
-      <p className="text-text-secondary text-xs font-sans">
-        Last fetched: <span className="font-sans tabular-nums">{fetchedTime}</span>
-      </p>
-    </div>
+    <p className="text-text-muted text-[10px] font-sans mt-1">
+      Rate: {rateDate} / Fetched: {fetchedTime}
+    </p>
   );
 }
 
@@ -272,9 +252,9 @@ function SettingRow({
   return (
     <button
       onClick={onClick}
-      className="w-full flex items-center justify-between px-4 min-h-[48px] active:bg-bg-raised transition-colors duration-100"
+      className="w-full flex items-center justify-between px-3 min-h-[40px] active:bg-bg-raised transition-colors duration-100"
     >
-      <span className="text-text-secondary text-sm font-sans">{label}</span>
+      <span className="text-text-secondary text-xs font-sans">{label}</span>
       {children}
     </button>
   );

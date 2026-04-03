@@ -104,7 +104,7 @@ export default function RateChart({ data }: RateChartProps) {
 
   if (data.length < 2) {
     return (
-      <div className="h-[250px] flex items-center justify-center">
+      <div className="h-full flex items-center justify-center">
         <div className="h-[2px] w-3/4 bg-bg-raised animate-pulse rounded-full" />
       </div>
     );
@@ -127,7 +127,7 @@ export default function RateChart({ data }: RateChartProps) {
       : null;
 
   return (
-    <div className="h-[250px]">
+    <div className="h-full">
       <ResponsiveContainer width="100%" height="100%">
         <AreaChart
           data={data}

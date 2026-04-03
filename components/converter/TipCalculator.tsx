@@ -1,0 +1,117 @@
+"use client";
+
+import { X } from "lucide-react";
+import { CURRENCY_SYMBOLS } from "@/lib/constants/currencies";
+
+interface TipCalculatorProps {
+  isOpen: boolean;
+  onClose: () => void;
+  amount: number;
+  currency: string;
+  homeCurrency: string;
+  rate: number;
+}
+
+const TIP_PERCENTAGES = [10, 15, 20, 25];
+
+function formatVal(value: number): string {
+  return value.toLocaleString("en-GB", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  });
+}
+
+export default function TipCalculator({
+  isOpen,
+  onClose,
+  amount,
+  currency,
+  homeCurrency,
+  rate,
+}: TipCalculatorProps) {
+  if (!isOpen || amount <= 0) return null;
+
+  const quoteSymbol = CURRENCY_SYMBOLS[currency] || currency;
+  const homeSymbol = CURRENCY_SYMBOLS[homeCurrency] || homeCurrency;
+  // rate converts base -> quote, so to get home equivalent of the quote amount:
+  // if base=EUR, quote=GBP, rate=0.87, and amount is in GBP (the converted amount)
+  // we need to invert: home cost = amount / rate
+  const homeRate = 1 / rate;
+
+  return (
+    <div className="fixed inset-0 z-50 flex flex-col justify-end" onClick={onClose}>
+      <div className="absolute inset-0 bg-black/50 animate-overlay" />
+      <div
+        className="relative bg-bg-primary rounded-t-[12px] animate-slide-up"
+        style={{ paddingBottom: "env(safe-area-inset-bottom, 8px)" }}
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="flex justify-center pt-2 pb-1">
+          <div className="w-8 h-1 rounded-full bg-border-subtle" />
+        </div>
+
+        <div className="px-4 pb-2 flex items-center justify-between">
+          <p className="font-sans text-text-primary text-sm font-medium">
+            Tip on {quoteSymbol}{formatVal(amount)}
+          </p>
+          <button
+            onClick={onClose}
+            className="min-w-[44px] min-h-[44px] flex items-center justify-center -mr-2 active:opacity-70 haptic-tap"
+            aria-label="Close"
+          >
+            <X size={18} className="text-text-secondary" />
+          </button>
+        </div>
+
+        <div className="px-4 pb-4">
+          <div className="rounded-[4px] overflow-hidden border border-border-subtle">
+            {/* Header */}
+            <div className="flex bg-bg-surface">
+              <div className="w-16 py-2 flex items-center justify-center">
+                <span className="font-sans text-[10px] tracking-widest text-text-muted uppercase">Tip</span>
+              </div>
+              <div className="w-px bg-border-subtle" />
+              <div className="flex-1 py-2 flex items-center justify-center">
+                <span className="font-sans text-[10px] tracking-widest text-text-muted uppercase">{currency}</span>
+              </div>
+              <div className="w-px bg-border-subtle" />
+              <div className="flex-1 py-2 flex items-center justify-center">
+                <span className="font-sans text-[10px] tracking-widest text-text-muted uppercase">Total {currency}</span>
+              </div>
+            </div>
+
+            {/* Rows */}
+            {TIP_PERCENTAGES.map((pct, i) => {
+              const tipAmount = amount * (pct / 100);
+              const total = amount + tipAmount;
+              return (
+                <div key={pct} className={`flex border-t border-border-subtle ${i % 2 === 0 ? "bg-bg-surface" : "bg-bg-raised"}`}>
+                  <div className="w-16 py-2.5 flex items-center justify-center">
+                    <span className="font-sans text-accent text-sm font-medium">{pct}%</span>
+                  </div>
+                  <div className="w-px bg-border-subtle" />
+                  <div className="flex-1 py-2.5 flex items-center justify-center">
+                    <span className="font-sans text-text-primary text-sm tabular-nums">
+                      {quoteSymbol}{formatVal(tipAmount)}
+                    </span>
+                  </div>
+                  <div className="w-px bg-border-subtle" />
+                  <div className="flex-1 py-2.5 flex items-center justify-center">
+                    <span className="font-sans text-text-primary text-sm tabular-nums font-medium">
+                      {quoteSymbol}{formatVal(total)}
+                    </span>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          {/* Home currency equivalent note */}
+          <p className="text-text-muted text-[10px] font-sans mt-2 text-center">
+            Total at 20% = ~{homeSymbol}{formatVal((amount * 1.2) * homeRate)} in {homeCurrency}
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+}
