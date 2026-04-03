@@ -6,6 +6,7 @@ import SegmentDisplay from "@/components/display/SegmentDisplay";
 import ConverterInput from "@/components/converter/ConverterInput";
 import FlipButton from "@/components/converter/FlipButton";
 import ConversionTable from "@/components/converter/ConversionTable";
+import MultiCurrencyGlance from "@/components/converter/MultiCurrencyGlance";
 import CurrencySelector from "@/components/converter/CurrencySelector";
 import FavouritePairs from "@/components/converter/FavouritePairs";
 import WallpaperCreator from "@/components/converter/WallpaperCreator";
@@ -50,7 +51,16 @@ export default function ConverterPage() {
     async function loadRate() {
       try {
         const result = await fetchLatestRate(baseCurrency, quoteCurrency);
-        if (!cancelled) setRate(result.rate);
+        if (!cancelled) {
+          setRate(result.rate);
+          // Store last update info for settings page
+          try {
+            localStorage.setItem("moneta:last_update", JSON.stringify({
+              date: result.date,
+              fetchedAt: result.fetchedAt,
+            }));
+          } catch { /* ignore */ }
+        }
       } catch {
         if (!cancelled) setRate(null);
       }
@@ -210,6 +220,16 @@ export default function ConverterPage() {
             setWallpaperMultiplier(multiplier);
             setShowWallpaper(true);
           }}
+        />
+      </div>
+
+      {/* Quick glance currencies */}
+      <div className="mb-2">
+        <MultiCurrencyGlance
+          base={baseCurrency}
+          amount={numericValue}
+          excludeCurrency={quoteCurrency}
+          currencies={settings.glanceCurrencies}
         />
       </div>
 

@@ -170,6 +170,10 @@ export default function SettingsPage() {
           <p className="text-text-muted text-xs font-sans">
             Rates from Frankfurter API / European Central Bank
           </p>
+          <p className="text-text-muted text-xs font-sans">
+            Rates update once per business day (ECB, ~16:00 CET)
+          </p>
+          <LastUpdatedInfo />
         </div>
       </section>
 
@@ -216,6 +220,42 @@ export default function SettingsPage() {
         onSelect={handleCurrencySelect}
         selectedCode={getPickerSelected()}
       />
+    </div>
+  );
+}
+
+function LastUpdatedInfo() {
+  const [info, setInfo] = useState<{ date: string; fetchedAt: number } | null>(null);
+
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem("moneta:last_update");
+      if (raw) setInfo(JSON.parse(raw));
+    } catch { /* ignore */ }
+  }, []);
+
+  if (!info) return null;
+
+  const rateDate = new Date(info.date).toLocaleDateString("en-GB", {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+  });
+  const fetchedTime = new Date(info.fetchedAt).toLocaleString("en-GB", {
+    day: "numeric",
+    month: "short",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+
+  return (
+    <div className="border-t border-border-subtle pt-2 mt-2 space-y-1">
+      <p className="text-text-secondary text-xs font-sans">
+        Rate date: <span className="font-mono">{rateDate}</span>
+      </p>
+      <p className="text-text-secondary text-xs font-sans">
+        Last fetched: <span className="font-mono">{fetchedTime}</span>
+      </p>
     </div>
   );
 }
