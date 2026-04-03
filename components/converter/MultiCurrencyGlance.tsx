@@ -62,15 +62,13 @@ export default function MultiCurrencyGlance({
         return (
           <div
             key={quote}
-            className="flex-1 bg-bg-surface rounded-[4px] border border-border-subtle px-2 py-1.5"
+            className="flex-1 bg-bg-surface rounded-[4px] border border-border-subtle px-2 py-1 flex items-center gap-1.5"
           >
-            <div className="flex items-center gap-1 mb-0.5">
-              <CountryFlag currencyCode={quote} />
-              <span className="font-sans text-text-muted text-[10px] tracking-wider">
-                {quote}
-              </span>
-            </div>
-            <span className="text-text-secondary tabular-nums font-sans text-[13px] font-medium">
+            <CountryFlag currencyCode={quote} />
+            <span className="font-sans text-text-muted text-[10px] tracking-wider">
+              {quote}
+            </span>
+            <span className="font-sans text-text-secondary text-[11px] tabular-nums font-medium ml-auto">
               {converted !== null ? formatAmount(converted) : "--.--"}
             </span>
           </div>
