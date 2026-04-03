@@ -23,13 +23,10 @@ const BG_COLORS = [
   { label: "Charcoal", value: "#1A1A2E" },
   { label: "Navy", value: "#0D1B2A" },
   { label: "Forest", value: "#0D1F0D" },
-  { label: "Burgundy", value: "#1F0D0D" },
-  { label: "Grey", value: "#4A4A4A" },
   { label: "Teal", value: "#0D4B4B" },
   { label: "Gold", value: "#8B7535" },
   { label: "Orange", value: "#9B4400" },
   { label: "Pink", value: "#8B2252" },
-  { label: "Yellow", value: "#9B8A00" },
   { label: "White", value: "#F5F2ED" },
 ] as const;
 

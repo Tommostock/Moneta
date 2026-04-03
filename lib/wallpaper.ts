@@ -74,9 +74,9 @@ export async function renderWallpaper(config: WallpaperConfig): Promise<Blob> {
   const rowH = 42 * scale;
   const cardH = headerH + rowH * 10 + 2 * scale;
   const cardX = cardMargin;
-  // Position: start at ~18% from top (below clock), centered in the safe zone
-  const topZone = height * 0.18;
-  const bottomZone = height * 0.85;
+  // Position: below the clock (~28% from top), above bottom buttons (~88%)
+  const topZone = height * 0.28;
+  const bottomZone = height * 0.88;
   const safeHeight = bottomZone - topZone;
   const cardY = topZone + (safeHeight - cardH) / 2;
   const cardR = 12 * scale;

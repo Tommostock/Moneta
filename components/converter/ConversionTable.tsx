@@ -2,7 +2,6 @@
 
 import { useRef, useState, useEffect } from "react";
 import ConversionTablePage from "./ConversionTablePage";
-import { ImageIcon } from "lucide-react";
 
 interface ConversionTableProps {
   baseCurrency: string;
@@ -88,30 +87,29 @@ export default function ConversionTable({
         ))}
       </div>
 
-      {/* Dots + wallpaper button */}
+      {/* Dots */}
       <div className="flex items-center justify-center gap-1.5 py-2">
-        <div className="flex items-center gap-1.5">
-          {MULTIPLIERS.map((_, i) => (
-            <button
-              key={i}
-              onClick={() => handleDotClick(i)}
-              className={`w-1.5 h-1.5 rounded-full transition-colors duration-200 ${
-                i === activePage ? "bg-accent" : "bg-text-muted"
-              }`}
-              aria-label={`Page ${i + 1}`}
-            />
-          ))}
-        </div>
-        {onRequestWallpaper && (
+        {MULTIPLIERS.map((_, i) => (
           <button
-            onClick={() => onRequestWallpaper(MULTIPLIERS[activePage])}
-            className="ml-2 min-w-[36px] min-h-[36px] flex items-center justify-center text-text-muted active:text-accent transition-colors"
-            aria-label="Create wallpaper"
-          >
-            <ImageIcon size={16} />
-          </button>
-        )}
+            key={i}
+            onClick={() => handleDotClick(i)}
+            className={`w-1.5 h-1.5 rounded-full transition-colors duration-200 ${
+              i === activePage ? "bg-accent" : "bg-text-muted"
+            }`}
+            aria-label={`Page ${i + 1}`}
+          />
+        ))}
       </div>
+
+      {/* Create Wallpaper button */}
+      {onRequestWallpaper && (
+        <button
+          onClick={() => onRequestWallpaper(MULTIPLIERS[activePage])}
+          className="w-full h-10 rounded-[4px] border border-border-subtle text-text-secondary font-sans text-xs tracking-wider active:bg-bg-raised transition-colors"
+        >
+          Create Wallpaper
+        </button>
+      )}
     </div>
   );
 }
