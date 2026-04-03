@@ -108,8 +108,8 @@ export default function RatesPage() {
   }, [base, quote]);
 
   const rateDisplay = currentRate
-    ? formatRate(currentRate).padStart(10, " ")
-    : "    --.----";
+    ? formatRate(currentRate)
+    : "--.----";
 
   const handleCurrencySelect = (code: string) => {
     if (pickerTarget === "base") setBase(code);

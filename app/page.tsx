@@ -70,10 +70,10 @@ export default function ConverterPage() {
   const convertedAmount = rate ? numericValue * rate : null;
 
   const displayResult = convertedAmount !== null && numericValue > 0
-    ? formatAmount(convertedAmount).padStart(12, " ")
+    ? formatAmount(convertedAmount)
     : rate !== null
-      ? "        0.00"
-      : "        --.--";
+      ? "0.00"
+      : "--.--";
 
   const handleFlip = useCallback(() => {
     const newBase = quoteCurrency;

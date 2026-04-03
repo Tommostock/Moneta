@@ -17,15 +17,12 @@ export default function SplitFlapDisplay({
   const displayValue =
     amount !== null ? formatAmount(amount) : "----.--";
 
-  // Pad to consistent width for visual stability
-  const padded = displayValue.padStart(12, " ");
-
   return (
     <div className="flex items-center gap-3">
       <span className="font-mono text-text-secondary tracking-wider text-sm">
         {currencyCode}
       </span>
-      <SplitFlapGroup value={padded} size={size} />
+      <SplitFlapGroup value={displayValue} size={size} />
     </div>
   );
 }
