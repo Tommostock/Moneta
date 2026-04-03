@@ -94,7 +94,7 @@ export default function SettingsPage() {
               {isDark ? <Moon size={16} className="text-text-secondary" /> : <Sun size={16} className="text-text-secondary" />}
               <span className="text-text-secondary text-sm font-sans">Theme</span>
             </div>
-            <span className="font-mono text-text-primary tracking-wider text-sm">
+            <span className="font-sans text-text-primary tracking-wider font-medium text-sm">
               {isDark ? "Dark" : "Light"}
             </span>
           </button>
@@ -113,7 +113,7 @@ export default function SettingsPage() {
           >
             <div className="flex items-center gap-2">
               <CountryFlag currencyCode={settings.homeCurrency} />
-              <span className="font-mono text-text-primary tracking-wider">
+              <span className="font-sans text-text-primary tracking-wider font-medium">
                 {settings.homeCurrency}
               </span>
             </div>
@@ -124,7 +124,7 @@ export default function SettingsPage() {
           >
             <div className="flex items-center gap-2">
               <CountryFlag currencyCode={settings.defaultForeignCurrency} />
-              <span className="font-mono text-text-primary tracking-wider">
+              <span className="font-sans text-text-primary tracking-wider font-medium">
                 {settings.defaultForeignCurrency}
               </span>
             </div>
@@ -149,7 +149,7 @@ export default function SettingsPage() {
             >
               <div className="flex items-center gap-2">
                 <CountryFlag currencyCode={code} />
-                <span className="font-mono text-text-primary tracking-wider">
+                <span className="font-sans text-text-primary tracking-wider font-medium">
                   {code}
                 </span>
               </div>
@@ -251,10 +251,10 @@ function LastUpdatedInfo() {
   return (
     <div className="border-t border-border-subtle pt-2 mt-2 space-y-1">
       <p className="text-text-secondary text-xs font-sans">
-        Rate date: <span className="font-mono">{rateDate}</span>
+        Rate date: <span className="font-sans tabular-nums">{rateDate}</span>
       </p>
       <p className="text-text-secondary text-xs font-sans">
-        Last fetched: <span className="font-mono">{fetchedTime}</span>
+        Last fetched: <span className="font-sans tabular-nums">{fetchedTime}</span>
       </p>
     </div>
   );

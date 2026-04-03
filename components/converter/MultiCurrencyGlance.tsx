@@ -66,18 +66,11 @@ export default function MultiCurrencyGlance({
           >
             <div className="flex items-center gap-1 mb-0.5">
               <CountryFlag currencyCode={quote} />
-              <span className="font-mono text-text-muted text-[10px] tracking-wider">
+              <span className="font-sans text-text-muted text-[10px] tracking-wider">
                 {quote}
               </span>
             </div>
-            <span
-              className="text-text-secondary tabular-nums"
-              style={{
-                fontFamily: "var(--font-inter), system-ui, sans-serif",
-                fontSize: 13,
-                fontWeight: 500,
-              }}
-            >
+            <span className="text-text-secondary tabular-nums font-sans text-[13px] font-medium">
               {converted !== null ? formatAmount(converted) : "--.--"}
             </span>
           </div>

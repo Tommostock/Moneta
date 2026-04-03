@@ -27,7 +27,7 @@ export default function FavouritePairs({
           <button
             key={`${pair.base}-${pair.quote}`}
             onClick={() => onSelect(pair.base, pair.quote)}
-            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-[4px] border text-xs font-mono tracking-wider whitespace-nowrap transition-colors duration-100 shrink-0 ${
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-[4px] border text-xs font-sans tracking-wider whitespace-nowrap transition-colors duration-100 shrink-0 ${
               isActive
                 ? "bg-accent/15 border-accent/40 text-accent"
                 : "bg-bg-surface border-border-subtle text-text-secondary active:bg-bg-raised"

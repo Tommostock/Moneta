@@ -47,7 +47,7 @@ export default function RateContext({
       <div className="flex gap-4 text-sm">
         <div className="flex items-center gap-2">
           <span className="text-text-muted font-sans">High</span>
-          <span className="text-positive font-mono">
+          <span className="text-positive font-sans">
             {formatRate(high.rate)}
           </span>
           <span className="text-text-muted font-sans text-xs">
@@ -56,7 +56,7 @@ export default function RateContext({
         </div>
         <div className="flex items-center gap-2">
           <span className="text-text-muted font-sans">Low</span>
-          <span className="text-negative font-mono">
+          <span className="text-negative font-sans">
             {formatRate(low.rate)}
           </span>
           <span className="text-text-muted font-sans text-xs">

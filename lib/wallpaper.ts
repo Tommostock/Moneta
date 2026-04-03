@@ -112,7 +112,7 @@ export async function renderWallpaper(config: WallpaperConfig): Promise<Blob> {
 
   // Header text
   const headerFontSize = Math.round(14 * scale);
-  ctx.font = `500 ${headerFontSize}px "Inter", system-ui, sans-serif`;
+  ctx.font = `500 ${headerFontSize}px "DM Sans", system-ui, sans-serif`;
   ctx.textAlign = "center";
   ctx.textBaseline = "middle";
   ctx.fillStyle = "#D45B5B";
@@ -139,7 +139,7 @@ export async function renderWallpaper(config: WallpaperConfig): Promise<Blob> {
   // Scale font down for large multipliers
   const baseFontSize = multiplier >= 10000 ? 13 : multiplier >= 100 ? 15 : 16;
   const rowFontSize = Math.round(baseFontSize * scale);
-  ctx.font = `400 ${rowFontSize}px "Inter", system-ui, sans-serif`;
+  ctx.font = `400 ${rowFontSize}px "DM Sans", system-ui, sans-serif`;
 
   for (let i = 0; i < 10; i++) {
     const baseAmount = (i + 1) * multiplier;

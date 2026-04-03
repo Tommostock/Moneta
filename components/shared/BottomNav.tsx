@@ -80,7 +80,7 @@ export default function BottomNav() {
                 <Icon size={22} />
                 {showBadge && (
                   <span
-                    className={`absolute -top-2.5 -right-5 text-[8px] font-mono font-medium px-1 py-0.5 rounded-[2px] leading-none ${
+                    className={`absolute -top-2.5 -right-5 text-[8px] font-sans font-medium px-1 py-0.5 rounded-[2px] leading-none ${
                       rateDelta.startsWith("+")
                         ? "bg-positive/20 text-positive"
                         : "bg-negative/20 text-negative"

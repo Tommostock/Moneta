@@ -146,7 +146,7 @@ function CurrencyRow({
       }`}
     >
       <CountryFlag currencyCode={code} />
-      <span className="font-mono text-text-primary tracking-wider text-sm">
+      <span className="font-sans text-text-primary tracking-wider text-sm">
         {code}
       </span>
       <span className="font-sans text-text-secondary text-sm flex-1 text-left truncate">

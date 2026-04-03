@@ -5,7 +5,7 @@ import { useEffect, useRef, useState } from "react";
 interface SegmentDisplayProps {
   value: string;
   size?: number;
-  flash?: boolean; // enable amber flash on value change
+  flash?: boolean;
 }
 
 export default function SegmentDisplay({
@@ -28,9 +28,8 @@ export default function SegmentDisplay({
 
   return (
     <span
-      className={`text-text-primary tabular-nums tracking-tight ${flashing ? "animate-number-flash" : ""}`}
+      className={`text-text-primary tabular-nums tracking-tight font-sans ${flashing ? "animate-number-flash" : ""}`}
       style={{
-        fontFamily: "var(--font-inter), system-ui, sans-serif",
         fontSize: size,
         fontWeight: 500,
         lineHeight: 1.1,

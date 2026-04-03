@@ -2,7 +2,6 @@
 
 import { CURRENCY_SYMBOLS } from "@/lib/constants/currencies";
 import { ArrowLeftRight } from "lucide-react";
-import SegmentDisplay from "@/components/display/SegmentDisplay";
 
 interface ConversionTablePageProps {
   baseCurrency: string;
@@ -11,7 +10,6 @@ interface ConversionTablePageProps {
   multiplier: number;
   reversed?: boolean;
   onToggleReverse?: () => void;
-  onRowTap?: (amount: number) => void;
 }
 
 function formatCompact(value: number): string {
@@ -28,9 +26,7 @@ export default function ConversionTablePage({
   multiplier,
   reversed = false,
   onToggleReverse,
-  onRowTap,
 }: ConversionTablePageProps) {
-  // When reversed, swap which side shows base vs quote
   const leftCurrency = reversed ? quoteCurrency : baseCurrency;
   const rightCurrency = reversed ? baseCurrency : quoteCurrency;
   const leftSymbol = CURRENCY_SYMBOLS[leftCurrency] || leftCurrency;
@@ -43,14 +39,14 @@ export default function ConversionTablePage({
     return { leftAmount, rightAmount };
   });
 
-  const segSize = multiplier >= 10000 ? 12 : multiplier >= 100 ? 14 : 16;
+  const fontSize = multiplier >= 10000 ? "text-[11px]" : multiplier >= 100 ? "text-[13px]" : "text-[15px]";
 
   return (
-    <div className="rounded-[4px] overflow-hidden border border-border-subtle">
+    <div className="rounded-[4px] overflow-hidden border border-border-subtle flex flex-col">
       {/* Header with reverse toggle */}
       <div className="flex">
         <div className="flex-1 bg-bg-surface py-1.5 flex items-center justify-center">
-          <span className="font-mono text-xs tracking-wider text-negative font-medium">
+          <span className="font-sans text-xs tracking-wider text-negative font-medium">
             {leftCurrency}
           </span>
         </div>
@@ -62,7 +58,7 @@ export default function ConversionTablePage({
           <ArrowLeftRight size={10} className="text-text-muted" />
         </button>
         <div className="flex-1 bg-bg-raised py-1.5 flex items-center justify-center">
-          <span className="font-mono text-xs tracking-wider text-accent font-medium">
+          <span className="font-sans text-xs tracking-wider text-accent font-medium">
             {rightCurrency}
           </span>
         </div>
@@ -70,25 +66,19 @@ export default function ConversionTablePage({
 
       {/* Rows */}
       {rows.map(({ leftAmount, rightAmount }, i) => (
-        <button
-          key={i}
-          onClick={() => onRowTap?.(leftAmount)}
-          className="flex w-full border-t border-border-subtle haptic-tap active:bg-accent/5 transition-colors"
-        >
-          <div className="flex-1 bg-bg-surface py-1.5 flex items-center justify-center">
-            <span className="text-text-secondary mr-0.5" style={{ fontSize: segSize * 0.75, fontFamily: "var(--font-inter)" }}>
-              {leftSymbol}
+        <div key={i} className="flex border-t border-border-subtle flex-1">
+          <div className="flex-1 bg-bg-surface flex items-center justify-center">
+            <span className={`font-sans text-text-primary ${fontSize} tabular-nums`}>
+              {leftSymbol}{formatCompact(leftAmount)}
             </span>
-            <SegmentDisplay value={formatCompact(leftAmount)} size={segSize} />
           </div>
           <div className="w-px bg-border-subtle" />
-          <div className="flex-1 bg-bg-raised py-1.5 flex items-center justify-center">
-            <span className="text-text-secondary mr-0.5" style={{ fontSize: segSize * 0.75, fontFamily: "var(--font-inter)" }}>
-              {rightSymbol}
+          <div className="flex-1 bg-bg-raised flex items-center justify-center">
+            <span className={`font-sans text-text-primary ${fontSize} tabular-nums`}>
+              {rightSymbol}{formatCompact(rightAmount)}
             </span>
-            <SegmentDisplay value={formatCompact(rightAmount)} size={segSize} />
           </div>
-        </button>
+        </div>
       ))}
     </div>
   );

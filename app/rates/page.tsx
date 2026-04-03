@@ -134,17 +134,17 @@ export default function RatesPage() {
             className="flex items-center gap-2 min-h-[44px] px-2 active:bg-bg-raised rounded-[4px] transition-colors"
           >
             <CountryFlag currencyCode={base} />
-            <span className="font-mono text-text-primary tracking-wider text-xl">
+            <span className="font-sans text-text-primary tracking-wider text-xl font-medium">
               {base}
             </span>
           </button>
-          <span className="text-text-muted font-mono">/</span>
+          <span className="text-text-muted font-sans">/</span>
           <button
             onClick={() => setPickerTarget("quote")}
             className="flex items-center gap-2 min-h-[44px] px-2 active:bg-bg-raised rounded-[4px] transition-colors"
           >
             <CountryFlag currencyCode={quote} />
-            <span className="font-mono text-text-primary tracking-wider text-xl">
+            <span className="font-sans text-text-primary tracking-wider text-xl font-medium">
               {quote}
             </span>
           </button>
@@ -198,7 +198,7 @@ export default function RatesPage() {
             {rate1yAgo !== null && (
               <div className="flex justify-between items-baseline">
                 <span className="text-text-secondary font-sans text-sm">1 year ago</span>
-                <span className="font-mono text-text-primary text-sm">
+                <span className="font-sans text-text-primary text-sm tabular-nums">
                   {formatFriendlyRate(base, quote, rate1yAgo)}
                 </span>
               </div>
@@ -206,7 +206,7 @@ export default function RatesPage() {
             {rate6mAgo !== null && (
               <div className="flex justify-between items-baseline">
                 <span className="text-text-secondary font-sans text-sm">6 months ago</span>
-                <span className="font-mono text-text-primary text-sm">
+                <span className="font-sans text-text-primary text-sm tabular-nums">
                   {formatFriendlyRate(base, quote, rate6mAgo)}
                 </span>
               </div>
@@ -214,7 +214,7 @@ export default function RatesPage() {
             {currentRate !== null && (
               <div className="flex justify-between items-baseline border-t border-border-subtle pt-2 mt-1">
                 <span className="text-text-secondary font-sans text-sm">Today</span>
-                <span className="font-mono text-accent text-sm">
+                <span className="font-sans text-accent text-sm tabular-nums">
                   {formatFriendlyRate(base, quote, currentRate)}
                 </span>
               </div>

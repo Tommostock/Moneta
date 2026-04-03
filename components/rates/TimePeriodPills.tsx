@@ -37,7 +37,7 @@ export default function TimePeriodPills({
         <button
           key={p}
           onClick={() => onSelect(p)}
-          className={`h-9 px-4 rounded-[4px] font-mono text-sm transition-colors duration-100 ${
+          className={`h-9 px-4 rounded-[4px] font-sans text-sm transition-colors duration-100 ${
             selected === p
               ? "bg-accent text-bg-primary"
               : "bg-bg-raised text-text-secondary border border-border-subtle active:bg-bg-surface"

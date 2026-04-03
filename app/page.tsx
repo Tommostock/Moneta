@@ -123,20 +123,16 @@ export default function ConverterPage() {
     [pickerTarget]
   );
 
-  const handleRowTap = useCallback((amount: number) => {
-    setInputValue(amount.toString());
-  }, []);
-
   return (
-    <div className="min-h-screen px-3 pt-2">
+    <div className="h-[100dvh] px-3 pt-2 pb-16 flex flex-col" style={{ paddingBottom: "calc(env(safe-area-inset-bottom, 0px) + 60px)" }}>
       {/* Header + favourite star */}
-      <div className="mb-2 flex items-center justify-between">
+      <div className="mb-1.5 flex items-center justify-between shrink-0">
         <h1 className="text-text-muted text-xs font-sans tracking-widest uppercase">
           MONETA
         </h1>
         <button
           onClick={handleToggleFavourite}
-          className="min-w-[44px] min-h-[36px] flex items-center justify-center -mr-2 active:opacity-70 haptic-tap transition-opacity"
+          className="min-w-[44px] min-h-[32px] flex items-center justify-center -mr-2 active:opacity-70 haptic-tap transition-opacity"
           aria-label={isFavourite ? "Remove from favourites" : "Add to favourites"}
         >
           <Star
@@ -148,7 +144,7 @@ export default function ConverterPage() {
 
       {/* Favourite pairs */}
       {settings.favouritePairs.length > 0 && (
-        <div className="mb-2">
+        <div className="mb-1.5 shrink-0">
           <FavouritePairs
             pairs={settings.favouritePairs}
             currentBase={baseCurrency}
@@ -159,7 +155,7 @@ export default function ConverterPage() {
       )}
 
       {/* Converter — card with depth shadow */}
-      <div className="relative mb-3" style={{ boxShadow: "0 1px 3px rgba(0,0,0,0.12)" }}>
+      <div className="relative mb-2 shrink-0" style={{ boxShadow: "0 1px 3px rgba(0,0,0,0.12)" }}>
         {/* Source row */}
         <div className="bg-bg-surface rounded-t-[4px] border border-border-subtle px-3 py-2">
           <div className="flex items-center gap-2">
@@ -168,7 +164,7 @@ export default function ConverterPage() {
               className="flex items-center gap-1.5 min-h-[36px] px-1.5 -ml-1.5 active:bg-bg-raised rounded-[4px] haptic-tap transition-colors duration-100"
             >
               <CountryFlag currencyCode={baseCurrency} />
-              <span className="font-mono text-text-primary tracking-wider text-base">
+              <span className="font-sans text-text-primary tracking-wider text-base font-medium">
                 {baseCurrency}
               </span>
             </button>
@@ -186,7 +182,7 @@ export default function ConverterPage() {
               className="flex items-center gap-1.5 min-h-[36px] px-1.5 -ml-1.5 active:bg-bg-raised rounded-[4px] haptic-tap transition-colors duration-100"
             >
               <CountryFlag currencyCode={quoteCurrency} />
-              <span className="font-mono text-text-primary tracking-wider text-base">
+              <span className="font-sans text-text-primary tracking-wider text-base font-medium">
                 {quoteCurrency}
               </span>
             </button>
@@ -207,17 +203,17 @@ export default function ConverterPage() {
           </div>
         </div>
 
-        {/* Flip button — centered on the dividing line */}
+        {/* Flip button */}
         <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-10">
           <FlipButton onFlip={handleFlip} />
         </div>
       </div>
 
       {/* Separator */}
-      <div className="border-t border-border-subtle mb-2" />
+      <div className="border-t border-border-subtle mb-1.5 shrink-0" />
 
-      {/* Conversion table */}
-      <div className="mb-1">
+      {/* Conversion table — grows to fill available space */}
+      <div className="flex-1 min-h-0 mb-1.5 flex flex-col">
         <ConversionTable
           baseCurrency={baseCurrency}
           quoteCurrency={quoteCurrency}
@@ -226,12 +222,11 @@ export default function ConverterPage() {
             setWallpaperMultiplier(multiplier);
             setShowWallpaper(true);
           }}
-          onRowTap={handleRowTap}
         />
       </div>
 
       {/* Quick glance currencies */}
-      <div className="mb-2">
+      <div className="shrink-0">
         <MultiCurrencyGlance
           base={baseCurrency}
           amount={numericValue}

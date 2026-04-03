@@ -20,13 +20,13 @@ const SIZE_PRESETS = [
 
 const BG_COLORS = [
   { label: "Black", value: "#0C0C0C" },
-  { label: "Charcoal", value: "#1A1A2E" },
   { label: "Navy", value: "#0D1B2A" },
   { label: "Forest", value: "#0D1F0D" },
+  { label: "Charcoal", value: "#1A1A2E" },
   { label: "Teal", value: "#0D4B4B" },
+  { label: "Pink", value: "#8B2252" },
   { label: "Gold", value: "#8B7535" },
   { label: "Orange", value: "#9B4400" },
-  { label: "Pink", value: "#8B2252" },
   { label: "White", value: "#F5F2ED" },
 ] as const;
 

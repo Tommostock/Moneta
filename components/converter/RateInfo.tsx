@@ -39,11 +39,11 @@ export default function RateInfo({
       <div className="flex flex-wrap items-baseline gap-x-2">
         <span className="text-text-secondary">
           1{" "}
-          <span className="font-mono tracking-wider">{base}</span>
+          <span className="font-sans tracking-wider">{base}</span>
           {" = "}
-          <span className="font-mono tracking-wider">{rateStr}</span>
+          <span className="font-sans tracking-wider">{rateStr}</span>
           {" "}
-          <span className="font-mono tracking-wider">{quote}</span>
+          <span className="font-sans tracking-wider">{quote}</span>
         </span>
         {offline && cacheDate ? (
           <span className="text-text-muted">
@@ -55,11 +55,11 @@ export default function RateInfo({
       </div>
       <div className="text-text-muted text-xs">
         1{" "}
-        <span className="font-mono tracking-wider">{quote}</span>
+        <span className="font-sans tracking-wider">{quote}</span>
         {" = "}
-        <span className="font-mono tracking-wider">{inverseRateStr}</span>
+        <span className="font-sans tracking-wider">{inverseRateStr}</span>
         {" "}
-        <span className="font-mono tracking-wider">{base}</span>
+        <span className="font-sans tracking-wider">{base}</span>
       </div>
     </div>
   );
