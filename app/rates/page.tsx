@@ -11,7 +11,7 @@ import TimePeriodPills, {
 import type { Period } from "@/components/rates/TimePeriodPills";
 import RateContext from "@/components/rates/RateContext";
 import CurrencySelector from "@/components/converter/CurrencySelector";
-import { fetchLatestRate, fetchTimeSeries } from "@/lib/api/frankfurter";
+import { fetchLatestRate, fetchTimeSeries, fetchRateOnDate } from "@/lib/api/frankfurter";
 import { formatRate } from "@/lib/format";
 import { daysAgoDate, todayDate } from "@/lib/dates";
 import { getSettings } from "@/lib/settings";
@@ -42,6 +42,8 @@ export default function RatesPage() {
   const [currentRate, setCurrentRate] = useState<number | null>(null);
   const [series, setSeries] = useState<TimeSeriesPoint[]>([]);
   const [pickerTarget, setPickerTarget] = useState<"base" | "quote" | null>(null);
+  const [rate6mAgo, setRate6mAgo] = useState<number | null>(null);
+  const [rate1yAgo, setRate1yAgo] = useState<number | null>(null);
 
   // Load settings
   useEffect(() => {
@@ -87,6 +89,23 @@ export default function RatesPage() {
     load();
     return () => { cancelled = true; };
   }, [base, quote, period]);
+
+  // Fetch historical reference rates when pair changes
+  useEffect(() => {
+    let cancelled = false;
+    async function loadHistorical() {
+      const [r6m, r1y] = await Promise.all([
+        fetchRateOnDate(base, quote, daysAgoDate(182)),
+        fetchRateOnDate(base, quote, daysAgoDate(365)),
+      ]);
+      if (!cancelled) {
+        setRate6mAgo(r6m);
+        setRate1yAgo(r1y);
+      }
+    }
+    loadHistorical();
+    return () => { cancelled = true; };
+  }, [base, quote]);
 
   const rateDisplay = currentRate
     ? formatRate(currentRate).padStart(10, " ")
@@ -154,6 +173,35 @@ export default function RatesPage() {
           daysLabel={periodLabels[period]}
         />
       </div>
+
+      {/* Historical reference */}
+      {(rate1yAgo !== null || rate6mAgo !== null) && (
+        <div className="mb-6 bg-bg-surface rounded-[4px] border border-border-subtle p-4">
+          <p className="text-text-muted text-xs font-sans tracking-widest uppercase mb-3">
+            Historical Reference
+          </p>
+          <div className="flex flex-col gap-2">
+            {rate1yAgo !== null && (
+              <div className="flex justify-between items-baseline">
+                <span className="text-text-secondary font-sans text-sm">1 year ago</span>
+                <span className="font-mono text-text-primary text-sm">{formatRate(rate1yAgo)}</span>
+              </div>
+            )}
+            {rate6mAgo !== null && (
+              <div className="flex justify-between items-baseline">
+                <span className="text-text-secondary font-sans text-sm">6 months ago</span>
+                <span className="font-mono text-text-primary text-sm">{formatRate(rate6mAgo)}</span>
+              </div>
+            )}
+            {currentRate !== null && (
+              <div className="flex justify-between items-baseline border-t border-border-subtle pt-2 mt-1">
+                <span className="text-text-secondary font-sans text-sm">Today</span>
+                <span className="font-mono text-accent text-sm">{formatRate(currentRate)}</span>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
 
       {/* Currency Picker */}
       <CurrencySelector

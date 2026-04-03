@@ -28,6 +28,7 @@ export default function ConverterPage() {
   const [rate, setRate] = useState<number | null>(null);
   const [rateDate, setRateDate] = useState<string>("");
   const [offline, setOffline] = useState(false);
+  const [fetchedAt, setFetchedAt] = useState<number | undefined>(undefined);
   const [pickerTarget, setPickerTarget] = useState<"base" | "quote" | null>(
     null
   );
@@ -50,6 +51,7 @@ export default function ConverterPage() {
           setRate(result.rate);
           setRateDate(result.date);
           setOffline(result.offline);
+          setFetchedAt(result.fetchedAt);
         }
       } catch {
         if (!cancelled) {
@@ -69,7 +71,9 @@ export default function ConverterPage() {
 
   const displayResult = convertedAmount !== null && numericValue > 0
     ? formatAmount(convertedAmount).padStart(12, " ")
-    : "       0.00";
+    : rate !== null
+      ? "        0.00"
+      : "        --.--";
 
   const handleFlip = useCallback(() => {
     const newBase = quoteCurrency;
@@ -165,6 +169,7 @@ export default function ConverterPage() {
           rate={rate}
           offline={offline}
           cacheDate={rateDate}
+          fetchedAt={fetchedAt}
         />
       </div>
 
