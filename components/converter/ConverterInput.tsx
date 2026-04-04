@@ -2,7 +2,6 @@
 
 import { useCallback, useRef } from "react";
 import { sanitizeNumericInput } from "@/lib/format";
-import SegmentDisplay from "@/components/display/SegmentDisplay";
 
 interface ConverterInputProps {
   value: string;
@@ -34,11 +33,8 @@ export default function ConverterInput({ value, onChange }: ConverterInputProps)
     inputRef.current?.focus();
   };
 
-  const displayValue = value || "0";
-
   return (
-    <div className="relative flex items-center justify-end" onClick={handleTap}>
-      {/* Hidden input for keyboard */}
+    <div className="flex items-center justify-end" onClick={handleTap}>
       <input
         ref={inputRef}
         type="text"
@@ -48,12 +44,10 @@ export default function ConverterInput({ value, onChange }: ConverterInputProps)
         onPaste={handlePaste}
         placeholder="0"
         maxLength={16}
-        className="absolute inset-0 w-full h-full opacity-0 cursor-text"
-        style={{ fontSize: "16px" }}
+        className="w-full text-right text-text-primary tabular-nums tracking-tight font-sans bg-transparent border-none outline-none caret-accent placeholder:text-text-muted"
+        style={{ fontSize: 28, fontWeight: 500, lineHeight: 1.1 }}
         autoComplete="off"
       />
-      {/* Visible segment display */}
-      <SegmentDisplay value={displayValue} size={28} />
     </div>
   );
 }
