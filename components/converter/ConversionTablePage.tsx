@@ -64,7 +64,7 @@ export default function ConversionTablePage({
   }, [onRowTap]);
 
   return (
-    <div className="rounded-[4px] overflow-hidden border border-border-subtle">
+    <div className="rounded-[4px] overflow-hidden border border-border-subtle flex flex-col">
       {/* Header */}
       <div className="flex shrink-0">
         <div className="flex-1 bg-bg-surface py-1.5 flex items-center justify-center">
@@ -93,19 +93,19 @@ export default function ConversionTablePage({
         <button
           key={i}
           onClick={(e) => handleRowClick(i, e)}
-          className="flex border-t border-border-subtle haptic-tap transition-colors ripple-container"
+          className="flex w-full border-t border-border-subtle haptic-tap transition-colors ripple-container"
         >
           {/* Ripples */}
           {ripples.map((r) => (
             <div key={r.id} className="ripple" style={{ left: r.x, top: r.y }} />
           ))}
-          <div className={`flex-1 bg-bg-surface flex items-center justify-center py-px ${evenTint}`}>
+          <div className={`flex-1 bg-bg-surface flex items-center justify-center py-1 ${evenTint}`}>
             <span className={`font-sans text-text-primary ${fontSize} tabular-nums leading-tight`}>
               {leftSymbol}{formatCompact(leftAmount)}
             </span>
           </div>
           <div className="w-px bg-border-subtle" />
-          <div className={`flex-1 bg-bg-raised flex items-center justify-center py-px ${evenTint}`}>
+          <div className={`flex-1 bg-bg-raised flex items-center justify-center py-1 ${evenTint}`}>
             <span className={`font-sans text-text-primary ${fontSize} tabular-nums leading-tight`}>
               {rightSymbol}{formatCompact(rightAmount)}
             </span>
