@@ -222,14 +222,29 @@ export default function ConverterPage() {
           baseCurrency={baseCurrency}
           quoteCurrency={quoteCurrency}
           rate={rate}
-          onRequestWallpaper={(multiplier) => {
-            setWallpaperMultiplier(multiplier);
-            setShowWallpaper(true);
-          }}
-          onRequestTip={() => setShowTip(true)}
-          showTipButton={numericValue > 0 && rate !== null}
           onFlip={handleFlip}
         />
+      </div>
+
+      {/* Action buttons */}
+      <div className="flex gap-2 shrink-0 mb-1">
+        {numericValue > 0 && rate !== null && (
+          <button
+            onClick={() => setShowTip(true)}
+            className="flex-1 h-11 rounded-[4px] border border-border-subtle bg-bg-surface text-text-secondary font-sans text-sm tracking-wider active:bg-bg-raised haptic-tap transition-colors"
+          >
+            Tip Calculator
+          </button>
+        )}
+        <button
+          onClick={() => {
+            setWallpaperMultiplier(10);
+            setShowWallpaper(true);
+          }}
+          className="flex-1 h-11 rounded-[4px] border border-border-subtle bg-bg-surface text-text-secondary font-sans text-sm tracking-wider active:bg-bg-raised haptic-tap transition-colors"
+        >
+          Create Wallpaper
+        </button>
       </div>
 
       {/* Quick glance currencies */}

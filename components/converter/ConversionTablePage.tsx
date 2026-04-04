@@ -36,8 +36,6 @@ export default function ConversionTablePage({
     return { leftAmount, rightAmount };
   });
 
-  const fontSize = multiplier >= 10000 ? "text-[11px]" : multiplier >= 100 ? "text-[13px]" : "text-[15px]";
-
   const handleRowClick = useCallback((i: number) => {
     onRowTap?.(i);
   }, [onRowTap]);
@@ -75,13 +73,13 @@ export default function ConversionTablePage({
           className={`flex w-full border-t border-border-subtle haptic-tap active:bg-accent/5 transition-colors ${rowBg}`}
         >
           <div className="flex-1 flex items-center justify-center py-[11px]">
-            <span className={`font-sans text-text-primary ${fontSize} tabular-nums leading-tight`}>
+            <span className="font-sans text-text-primary text-[13px] tabular-nums leading-tight">
               {leftSymbol}{formatCompact(leftAmount)}
             </span>
           </div>
           <div className="w-px bg-border-subtle" />
           <div className="flex-1 flex items-center justify-center py-[11px]">
-            <span className={`font-sans text-text-primary ${fontSize} tabular-nums leading-tight`}>
+            <span className="font-sans text-text-primary text-[13px] tabular-nums leading-tight">
               {rightSymbol}{formatCompact(rightAmount)}
             </span>
           </div>

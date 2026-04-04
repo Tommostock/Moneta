@@ -8,9 +8,6 @@ interface ConversionTableProps {
   baseCurrency: string;
   quoteCurrency: string;
   rate: number | null;
-  onRequestWallpaper?: (multiplier: number) => void;
-  onRequestTip?: () => void;
-  showTipButton?: boolean;
   onFlip?: () => void;
 }
 
@@ -21,9 +18,6 @@ export default function ConversionTable({
   baseCurrency,
   quoteCurrency,
   rate,
-  onRequestWallpaper,
-  onRequestTip,
-  showTipButton,
   onFlip,
 }: ConversionTableProps) {
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -116,26 +110,6 @@ export default function ConversionTable({
             </button>
           ))}
         </div>
-      </div>
-
-      {/* Action buttons — side by side */}
-      <div className="flex gap-2 shrink-0">
-        {showTipButton && onRequestTip && (
-          <button
-            onClick={onRequestTip}
-            className="flex-1 h-8 rounded-[4px] border border-border-subtle text-text-secondary font-sans text-xs tracking-wider active:bg-bg-raised haptic-tap transition-colors"
-          >
-            Tip Calculator
-          </button>
-        )}
-        {onRequestWallpaper && (
-          <button
-            onClick={() => onRequestWallpaper(MULTIPLIERS[activePage])}
-            className="flex-1 h-8 rounded-[4px] border border-border-subtle text-text-secondary font-sans text-xs tracking-wider active:bg-bg-raised haptic-tap transition-colors"
-          >
-            Create Wallpaper
-          </button>
-        )}
       </div>
 
       {/* Expanded row bottom sheet */}
