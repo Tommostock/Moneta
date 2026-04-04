@@ -99,13 +99,13 @@ export default function ConversionTablePage({
           {ripples.map((r) => (
             <div key={r.id} className="ripple" style={{ left: r.x, top: r.y }} />
           ))}
-          <div className={`flex-1 bg-bg-surface flex items-center justify-center py-2 ${evenTint}`}>
+          <div className={`flex-1 bg-bg-surface flex items-center justify-center py-[11px] ${evenTint}`}>
             <span className={`font-sans text-text-primary ${fontSize} tabular-nums leading-tight`}>
               {leftSymbol}{formatCompact(leftAmount)}
             </span>
           </div>
           <div className="w-px bg-border-subtle" />
-          <div className={`flex-1 bg-bg-raised flex items-center justify-center py-2 ${evenTint}`}>
+          <div className={`flex-1 bg-bg-raised flex items-center justify-center py-[11px] ${evenTint}`}>
             <span className={`font-sans text-text-primary ${fontSize} tabular-nums leading-tight`}>
               {rightSymbol}{formatCompact(rightAmount)}
             </span>
