@@ -41,26 +41,26 @@ export default function ConversionTablePage({
     return { leftAmount, rightAmount };
   });
 
-  const fontSize = multiplier >= 10000 ? "text-[11px]" : multiplier >= 100 ? "text-[13px]" : "text-[15px]";
+  const fontSize = multiplier >= 10000 ? "text-[10px]" : multiplier >= 100 ? "text-[12px]" : "text-[13px]";
 
   return (
     <div className="h-full rounded-[4px] overflow-hidden border border-border-subtle flex flex-col">
       {/* Header */}
       <div className="flex shrink-0">
-        <div className="flex-1 bg-bg-surface py-1.5 flex items-center justify-center">
-          <span className="font-sans text-xs tracking-wider text-negative font-medium">
+        <div className="flex-1 bg-bg-surface py-1 flex items-center justify-center">
+          <span className="font-sans text-[10px] tracking-wider text-negative font-medium">
             {leftCurrency}
           </span>
         </div>
         <button
           onClick={onToggleReverse}
-          className="flex items-center bg-border-subtle px-1.5 haptic-tap active:bg-accent/20 transition-colors"
+          className="flex items-center bg-border-subtle px-1 haptic-tap active:bg-accent/20 transition-colors"
           aria-label="Reverse table direction"
         >
-          <ArrowLeftRight size={10} className="text-text-muted" />
+          <ArrowLeftRight size={9} className="text-text-muted" />
         </button>
-        <div className="flex-1 bg-bg-raised py-1.5 flex items-center justify-center">
-          <span className="font-sans text-xs tracking-wider text-accent font-medium">
+        <div className="flex-1 bg-bg-raised py-1 flex items-center justify-center">
+          <span className="font-sans text-[10px] tracking-wider text-accent font-medium">
             {rightCurrency}
           </span>
         </div>
