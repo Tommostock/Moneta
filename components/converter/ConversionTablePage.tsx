@@ -64,7 +64,7 @@ export default function ConversionTablePage({
   }, [onRowTap]);
 
   return (
-    <div className="h-full rounded-[4px] overflow-hidden border border-border-subtle flex flex-col">
+    <div className="rounded-[4px] overflow-hidden border border-border-subtle">
       {/* Header */}
       <div className="flex shrink-0">
         <div className="flex-1 bg-bg-surface py-1.5 flex items-center justify-center">
@@ -93,7 +93,7 @@ export default function ConversionTablePage({
         <button
           key={i}
           onClick={(e) => handleRowClick(i, e)}
-          className="flex border-t border-border-subtle flex-1 min-h-0 haptic-tap transition-colors ripple-container"
+          className="flex border-t border-border-subtle haptic-tap transition-colors ripple-container"
         >
           {/* Ripples */}
           {ripples.map((r) => (

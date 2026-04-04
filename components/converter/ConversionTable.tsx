@@ -76,15 +76,15 @@ export default function ConversionTable({
   const currentMultiplier = MULTIPLIERS[activePage];
 
   return (
-    <div className="h-full flex flex-col">
+    <div className="flex flex-col">
       {/* Swipeable pages */}
       <div
         ref={scrollRef}
-        className="flex-1 min-h-0 flex overflow-x-auto snap-x snap-mandatory no-scrollbar"
+        className="flex overflow-x-auto snap-x snap-mandatory no-scrollbar"
         onScroll={handleScroll}
       >
         {MULTIPLIERS.map((mult) => (
-          <div key={mult} className="min-w-full h-full snap-start shrink-0">
+          <div key={mult} className="min-w-full snap-start shrink-0">
             <ConversionTablePage
               baseCurrency={baseCurrency}
               quoteCurrency={quoteCurrency}
