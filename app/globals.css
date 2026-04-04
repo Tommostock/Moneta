@@ -102,6 +102,30 @@
 .haptic-tap:active { transform: scale(0.93); }
 .haptic-tap { transition: transform 100ms ease-out; }
 
+/* Ripple effect */
+@keyframes rippleOut {
+  from { transform: translate(-50%, -50%) scale(0); opacity: 0.3; }
+  to { transform: translate(-50%, -50%) scale(4); opacity: 0; }
+}
+.ripple-container { position: relative; overflow: hidden; }
+.ripple-container .ripple {
+  position: absolute;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: var(--color-accent);
+  pointer-events: none;
+  animation: rippleOut 400ms ease-out forwards;
+}
+
+/* Nav tab bounce */
+@keyframes tabBounce {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.15); }
+  100% { transform: scale(1); }
+}
+.animate-tab-bounce { animation: tabBounce 200ms ease-out; }
+
 /* Staggered entrance delays */
 .stagger-1 { animation-delay: 0ms; }
 .stagger-2 { animation-delay: 50ms; }

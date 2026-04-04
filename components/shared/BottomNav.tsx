@@ -76,7 +76,7 @@ export default function BottomNav() {
               {isActive && (
                 <div className="absolute top-0.5 left-1/2 -translate-x-1/2 w-3 h-[3px] bg-accent rounded-full" />
               )}
-              <div className="relative">
+              <div className={`relative ${isActive ? "animate-tab-bounce" : ""}`}>
                 <Icon size={22} />
                 {showBadge && (
                   <span

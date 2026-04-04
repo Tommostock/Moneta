@@ -89,7 +89,7 @@ export default function ExpandedRowSheet({
       <div className={`absolute inset-0 bg-black/50 ${closing ? "animate-overlay-out" : "animate-overlay"}`} />
 
       <div
-        className={`relative bg-bg-primary rounded-t-[12px] max-h-[85dvh] flex flex-col ${
+        className={`relative bg-bg-primary/90 backdrop-blur-xl rounded-t-[12px] max-h-[85dvh] flex flex-col ${
           closing ? "animate-slide-down" : "animate-slide-up"
         }`}
         style={{

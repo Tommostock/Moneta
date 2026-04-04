@@ -185,6 +185,9 @@ export default function RateChart({ data }: RateChartProps) {
             stroke="#D4A843"
             strokeWidth={2}
             fill={`url(#${gradientId})`}
+            animationBegin={0}
+            animationDuration={800}
+            animationEasing="ease-out"
             activeDot={{
               r: 4,
               fill: "#D4A843",

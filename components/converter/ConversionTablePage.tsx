@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useCallback } from "react";
 import { CURRENCY_SYMBOLS } from "@/lib/constants/currencies";
 import { ArrowLeftRight } from "lucide-react";
 
@@ -20,6 +21,12 @@ function formatCompact(value: number): string {
   });
 }
 
+interface Ripple {
+  id: number;
+  x: number;
+  y: number;
+}
+
 export default function ConversionTablePage({
   baseCurrency,
   quoteCurrency,
@@ -34,6 +41,7 @@ export default function ConversionTablePage({
   const leftSymbol = CURRENCY_SYMBOLS[leftCurrency] || leftCurrency;
   const rightSymbol = CURRENCY_SYMBOLS[rightCurrency] || rightCurrency;
   const effectiveRate = reversed ? (1 / rate) : rate;
+  const [ripples, setRipples] = useState<Ripple[]>([]);
 
   const rows = Array.from({ length: 10 }, (_, i) => {
     const leftAmount = (i + 1) * multiplier;
@@ -42,6 +50,18 @@ export default function ConversionTablePage({
   });
 
   const fontSize = multiplier >= 10000 ? "text-[11px]" : multiplier >= 100 ? "text-[13px]" : "text-[15px]";
+
+  const handleRowClick = useCallback((i: number, e: React.MouseEvent | React.TouchEvent) => {
+    const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();
+    const clientX = "touches" in e ? e.touches[0].clientX : (e as React.MouseEvent).clientX;
+    const clientY = "touches" in e ? e.touches[0].clientY : (e as React.MouseEvent).clientY;
+    const x = clientX - rect.left;
+    const y = clientY - rect.top;
+    const id = Date.now();
+    setRipples((prev) => [...prev, { id, x, y }]);
+    setTimeout(() => setRipples((prev) => prev.filter((r) => r.id !== id)), 400);
+    onRowTap?.(i);
+  }, [onRowTap]);
 
   return (
     <div className="h-full rounded-[4px] overflow-hidden border border-border-subtle flex flex-col">
@@ -72,9 +92,13 @@ export default function ConversionTablePage({
         return (
         <button
           key={i}
-          onClick={() => onRowTap?.(i)}
-          className="flex border-t border-border-subtle flex-1 haptic-tap active:bg-accent/5 transition-colors"
+          onClick={(e) => handleRowClick(i, e)}
+          className="flex border-t border-border-subtle flex-1 haptic-tap transition-colors ripple-container"
         >
+          {/* Ripples */}
+          {ripples.filter((r) => true).map((r) => (
+            <div key={r.id} className="ripple" style={{ left: r.x, top: r.y }} />
+          ))}
           <div className={`flex-1 bg-bg-surface flex items-center justify-center ${evenTint}`}>
             <span className={`font-sans text-text-primary ${fontSize} tabular-nums`}>
               {leftSymbol}{formatCompact(leftAmount)}
