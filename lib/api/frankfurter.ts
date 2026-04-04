@@ -10,10 +10,11 @@ import {
 
 const BASE_URL = "https://api.frankfurter.dev/v2";
 const TIMEOUT_MS = 5000;
+const BATCH_TIMEOUT_MS = 15000;
 
-async function fetchWithTimeout(url: string): Promise<Response> {
+async function fetchWithTimeout(url: string, timeoutMs = TIMEOUT_MS): Promise<Response> {
   const controller = new AbortController();
-  const id = setTimeout(() => controller.abort(), TIMEOUT_MS);
+  const id = setTimeout(() => controller.abort(), timeoutMs);
   try {
     const res = await fetch(url, { signal: controller.signal });
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
@@ -155,6 +156,86 @@ export async function fetchRateOnDate(
   } catch {
     return null;
   }
+}
+
+// Batch latest rates for multiple quotes in a single API call
+export async function fetchLatestRatesBatch(
+  base: string,
+  quotes: string[]
+): Promise<Record<string, { rate: number; date: string }>> {
+  const cacheKey = `rates_batch:${base}:${quotes.join(",")}`;
+  const cached = cacheGet<RateResponse[]>(cacheKey);
+
+  if (cached && !isExpired(cached.fetchedAt, RATES_TTL)) {
+    const result: Record<string, { rate: number; date: string }> = {};
+    for (const entry of cached.data) {
+      result[entry.quote] = { rate: entry.rate, date: entry.date };
+    }
+    return result;
+  }
+
+  try {
+    const res = await fetchWithTimeout(
+      `${BASE_URL}/rates?base=${base}&quotes=${quotes.join(",")}`,
+      BATCH_TIMEOUT_MS
+    );
+    const data: RateResponse[] = await res.json();
+    cacheSet(cacheKey, data);
+    const result: Record<string, { rate: number; date: string }> = {};
+    for (const entry of data) {
+      result[entry.quote] = { rate: entry.rate, date: entry.date };
+    }
+    return result;
+  } catch {
+    if (cached) {
+      const result: Record<string, { rate: number; date: string }> = {};
+      for (const entry of cached.data) {
+        result[entry.quote] = { rate: entry.rate, date: entry.date };
+      }
+      return result;
+    }
+    return {};
+  }
+}
+
+// Batch time series for multiple quotes in a single API call
+export async function fetchTimeSeriesBatch(
+  base: string,
+  quotes: string[],
+  from: string,
+  to: string,
+  group?: "week" | "month"
+): Promise<Record<string, TimeSeriesPoint[]>> {
+  const groupKey = group || "daily";
+  const cacheKey = `series_batch:${base}:${quotes.join(",")}:${from}:${to}:${groupKey}`;
+  const cached = cacheGet<RateResponse[]>(cacheKey);
+
+  if (cached && !isExpired(cached.fetchedAt, SERIES_TTL)) {
+    return groupByQuote(cached.data);
+  }
+
+  try {
+    let url = `${BASE_URL}/rates?base=${base}&quotes=${quotes.join(",")}&from=${from}&to=${to}`;
+    if (group) url += `&group=${group}`;
+    const res = await fetchWithTimeout(url, BATCH_TIMEOUT_MS);
+    const data: RateResponse[] = await res.json();
+    cacheSet(cacheKey, data);
+    return groupByQuote(data);
+  } catch {
+    if (cached) {
+      return groupByQuote(cached.data);
+    }
+    return {};
+  }
+}
+
+function groupByQuote(data: RateResponse[]): Record<string, TimeSeriesPoint[]> {
+  const result: Record<string, TimeSeriesPoint[]> = {};
+  for (const entry of data) {
+    if (!result[entry.quote]) result[entry.quote] = [];
+    result[entry.quote].push({ date: entry.date, rate: entry.rate });
+  }
+  return result;
 }
 
 // Full currency list
