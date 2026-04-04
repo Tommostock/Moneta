@@ -159,16 +159,16 @@ export default function ConverterPage() {
       )}
 
       {/* Converter — card with depth shadow */}
-      <div className="relative mb-1 shrink-0" style={{ boxShadow: "0 1px 3px var(--theme-flap-shadow)" }}>
+      <div className="relative mb-1.5 shrink-0" style={{ boxShadow: "0 1px 3px var(--theme-flap-shadow)" }}>
         {/* Source row */}
-        <div className="bg-bg-surface rounded-t-[4px] border border-border-subtle px-3 py-1.5">
+        <div className="bg-bg-surface rounded-t-[4px] border border-border-subtle px-3 py-2">
           <div className="flex items-center gap-2">
             <button
               onClick={() => setPickerTarget("base")}
-              className="flex items-center gap-1.5 min-h-[32px] px-1.5 -ml-1.5 active:bg-bg-raised rounded-[4px] haptic-tap transition-colors duration-100"
+              className="flex items-center gap-1.5 min-h-[36px] px-1.5 -ml-1.5 active:bg-bg-raised rounded-[4px] haptic-tap transition-colors duration-100"
             >
               <CountryFlag currencyCode={baseCurrency} />
-              <span className="font-sans text-text-primary tracking-wider text-sm font-medium">
+              <span className="font-sans text-text-primary tracking-wider text-base font-medium">
                 {baseCurrency}
               </span>
             </button>
@@ -179,14 +179,14 @@ export default function ConverterPage() {
         </div>
 
         {/* Target row */}
-        <div className="bg-bg-surface rounded-b-[4px] border border-t-0 border-border-subtle px-3 py-1.5">
+        <div className="bg-bg-surface rounded-b-[4px] border border-t-0 border-border-subtle px-3 py-2">
           <div className="flex items-center gap-2">
             <button
               onClick={() => setPickerTarget("quote")}
-              className="flex items-center gap-1.5 min-h-[32px] px-1.5 -ml-1.5 active:bg-bg-raised rounded-[4px] haptic-tap transition-colors duration-100"
+              className="flex items-center gap-1.5 min-h-[36px] px-1.5 -ml-1.5 active:bg-bg-raised rounded-[4px] haptic-tap transition-colors duration-100"
             >
               <CountryFlag currencyCode={quoteCurrency} />
-              <span className="font-sans text-text-primary tracking-wider text-sm font-medium">
+              <span className="font-sans text-text-primary tracking-wider text-base font-medium">
                 {quoteCurrency}
               </span>
             </button>
@@ -196,7 +196,7 @@ export default function ConverterPage() {
                 className="flex items-center active:opacity-70 haptic-tap transition-opacity"
                 aria-label="Copy converted amount"
               >
-                <SegmentDisplay value={displayResult} size={24} flash />
+                <SegmentDisplay value={displayResult} size={28} flash />
               </button>
               {showCopied && (
                 <span className="absolute -bottom-5 right-0 text-xs text-accent font-sans animate-fade-in">
@@ -214,10 +214,10 @@ export default function ConverterPage() {
       </div>
 
       {/* Separator */}
-      <div className="border-t border-border-subtle mb-0.5 shrink-0" />
+      <div className="border-t border-border-subtle mb-1 shrink-0" />
 
-      {/* Conversion table */}
-      <div className="shrink-0 mb-0.5">
+      {/* Conversion table — grows to fill available space */}
+      <div className="flex-1 min-h-0 mb-1">
         <ConversionTable
           baseCurrency={baseCurrency}
           quoteCurrency={quoteCurrency}

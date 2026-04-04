@@ -62,7 +62,7 @@ export default function MultiCurrencyGlance({
         return (
           <div
             key={quote}
-            className="flex-1 bg-bg-surface rounded-[4px] border border-border-subtle px-2 py-0.5 flex items-center gap-1.5"
+            className="flex-1 bg-bg-surface rounded-[4px] border border-border-subtle px-2 py-1 flex items-center gap-1.5"
           >
             <CountryFlag currencyCode={quote} />
             <span className="font-sans text-text-muted text-[10px] tracking-wider">

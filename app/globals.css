@@ -150,17 +150,27 @@ input[inputmode="decimal"] {
   animation: slideInFromLeft 200ms ease-out both;
 }
 
-/* Expansion sheet slide up */
+/* Sheet slide up/down */
 @keyframes slideUp {
   from { transform: translateY(100%); }
   to { transform: translateY(0); }
+}
+@keyframes slideDown {
+  from { transform: translateY(0); opacity: 1; }
+  to { transform: translateY(100%); opacity: 0; }
 }
 @keyframes fadeOverlay {
   from { opacity: 0; }
   to { opacity: 1; }
 }
+@keyframes fadeOverlayOut {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
 .animate-slide-up { animation: slideUp 250ms ease-out both; }
+.animate-slide-down { animation: slideDown 250ms ease-in both; }
 .animate-overlay { animation: fadeOverlay 200ms ease-out both; }
+.animate-overlay-out { animation: fadeOverlayOut 200ms ease-in both; }
 
 /* Hide scrollbar for horizontal scroll areas */
 .no-scrollbar::-webkit-scrollbar { display: none; }

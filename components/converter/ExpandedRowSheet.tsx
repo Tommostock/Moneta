@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useRef, useState, useCallback } from "react";
 import { CURRENCY_SYMBOLS } from "@/lib/constants/currencies";
 import { X } from "lucide-react";
 import CountryFlag from "@/components/shared/CountryFlag";
@@ -49,6 +49,14 @@ export default function ExpandedRowSheet({
 
   const rangeText = `${leftSymbol}${formatValue(baseStart)} - ${leftSymbol}${formatValue(baseEnd)}`;
 
+  // Dismiss animation state
+  const [closing, setClosing] = useState(false);
+
+  const handleDismiss = useCallback(() => {
+    setClosing(true);
+    setTimeout(onClose, 250);
+  }, [onClose]);
+
   // Pull-down to close
   const [dragY, setDragY] = useState(0);
   const startY = useRef(0);
@@ -62,29 +70,32 @@ export default function ExpandedRowSheet({
   const handleTouchMove = (e: React.TouchEvent) => {
     if (!dragging.current) return;
     const dy = e.touches[0].clientY - startY.current;
-    if (dy > 0) {
-      setDragY(dy);
-    }
+    if (dy > 0) setDragY(dy);
   };
 
   const handleTouchEnd = () => {
     dragging.current = false;
     if (dragY > 80) {
-      onClose();
+      handleDismiss();
     }
     setDragY(0);
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex flex-col justify-end" onClick={onClose}>
-      <div className="absolute inset-0 bg-black/50 animate-overlay" />
+    <div
+      className="fixed inset-0 z-50 flex flex-col justify-end"
+      onClick={handleDismiss}
+    >
+      <div className={`absolute inset-0 bg-black/50 ${closing ? "animate-overlay-out" : "animate-overlay"}`} />
 
       <div
-        className="relative bg-bg-primary rounded-t-[12px] animate-slide-up max-h-[85dvh] flex flex-col"
+        className={`relative bg-bg-primary rounded-t-[12px] max-h-[85dvh] flex flex-col ${
+          closing ? "animate-slide-down" : "animate-slide-up"
+        }`}
         style={{
           paddingBottom: "env(safe-area-inset-bottom, 8px)",
-          transform: dragY > 0 ? `translateY(${dragY}px)` : undefined,
-          transition: dragY === 0 ? "transform 200ms ease-out" : "none",
+          transform: dragY > 0 && !closing ? `translateY(${dragY}px)` : undefined,
+          transition: dragY === 0 && !closing ? "transform 200ms ease-out" : "none",
         }}
         onClick={(e) => e.stopPropagation()}
         onTouchStart={handleTouchStart}
@@ -110,12 +121,10 @@ export default function ExpandedRowSheet({
                 {rightCurrency}
               </span>
             </div>
-            <p className="text-text-muted font-sans text-xs">
-              {rangeText}
-            </p>
+            <p className="text-text-muted font-sans text-xs">{rangeText}</p>
           </div>
           <button
-            onClick={onClose}
+            onClick={handleDismiss}
             className="min-w-[44px] min-h-[44px] flex items-center justify-center -mr-2 active:opacity-70 haptic-tap"
             aria-label="Close"
           >
@@ -128,15 +137,11 @@ export default function ExpandedRowSheet({
           <div className="rounded-[4px] overflow-hidden border border-border-subtle">
             <div className="flex bg-bg-surface">
               <div className="flex-1 py-1.5 flex items-center justify-center">
-                <span className="font-sans text-[10px] tracking-widest text-text-muted uppercase">
-                  {leftCurrency}
-                </span>
+                <span className="font-sans text-[10px] tracking-widest text-text-muted uppercase">{leftCurrency}</span>
               </div>
               <div className="w-px bg-border-subtle" />
               <div className="flex-1 py-1.5 flex items-center justify-center">
-                <span className="font-sans text-[10px] tracking-widest text-text-muted uppercase">
-                  {rightCurrency}
-                </span>
+                <span className="font-sans text-[10px] tracking-widest text-text-muted uppercase">{rightCurrency}</span>
               </div>
             </div>
 
@@ -152,17 +157,13 @@ export default function ExpandedRowSheet({
                   }`}
                 >
                   <div className="flex-1 py-2.5 flex items-center justify-center">
-                    <span className={`font-sans tabular-nums text-sm ${
-                      highlight ? "text-accent font-medium" : "text-text-primary"
-                    }`}>
+                    <span className={`font-sans tabular-nums text-sm ${highlight ? "text-accent font-medium" : "text-text-primary"}`}>
                       {leftSymbol}{formatValue(leftAmount)}
                     </span>
                   </div>
                   <div className="w-px bg-border-subtle" />
                   <div className="flex-1 py-2.5 flex items-center justify-center">
-                    <span className={`font-sans tabular-nums text-sm ${
-                      highlight ? "text-accent font-medium" : "text-text-primary"
-                    }`}>
+                    <span className={`font-sans tabular-nums text-sm ${highlight ? "text-accent font-medium" : "text-text-primary"}`}>
                       {rightSymbol}{formatValue(rightAmount)}
                     </span>
                   </div>

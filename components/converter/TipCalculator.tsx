@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useRef, useState, useCallback } from "react";
 import { X } from "lucide-react";
 import { CURRENCY_SYMBOLS } from "@/lib/constants/currencies";
 
@@ -30,10 +30,18 @@ export default function TipCalculator({
   homeCurrency,
   rate,
 }: TipCalculatorProps) {
-  // Pull-down to close
+  const [closing, setClosing] = useState(false);
   const [dragY, setDragY] = useState(0);
   const startY = useRef(0);
   const isDragging = useRef(false);
+
+  const handleDismiss = useCallback(() => {
+    setClosing(true);
+    setTimeout(() => {
+      setClosing(false);
+      onClose();
+    }, 250);
+  }, [onClose]);
 
   const handleTouchStart = (e: React.TouchEvent) => {
     startY.current = e.touches[0].clientY;
@@ -49,7 +57,7 @@ export default function TipCalculator({
   const handleTouchEnd = () => {
     isDragging.current = false;
     if (dragY > 80) {
-      onClose();
+      handleDismiss();
     }
     setDragY(0);
   };
@@ -60,14 +68,19 @@ export default function TipCalculator({
   const homeSymbol = CURRENCY_SYMBOLS[homeCurrency] || homeCurrency;
 
   return (
-    <div className="fixed inset-0 z-50 flex flex-col justify-end" onClick={onClose}>
-      <div className="absolute inset-0 bg-black/50 animate-overlay" />
+    <div
+      className="fixed inset-0 z-50 flex flex-col justify-end"
+      onClick={handleDismiss}
+    >
+      <div className={`absolute inset-0 bg-black/50 ${closing ? "animate-overlay-out" : "animate-overlay"}`} />
       <div
-        className="relative bg-bg-primary rounded-t-[12px] animate-slide-up"
+        className={`relative bg-bg-primary rounded-t-[12px] ${
+          closing ? "animate-slide-down" : "animate-slide-up"
+        }`}
         style={{
           paddingBottom: "env(safe-area-inset-bottom, 8px)",
-          transform: dragY > 0 ? `translateY(${dragY}px)` : undefined,
-          transition: dragY === 0 ? "transform 200ms ease-out" : "none",
+          transform: dragY > 0 && !closing ? `translateY(${dragY}px)` : undefined,
+          transition: dragY === 0 && !closing ? "transform 200ms ease-out" : "none",
         }}
         onClick={(e) => e.stopPropagation()}
         onTouchStart={handleTouchStart}
@@ -83,7 +96,7 @@ export default function TipCalculator({
             Tip on {quoteSymbol}{formatVal(amount)}
           </p>
           <button
-            onClick={onClose}
+            onClick={handleDismiss}
             className="min-w-[44px] min-h-[44px] flex items-center justify-center -mr-2 active:opacity-70 haptic-tap"
             aria-label="Close"
           >

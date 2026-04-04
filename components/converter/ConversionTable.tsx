@@ -76,15 +76,15 @@ export default function ConversionTable({
   const currentMultiplier = MULTIPLIERS[activePage];
 
   return (
-    <div className="flex flex-col">
+    <div className="h-full flex flex-col">
       {/* Swipeable pages */}
       <div
         ref={scrollRef}
-        className="flex overflow-x-auto snap-x snap-mandatory no-scrollbar"
+        className="flex-1 min-h-0 flex overflow-x-auto snap-x snap-mandatory no-scrollbar"
         onScroll={handleScroll}
       >
         {MULTIPLIERS.map((mult) => (
-          <div key={mult} className="min-w-full snap-start shrink-0">
+          <div key={mult} className="min-w-full h-full snap-start shrink-0">
             <ConversionTablePage
               baseCurrency={baseCurrency}
               quoteCurrency={quoteCurrency}
@@ -99,7 +99,7 @@ export default function ConversionTable({
       </div>
 
       {/* Dots with sliding indicator + multiplier label */}
-      <div className="flex items-center justify-center gap-1.5 py-0.5 shrink-0">
+      <div className="flex items-center justify-center gap-1.5 py-1 shrink-0">
         <div className="relative flex items-center gap-1.5">
           <div
             className="absolute w-1.5 h-1.5 rounded-full bg-accent transition-transform duration-200 ease-out"
@@ -126,7 +126,7 @@ export default function ConversionTable({
         {showTipButton && onRequestTip && (
           <button
             onClick={onRequestTip}
-            className="flex-1 h-7 rounded-[4px] border border-border-subtle text-text-secondary font-sans text-[11px] tracking-wider active:bg-bg-raised haptic-tap transition-colors"
+            className="flex-1 h-8 rounded-[4px] border border-border-subtle text-text-secondary font-sans text-xs tracking-wider active:bg-bg-raised haptic-tap transition-colors"
           >
             Tip Calculator
           </button>
@@ -134,7 +134,7 @@ export default function ConversionTable({
         {onRequestWallpaper && (
           <button
             onClick={() => onRequestWallpaper(MULTIPLIERS[activePage])}
-            className="flex-1 h-7 rounded-[4px] border border-border-subtle text-text-secondary font-sans text-[11px] tracking-wider active:bg-bg-raised haptic-tap transition-colors"
+            className="flex-1 h-8 rounded-[4px] border border-border-subtle text-text-secondary font-sans text-xs tracking-wider active:bg-bg-raised haptic-tap transition-colors"
           >
             Create Wallpaper
           </button>
