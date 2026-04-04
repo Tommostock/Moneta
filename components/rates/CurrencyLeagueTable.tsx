@@ -66,8 +66,8 @@ export default function CurrencyLeagueTable({
         }
       }
 
-      // Sort by % change descending (strongest appreciation vs base first)
-      valid.sort((a, b) => b.change - a.change);
+      // Sort by % change ascending (cheapest to buy first — best value for base)
+      valid.sort((a, b) => a.change - b.change);
       setEntries(valid);
       setLoading(false);
     }
@@ -98,7 +98,11 @@ export default function CurrencyLeagueTable({
   }
 
   return (
-    <div className="rounded-[4px] overflow-hidden border border-border-subtle">
+    <div>
+      <p className="text-text-secondary font-sans text-xs mb-2">
+        Currencies that have gotten cheaper for {base} to buy, ranked from best value down.
+      </p>
+      <div className="rounded-[4px] overflow-hidden border border-border-subtle">
       {/* Header */}
       <div className="flex items-center px-3 py-2 bg-bg-surface text-text-muted font-sans text-xs tracking-wider uppercase">
         <span className="w-8">#</span>
@@ -145,6 +149,7 @@ export default function CurrencyLeagueTable({
           </div>
         );
       })}
+      </div>
     </div>
   );
 }

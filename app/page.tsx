@@ -143,7 +143,7 @@ export default function ConverterPage() {
   return (
     <div className="h-[100dvh] px-3 pt-2 flex flex-col" style={{ paddingBottom: "calc(env(safe-area-inset-bottom, 0px) + 56px)" }}>
       {/* Header + favourite star */}
-      <div className="mb-1 flex items-center justify-between shrink-0">
+      <div className="mb-2 flex items-center justify-between shrink-0">
         <h1 className="text-text-muted text-xs font-sans tracking-widest uppercase">
           MONETA
         </h1>
@@ -161,7 +161,7 @@ export default function ConverterPage() {
 
       {/* Favourite pairs */}
       {settings.favouritePairs.length > 0 && (
-        <div className="mb-1 shrink-0">
+        <div className="mb-2 shrink-0">
           <FavouritePairs
             pairs={settings.favouritePairs}
             currentBase={baseCurrency}
