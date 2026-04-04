@@ -67,7 +67,7 @@ export default function ConversionTablePage({
 
       {/* Rows */}
       {rows.map(({ leftAmount, rightAmount }, i) => {
-        const rowBg = i % 2 === 0 ? "bg-bg-surface" : "bg-bg-raised";
+        const rowBg = i % 2 === 0 ? "bg-bg-primary" : "bg-bg-raised";
         return (
         <button
           key={i}

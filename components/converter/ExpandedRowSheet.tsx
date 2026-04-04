@@ -153,7 +153,7 @@ export default function ExpandedRowSheet({
                 <div
                   key={i}
                   className={`flex border-t border-border-subtle ${
-                    highlight ? "bg-accent/5" : i % 2 === 0 ? "bg-bg-surface" : "bg-bg-raised"
+                    highlight ? "bg-accent/5" : i % 2 === 0 ? "bg-bg-primary" : "bg-bg-raised"
                   }`}
                 >
                   <div className="flex-1 py-2.5 flex items-center justify-center">
