@@ -226,8 +226,18 @@ export default function ConverterPage() {
         />
       </div>
 
+      {/* Quick glance currencies */}
+      <div className="shrink-0 mb-1">
+        <MultiCurrencyGlance
+          base={settings.homeCurrency}
+          amount={1}
+          excludeCurrency=""
+          currencies={settings.glanceCurrencies}
+        />
+      </div>
+
       {/* Action buttons */}
-      <div className="flex gap-2 shrink-0 mb-1">
+      <div className="flex gap-2 shrink-0">
         {numericValue > 0 && rate !== null && (
           <button
             onClick={() => setShowTip(true)}
@@ -245,16 +255,6 @@ export default function ConverterPage() {
         >
           Create Wallpaper
         </button>
-      </div>
-
-      {/* Quick glance currencies */}
-      <div className="shrink-0">
-        <MultiCurrencyGlance
-          base={settings.homeCurrency}
-          amount={1}
-          excludeCurrency=""
-          currencies={settings.glanceCurrencies}
-        />
       </div>
 
       {/* Currency Picker */}
