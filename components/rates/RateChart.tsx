@@ -111,9 +111,18 @@ export default function RateChart({ data }: RateChartProps) {
   }
 
   const { high, low } = findHighLow(data);
+  // Find indices for ReferenceDot positioning (more reliable than date strings)
+  const highIndex = data.findIndex((d) => d.date === high.date);
+  const lowIndex = data.findIndex((d) => d.date === low.date);
   // Determine if high dot is in the top or bottom half of the chart to position label
   const rates = data.map((d) => d.rate);
-  const mid = (Math.min(...rates) + Math.max(...rates)) / 2;
+  const minRate = Math.min(...rates);
+  const maxRate = Math.max(...rates);
+  const mid = (minRate + maxRate) / 2;
+  // Add padding to domain so dots/labels near edges aren't clipped
+  const range = maxRate - minRate || 0.001;
+  const domainPadding = range * 0.08;
+  const yDomain = [minRate - domainPadding, maxRate + domainPadding];
 
   const formatXAxis = (dateStr: string) => {
     const d = new Date(dateStr);
@@ -131,7 +140,7 @@ export default function RateChart({ data }: RateChartProps) {
       <ResponsiveContainer width="100%" height="100%">
         <AreaChart
           data={data}
-          margin={{ top: 20, right: 10, left: 0, bottom: 0 }}
+          margin={{ top: 24, right: 10, left: 0, bottom: 0 }}
           onMouseMove={handleMouseMove}
           onMouseLeave={handleMouseLeave}
         >
@@ -164,7 +173,7 @@ export default function RateChart({ data }: RateChartProps) {
             axisLine={false}
             tickLine={false}
             width={65}
-            domain={["auto", "auto"]}
+            domain={yDomain}
           />
           <Tooltip
             content={<CrosshairTooltip />}
@@ -196,35 +205,41 @@ export default function RateChart({ data }: RateChartProps) {
             }}
           />
           {/* High dot with label */}
-          <ReferenceDot
-            x={high.date}
-            y={high.rate}
-            r={4}
-            fill="#6BBF6B"
-            stroke="var(--theme-bg-primary)"
-            strokeWidth={2}
-          >
-            <DotLabel
-              value={formatRate(high.rate)}
-              color="#6BBF6B"
-              position={high.rate >= mid ? "above" : "below"}
-            />
-          </ReferenceDot>
+          {highIndex >= 0 && (
+            <ReferenceDot
+              x={data[highIndex].date}
+              y={data[highIndex].rate}
+              r={4}
+              fill="#6BBF6B"
+              stroke="var(--theme-bg-primary)"
+              strokeWidth={2}
+              ifOverflow="visible"
+            >
+              <DotLabel
+                value={formatRate(high.rate)}
+                color="#6BBF6B"
+                position={high.rate >= mid ? "above" : "below"}
+              />
+            </ReferenceDot>
+          )}
           {/* Low dot with label */}
-          <ReferenceDot
-            x={low.date}
-            y={low.rate}
-            r={4}
-            fill="#D45B5B"
-            stroke="var(--theme-bg-primary)"
-            strokeWidth={2}
-          >
-            <DotLabel
-              value={formatRate(low.rate)}
-              color="#D45B5B"
-              position={low.rate <= mid ? "below" : "above"}
-            />
-          </ReferenceDot>
+          {lowIndex >= 0 && (
+            <ReferenceDot
+              x={data[lowIndex].date}
+              y={data[lowIndex].rate}
+              r={4}
+              fill="#D45B5B"
+              stroke="var(--theme-bg-primary)"
+              strokeWidth={2}
+              ifOverflow="visible"
+            >
+              <DotLabel
+                value={formatRate(low.rate)}
+                color="#D45B5B"
+                position={low.rate <= mid ? "below" : "above"}
+              />
+            </ReferenceDot>
+          )}
         </AreaChart>
       </ResponsiveContainer>
     </div>
