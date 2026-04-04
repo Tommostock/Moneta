@@ -53,7 +53,7 @@ export default function ConverterInput({ value, onChange }: ConverterInputProps)
         autoComplete="off"
       />
       {/* Visible segment display */}
-      <SegmentDisplay value={displayValue} size={28} />
+      <SegmentDisplay value={displayValue} size={24} />
     </div>
   );
 }
