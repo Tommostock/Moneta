@@ -34,6 +34,8 @@ const periodLabels: Record<Period, string> = {
   "90D": "90 days",
   "6M": "6 months",
   "1Y": "1 year",
+  "5Y": "5 years",
+  "10Y": "10 years",
 };
 
 function formatFriendlyRate(base: string, quote: string, rate: number): string {
