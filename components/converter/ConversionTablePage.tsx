@@ -10,6 +10,7 @@ interface ConversionTablePageProps {
   rate: number;
   multiplier: number;
   onToggleReverse?: () => void;
+  flipRotation?: number;
   onRowTap?: (rowIndex: number) => void;
 }
 
@@ -26,6 +27,7 @@ export default function ConversionTablePage({
   rate,
   multiplier,
   onToggleReverse,
+  flipRotation = 0,
   onRowTap,
 }: ConversionTablePageProps) {
   const leftSymbol = CURRENCY_SYMBOLS[baseCurrency] || baseCurrency;
@@ -60,7 +62,14 @@ export default function ConversionTablePage({
           className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-10 w-8 h-8 flex items-center justify-center bg-border-subtle rounded-[4px] haptic-tap active:bg-accent/20 transition-colors"
           aria-label="Reverse table direction"
         >
-          <ArrowLeftRight size={14} className="text-text-muted" />
+          <div
+            style={{
+              transform: `rotate(${flipRotation}deg)`,
+              transition: "transform 300ms ease-out",
+            }}
+          >
+            <ArrowLeftRight size={14} className="text-text-muted" />
+          </div>
         </button>
       </div>
 

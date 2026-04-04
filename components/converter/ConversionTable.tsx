@@ -9,6 +9,7 @@ interface ConversionTableProps {
   quoteCurrency: string;
   rate: number | null;
   onFlip?: () => void;
+  flipRotation?: number;
 }
 
 const MULTIPLIERS = [1, 10, 100, 1000, 10000, 100000, 1000000];
@@ -19,6 +20,7 @@ export default function ConversionTable({
   quoteCurrency,
   rate,
   onFlip,
+  flipRotation = 0,
 }: ConversionTableProps) {
   const scrollRef = useRef<HTMLDivElement>(null);
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -86,6 +88,7 @@ export default function ConversionTable({
               rate={rate}
               multiplier={mult}
               onToggleReverse={onFlip}
+              flipRotation={flipRotation}
               onRowTap={(rowIndex) => setExpandedRow(rowIndex)}
             />
           </div>

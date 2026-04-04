@@ -36,6 +36,7 @@ export default function ConverterPage() {
   const [showWallpaper, setShowWallpaper] = useState(false);
   const [wallpaperMultiplier, setWallpaperMultiplier] = useState(10);
   const [showTip, setShowTip] = useState(false);
+  const [flipRotation, setFlipRotation] = useState(0);
 
   // Wrap setters to persist converter state across tab switches
   const setBaseCurrency = useCallback((code: string) => {
@@ -95,12 +96,13 @@ export default function ConverterPage() {
       : "0.00";
 
   const handleFlip = useCallback(() => {
+    setFlipRotation((r) => r + 180);
     setBaseCurrency(quoteCurrency);
     setQuoteCurrency(baseCurrency);
     if (convertedAmount !== null && convertedAmount > 0) {
       setInputValue(convertedAmount.toFixed(2));
     }
-  }, [baseCurrency, quoteCurrency, convertedAmount]);
+  }, [baseCurrency, quoteCurrency, convertedAmount, setBaseCurrency, setQuoteCurrency]);
 
   const handleToggleFavourite = useCallback(() => {
     if (isFavourite) {
@@ -223,7 +225,7 @@ export default function ConverterPage() {
 
         {/* Flip button */}
         <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-10">
-          <FlipButton onFlip={handleFlip} />
+          <FlipButton onFlip={handleFlip} rotation={flipRotation} />
         </div>
       </div>
 
@@ -234,6 +236,7 @@ export default function ConverterPage() {
           quoteCurrency={quoteCurrency}
           rate={rate}
           onFlip={handleFlip}
+          flipRotation={flipRotation}
         />
       </div>
 
