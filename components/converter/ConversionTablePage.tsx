@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useCallback } from "react";
 import { CURRENCY_SYMBOLS } from "@/lib/constants/currencies";
 import { ArrowLeftRight } from "lucide-react";
 
@@ -9,7 +9,6 @@ interface ConversionTablePageProps {
   quoteCurrency: string;
   rate: number;
   multiplier: number;
-  reversed?: boolean;
   onToggleReverse?: () => void;
   onRowTap?: (rowIndex: number) => void;
 }
@@ -21,45 +20,25 @@ function formatCompact(value: number): string {
   });
 }
 
-interface Ripple {
-  id: number;
-  x: number;
-  y: number;
-}
-
 export default function ConversionTablePage({
   baseCurrency,
   quoteCurrency,
   rate,
   multiplier,
-  reversed = false,
   onToggleReverse,
   onRowTap,
 }: ConversionTablePageProps) {
-  const leftCurrency = reversed ? quoteCurrency : baseCurrency;
-  const rightCurrency = reversed ? baseCurrency : quoteCurrency;
-  const leftSymbol = CURRENCY_SYMBOLS[leftCurrency] || leftCurrency;
-  const rightSymbol = CURRENCY_SYMBOLS[rightCurrency] || rightCurrency;
-  const effectiveRate = reversed ? (1 / rate) : rate;
-  const [ripples, setRipples] = useState<Ripple[]>([]);
-
+  const leftSymbol = CURRENCY_SYMBOLS[baseCurrency] || baseCurrency;
+  const rightSymbol = CURRENCY_SYMBOLS[quoteCurrency] || quoteCurrency;
   const rows = Array.from({ length: 10 }, (_, i) => {
     const leftAmount = (i + 1) * multiplier;
-    const rightAmount = leftAmount * effectiveRate;
+    const rightAmount = leftAmount * rate;
     return { leftAmount, rightAmount };
   });
 
   const fontSize = multiplier >= 10000 ? "text-[11px]" : multiplier >= 100 ? "text-[13px]" : "text-[15px]";
 
-  const handleRowClick = useCallback((i: number, e: React.MouseEvent | React.TouchEvent) => {
-    const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();
-    const clientX = "touches" in e ? e.touches[0].clientX : (e as React.MouseEvent).clientX;
-    const clientY = "touches" in e ? e.touches[0].clientY : (e as React.MouseEvent).clientY;
-    const x = clientX - rect.left;
-    const y = clientY - rect.top;
-    const id = Date.now();
-    setRipples((prev) => [...prev, { id, x, y }]);
-    setTimeout(() => setRipples((prev) => prev.filter((r) => r.id !== id)), 400);
+  const handleRowClick = useCallback((i: number) => {
     onRowTap?.(i);
   }, [onRowTap]);
 
@@ -69,7 +48,7 @@ export default function ConversionTablePage({
       <div className="flex shrink-0">
         <div className="flex-1 bg-bg-surface py-1.5 flex items-center justify-center">
           <span className="font-sans text-xs tracking-wider text-negative font-medium">
-            {leftCurrency}
+            {baseCurrency}
           </span>
         </div>
         <button
@@ -81,7 +60,7 @@ export default function ConversionTablePage({
         </button>
         <div className="flex-1 bg-bg-raised py-1.5 flex items-center justify-center">
           <span className="font-sans text-xs tracking-wider text-accent font-medium">
-            {rightCurrency}
+            {quoteCurrency}
           </span>
         </div>
       </div>
@@ -92,13 +71,9 @@ export default function ConversionTablePage({
         return (
         <button
           key={i}
-          onClick={(e) => handleRowClick(i, e)}
-          className="flex w-full border-t border-border-subtle haptic-tap transition-colors ripple-container"
+          onClick={() => handleRowClick(i)}
+          className="flex w-full border-t border-border-subtle haptic-tap active:bg-accent/5 transition-colors"
         >
-          {/* Ripples */}
-          {ripples.map((r) => (
-            <div key={r.id} className="ripple" style={{ left: r.x, top: r.y }} />
-          ))}
           <div className={`flex-1 bg-bg-surface flex items-center justify-center py-[11px] ${evenTint}`}>
             <span className={`font-sans text-text-primary ${fontSize} tabular-nums leading-tight`}>
               {leftSymbol}{formatCompact(leftAmount)}

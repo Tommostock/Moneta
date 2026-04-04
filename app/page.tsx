@@ -228,6 +228,7 @@ export default function ConverterPage() {
           }}
           onRequestTip={() => setShowTip(true)}
           showTipButton={numericValue > 0 && rate !== null}
+          onFlip={handleFlip}
         />
       </div>
 

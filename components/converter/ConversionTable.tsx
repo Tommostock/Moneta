@@ -11,6 +11,7 @@ interface ConversionTableProps {
   onRequestWallpaper?: (multiplier: number) => void;
   onRequestTip?: () => void;
   showTipButton?: boolean;
+  onFlip?: () => void;
 }
 
 const MULTIPLIERS = [1, 10, 100, 1000, 10000, 100000, 1000000];
@@ -23,11 +24,11 @@ export default function ConversionTable({
   onRequestWallpaper,
   onRequestTip,
   showTipButton,
+  onFlip,
 }: ConversionTableProps) {
   const scrollRef = useRef<HTMLDivElement>(null);
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [activePage, setActivePage] = useState(0);
-  const [reversed, setReversed] = useState(false);
   const [expandedRow, setExpandedRow] = useState<number | null>(null);
 
   const calcPage = useCallback(() => {
@@ -90,8 +91,7 @@ export default function ConversionTable({
               quoteCurrency={quoteCurrency}
               rate={rate}
               multiplier={mult}
-              reversed={reversed}
-              onToggleReverse={() => setReversed(!reversed)}
+              onToggleReverse={onFlip}
               onRowTap={(rowIndex) => setExpandedRow(rowIndex)}
             />
           </div>
@@ -156,7 +156,7 @@ export default function ConversionTable({
           rate={rate}
           multiplier={currentMultiplier}
           rowIndex={expandedRow}
-          reversed={reversed}
+          reversed={false}
           onClose={() => setExpandedRow(null)}
         />
       )}
