@@ -250,9 +250,9 @@ export default function ConverterPage() {
       {/* Quick glance currencies */}
       <div className="shrink-0">
         <MultiCurrencyGlance
-          base={baseCurrency}
-          amount={numericValue}
-          excludeCurrency={quoteCurrency}
+          base={settings.homeCurrency}
+          amount={1}
+          excludeCurrency=""
           currencies={settings.glanceCurrencies}
         />
       </div>
