@@ -173,7 +173,7 @@ export default function ConverterPage() {
       )}
 
       {/* Converter — card with depth shadow */}
-      <div className="relative mb-1.5 shrink-0" style={{ boxShadow: "0 1px 3px var(--theme-flap-shadow)" }}>
+      <div className="relative mb-2 shrink-0" style={{ boxShadow: "0 1px 3px var(--theme-flap-shadow)" }}>
         {/* Source row */}
         <div className="bg-bg-surface rounded-t-[4px] border border-border-subtle px-3 py-2">
           <div className="flex items-center gap-2">
@@ -227,11 +227,8 @@ export default function ConverterPage() {
         </div>
       </div>
 
-      {/* Separator */}
-      <div className="border-t border-border-subtle mb-1 shrink-0" />
-
       {/* Conversion table */}
-      <div className="shrink-0 mb-1">
+      <div className="shrink-0 mb-2">
         <ConversionTable
           baseCurrency={baseCurrency}
           quoteCurrency={quoteCurrency}
@@ -241,7 +238,7 @@ export default function ConverterPage() {
       </div>
 
       {/* Quick glance currencies */}
-      <div className="shrink-0 mb-1">
+      <div className="shrink-0 mb-2">
         <MultiCurrencyGlance
           base={settings.homeCurrency}
           amount={1}

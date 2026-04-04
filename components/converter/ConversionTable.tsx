@@ -93,7 +93,7 @@ export default function ConversionTable({
       </div>
 
       {/* Multiplier tabs */}
-      <div className="py-1.5 shrink-0">
+      <div className="pt-2 shrink-0">
         <div className="flex rounded-[4px] border border-border-subtle overflow-hidden">
           {MULTIPLIER_LABELS.map((label, i) => (
             <button
