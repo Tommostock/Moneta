@@ -98,34 +98,24 @@ export default function ConversionTable({
         ))}
       </div>
 
-      {/* Pill indicator + multiplier label */}
-      <div className="flex items-center justify-center gap-1.5 py-1 shrink-0">
-        <div className="relative flex items-center gap-1">
-          {/* Sliding pill */}
-          <div
-            className="absolute h-1.5 bg-accent rounded-full transition-all duration-300 ease-out"
-            style={{
-              width: 10,
-              left: activePage * 10,
-            }}
-          />
-          {/* Background dots */}
-          {MULTIPLIERS.map((_, i) => (
+      {/* Multiplier tabs */}
+      <div className="flex items-center justify-center py-1.5 shrink-0">
+        <div className="flex rounded-[4px] border border-border-subtle overflow-hidden">
+          {MULTIPLIER_LABELS.map((label, i) => (
             <button
               key={i}
               onClick={() => handleDotClick(i)}
-              className="w-[10px] h-1.5 flex items-center justify-center"
-              aria-label={`Page ${i + 1}`}
+              className={`px-2 py-1 font-sans text-[10px] tracking-wide transition-colors duration-200 haptic-tap ${
+                i === activePage
+                  ? "bg-accent text-bg-primary font-medium"
+                  : "bg-bg-surface text-text-muted active:bg-bg-raised"
+              } ${i > 0 ? "border-l border-border-subtle" : ""}`}
+              aria-label={`Show ${label} multiplier`}
             >
-              <div className={`w-1.5 h-1.5 rounded-full transition-opacity duration-200 ${
-                i === activePage ? "opacity-0" : "bg-text-muted opacity-100"
-              }`} />
+              {label}
             </button>
           ))}
         </div>
-        <span className="ml-1 text-text-muted font-sans text-[10px]">
-          {MULTIPLIER_LABELS[activePage]}
-        </span>
       </div>
 
       {/* Action buttons — side by side */}
