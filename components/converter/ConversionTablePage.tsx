@@ -93,20 +93,20 @@ export default function ConversionTablePage({
         <button
           key={i}
           onClick={(e) => handleRowClick(i, e)}
-          className="flex border-t border-border-subtle flex-1 haptic-tap transition-colors ripple-container"
+          className="flex border-t border-border-subtle flex-1 min-h-0 haptic-tap transition-colors ripple-container"
         >
           {/* Ripples */}
-          {ripples.filter((r) => true).map((r) => (
+          {ripples.map((r) => (
             <div key={r.id} className="ripple" style={{ left: r.x, top: r.y }} />
           ))}
-          <div className={`flex-1 bg-bg-surface flex items-center justify-center ${evenTint}`}>
-            <span className={`font-sans text-text-primary ${fontSize} tabular-nums`}>
+          <div className={`flex-1 bg-bg-surface flex items-center justify-center py-[3px] ${evenTint}`}>
+            <span className={`font-sans text-text-primary ${fontSize} tabular-nums leading-tight`}>
               {leftSymbol}{formatCompact(leftAmount)}
             </span>
           </div>
           <div className="w-px bg-border-subtle" />
-          <div className={`flex-1 bg-bg-raised flex items-center justify-center ${evenTint}`}>
-            <span className={`font-sans text-text-primary ${fontSize} tabular-nums`}>
+          <div className={`flex-1 bg-bg-raised flex items-center justify-center py-[3px] ${evenTint}`}>
+            <span className={`font-sans text-text-primary ${fontSize} tabular-nums leading-tight`}>
               {rightSymbol}{formatCompact(rightAmount)}
             </span>
           </div>
