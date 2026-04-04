@@ -10,6 +10,7 @@ import TimePeriodPills, {
 } from "@/components/rates/TimePeriodPills";
 import type { Period } from "@/components/rates/TimePeriodPills";
 import RateContext from "@/components/rates/RateContext";
+import CurrencyLeagueTable from "@/components/rates/CurrencyLeagueTable";
 import CurrencySelector from "@/components/converter/CurrencySelector";
 import { fetchLatestRate, fetchTimeSeries, fetchRateOnDate } from "@/lib/api/frankfurter";
 import { daysAgoDate, todayDate } from "@/lib/dates";
@@ -50,6 +51,7 @@ export default function RatesPage() {
   const [pickerTarget, setPickerTarget] = useState<"base" | "quote" | null>(null);
   const [rate6mAgo, setRate6mAgo] = useState<number | null>(null);
   const [rate1yAgo, setRate1yAgo] = useState<number | null>(null);
+  const [view, setView] = useState<"chart" | "league">("chart");
 
   // Load settings
   useEffect(() => {
@@ -168,58 +170,91 @@ export default function RatesPage() {
         </div>
       </div>
 
+      {/* View toggle */}
+      <div className="mb-4 flex rounded-[4px] border border-border-subtle overflow-hidden animate-fade-up stagger-2">
+        <button
+          onClick={() => setView("chart")}
+          className={`flex-1 py-2 font-sans text-sm tracking-wide transition-colors duration-200 haptic-tap ${
+            view === "chart"
+              ? "bg-accent text-bg-primary font-medium"
+              : "bg-bg-surface text-text-muted active:bg-bg-raised"
+          }`}
+        >
+          Chart
+        </button>
+        <button
+          onClick={() => setView("league")}
+          className={`flex-1 py-2 font-sans text-sm tracking-wide transition-colors duration-200 haptic-tap border-l border-border-subtle ${
+            view === "league"
+              ? "bg-accent text-bg-primary font-medium"
+              : "bg-bg-surface text-text-muted active:bg-bg-raised"
+          }`}
+        >
+          League Table
+        </button>
+      </div>
+
       {/* Time period pills */}
-      <div className="mb-4 animate-fade-up stagger-2">
+      <div className="mb-4 animate-fade-up stagger-3">
         <TimePeriodPills selected={period} onSelect={setPeriod} />
       </div>
 
-      {/* Chart */}
-      <div className="mb-4 bg-bg-surface rounded-[4px] border border-border-subtle p-2 animate-fade-up stagger-3">
-        <RateChart data={series} />
-      </div>
-
-      {/* Rate context */}
-      <div className="mb-4 animate-fade-up stagger-4">
-        <RateContext
-          base={base}
-          quote={quote}
-          data={series}
-          daysLabel={periodLabels[period]}
-        />
-      </div>
-
-      {/* Historical reference — friendly format */}
-      {(rate1yAgo !== null || rate6mAgo !== null) && (
-        <div className="mb-6 bg-bg-surface rounded-[4px] border border-border-subtle p-4 animate-fade-up stagger-5">
-          <p className="text-text-muted text-xs font-sans tracking-widest uppercase mb-3">
-            Historical Reference
-          </p>
-          <div className="flex flex-col gap-2">
-            {rate1yAgo !== null && (
-              <div className="flex justify-between items-baseline">
-                <span className="text-text-secondary font-sans text-sm">1 year ago</span>
-                <span className="font-sans text-text-primary text-sm tabular-nums">
-                  {formatFriendlyRate(base, quote, rate1yAgo)}
-                </span>
-              </div>
-            )}
-            {rate6mAgo !== null && (
-              <div className="flex justify-between items-baseline">
-                <span className="text-text-secondary font-sans text-sm">6 months ago</span>
-                <span className="font-sans text-text-primary text-sm tabular-nums">
-                  {formatFriendlyRate(base, quote, rate6mAgo)}
-                </span>
-              </div>
-            )}
-            {currentRate !== null && (
-              <div className="flex justify-between items-baseline border-t border-border-subtle pt-2 mt-1">
-                <span className="text-text-secondary font-sans text-sm">Today</span>
-                <span className="font-sans text-accent text-sm tabular-nums">
-                  {formatFriendlyRate(base, quote, currentRate)}
-                </span>
-              </div>
-            )}
+      {view === "chart" ? (
+        <>
+          {/* Chart */}
+          <div className="mb-4 bg-bg-surface rounded-[4px] border border-border-subtle p-2 animate-fade-up stagger-4">
+            <RateChart data={series} />
           </div>
+
+          {/* Rate context */}
+          <div className="mb-4 animate-fade-up stagger-5">
+            <RateContext
+              base={base}
+              quote={quote}
+              data={series}
+              daysLabel={periodLabels[period]}
+            />
+          </div>
+
+          {/* Historical reference — friendly format */}
+          {(rate1yAgo !== null || rate6mAgo !== null) && (
+            <div className="mb-6 bg-bg-surface rounded-[4px] border border-border-subtle p-4 animate-fade-up stagger-5">
+              <p className="text-text-muted text-xs font-sans tracking-widest uppercase mb-3">
+                Historical Reference
+              </p>
+              <div className="flex flex-col gap-2">
+                {rate1yAgo !== null && (
+                  <div className="flex justify-between items-baseline">
+                    <span className="text-text-secondary font-sans text-sm">1 year ago</span>
+                    <span className="font-sans text-text-primary text-sm tabular-nums">
+                      {formatFriendlyRate(base, quote, rate1yAgo)}
+                    </span>
+                  </div>
+                )}
+                {rate6mAgo !== null && (
+                  <div className="flex justify-between items-baseline">
+                    <span className="text-text-secondary font-sans text-sm">6 months ago</span>
+                    <span className="font-sans text-text-primary text-sm tabular-nums">
+                      {formatFriendlyRate(base, quote, rate6mAgo)}
+                    </span>
+                  </div>
+                )}
+                {currentRate !== null && (
+                  <div className="flex justify-between items-baseline border-t border-border-subtle pt-2 mt-1">
+                    <span className="text-text-secondary font-sans text-sm">Today</span>
+                    <span className="font-sans text-accent text-sm tabular-nums">
+                      {formatFriendlyRate(base, quote, currentRate)}
+                    </span>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+        </>
+      ) : (
+        /* League table */
+        <div className="mb-6 animate-fade-up stagger-4">
+          <CurrencyLeagueTable base={base} period={period} />
         </div>
       )}
 
