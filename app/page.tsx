@@ -26,8 +26,8 @@ export default function ConverterPage() {
     theme: "dark" as "dark" | "light",
   }));
 
-  const [baseCurrency, setBaseCurrency] = useState("EUR");
-  const [quoteCurrency, setQuoteCurrency] = useState("GBP");
+  const [baseCurrency, setBaseCurrencyRaw] = useState("EUR");
+  const [quoteCurrency, setQuoteCurrencyRaw] = useState("GBP");
   const [inputValue, setInputValue] = useState("1");
   const [rate, setRate] = useState<number | null>(null);
   const [pickerTarget, setPickerTarget] = useState<"base" | "quote" | null>(null);
@@ -37,11 +37,25 @@ export default function ConverterPage() {
   const [wallpaperMultiplier, setWallpaperMultiplier] = useState(10);
   const [showTip, setShowTip] = useState(false);
 
+  // Wrap setters to persist converter state across tab switches
+  const setBaseCurrency = useCallback((code: string) => {
+    setBaseCurrencyRaw(code);
+    try { sessionStorage.setItem("moneta:converter_base", code); } catch {}
+  }, []);
+
+  const setQuoteCurrency = useCallback((code: string) => {
+    setQuoteCurrencyRaw(code);
+    try { sessionStorage.setItem("moneta:converter_quote", code); } catch {}
+  }, []);
+
   useEffect(() => {
     const s = getSettings();
     setSettings(s);
-    setBaseCurrency(s.defaultForeignCurrency || "EUR");
-    setQuoteCurrency(s.homeCurrency || "GBP");
+    // Restore from session (survives tab switches) or fall back to settings
+    const sessionBase = sessionStorage.getItem("moneta:converter_base");
+    const sessionQuote = sessionStorage.getItem("moneta:converter_quote");
+    setBaseCurrencyRaw(sessionBase || s.defaultForeignCurrency || "EUR");
+    setQuoteCurrencyRaw(sessionQuote || s.homeCurrency || "GBP");
   }, []);
 
   useEffect(() => {

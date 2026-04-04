@@ -23,6 +23,39 @@ async function fetchWithTimeout(url: string): Promise<Response> {
   }
 }
 
+// Fetch a direct rate from the API (no cache logic)
+async function fetchDirectRate(
+  base: string,
+  quote: string
+): Promise<RateResponse[]> {
+  const res = await fetchWithTimeout(
+    `${BASE_URL}/rates?base=${base}&quotes=${quote}`
+  );
+  const data: RateResponse[] = await res.json();
+  if (!data.length || data[0].rate === undefined) {
+    throw new Error(`No rate returned for ${base}/${quote}`);
+  }
+  return data;
+}
+
+// Cross-rate fallback via EUR when direct rate fails
+async function fetchCrossRate(
+  base: string,
+  quote: string
+): Promise<RateResponse[]> {
+  const [baseToEur, quoteToEur] = await Promise.all([
+    fetchDirectRate("EUR", base),
+    fetchDirectRate("EUR", quote),
+  ]);
+  const crossRate = quoteToEur[0].rate / baseToEur[0].rate;
+  return [{
+    date: baseToEur[0].date,
+    base,
+    quote,
+    rate: crossRate,
+  }];
+}
+
 // Latest rate for a currency pair
 export async function fetchLatestRate(
   base: string,
@@ -37,10 +70,13 @@ export async function fetchLatestRate(
   }
 
   try {
-    const res = await fetchWithTimeout(
-      `${BASE_URL}/rates?base=${base}&quotes=${quote}`
-    );
-    const data: RateResponse[] = await res.json();
+    let data: RateResponse[];
+    try {
+      data = await fetchDirectRate(base, quote);
+    } catch {
+      // Direct rate failed — try cross-rate via EUR
+      data = await fetchCrossRate(base, quote);
+    }
     cacheSet(cacheKey, data);
     const now = Date.now();
     return { rate: data[0].rate, date: data[0].date, fetchedAt: now, offline: false };
