@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useRef } from "react";
-import { sanitizeNumericInput } from "@/lib/format";
+import { sanitizeNumericInput, formatInputDisplay } from "@/lib/format";
 
 interface ConverterInputProps {
   value: string;
@@ -33,17 +33,19 @@ export default function ConverterInput({ value, onChange }: ConverterInputProps)
     inputRef.current?.focus();
   };
 
+  const displayValue = formatInputDisplay(value);
+
   return (
     <div className="flex items-center justify-end" onClick={handleTap}>
       <input
         ref={inputRef}
         type="text"
         inputMode="decimal"
-        value={value}
+        value={displayValue}
         onChange={handleChange}
         onPaste={handlePaste}
         placeholder="0"
-        maxLength={16}
+        maxLength={20}
         className="w-full text-right text-text-primary tabular-nums tracking-tight font-sans bg-transparent border-none outline-none caret-accent placeholder:text-text-muted"
         style={{ fontSize: 28, fontWeight: 500, lineHeight: 1.1 }}
         autoComplete="off"

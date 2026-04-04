@@ -54,12 +54,14 @@ export default function RatesPage() {
   const [rate6mAgo, setRate6mAgo] = useState<number | null>(null);
   const [rate1yAgo, setRate1yAgo] = useState<number | null>(null);
   const [view, setView] = useState<"chart" | "league">("chart");
+  const [homeCurrency, setHomeCurrency] = useState("GBP");
 
   // Load settings
   useEffect(() => {
     const s = getSettings();
     setBase(s.homeCurrency || "GBP");
     setQuote(s.defaultForeignCurrency || "EUR");
+    setHomeCurrency(s.homeCurrency || "GBP");
   }, []);
 
   // Fetch current rate
@@ -256,7 +258,7 @@ export default function RatesPage() {
       ) : (
         /* League table */
         <div className="mb-6 animate-fade-up stagger-4">
-          <CurrencyLeagueTable base={base} period={period} />
+          <CurrencyLeagueTable base={homeCurrency} period={period} />
         </div>
       )}
 

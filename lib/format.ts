@@ -18,9 +18,10 @@ export function padDisplay(value: string, length: number): string {
 
 // Strip non-numeric characters except decimal point
 export function sanitizeNumericInput(value: string): string {
-  // Allow digits and at most one decimal point
+  // Strip commas and other non-numeric chars first
+  const stripped = value.replace(/,/g, "");
   let hasDecimal = false;
-  return value
+  return stripped
     .split("")
     .filter((ch) => {
       if (ch >= "0" && ch <= "9") return true;
@@ -31,4 +32,12 @@ export function sanitizeNumericInput(value: string): string {
       return false;
     })
     .join("");
+}
+
+// Format a numeric string with thousand separators for display
+export function formatInputDisplay(raw: string): string {
+  if (!raw) return "";
+  const parts = raw.split(".");
+  const intPart = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  return parts.length > 1 ? `${intPart}.${parts[1]}` : intPart;
 }
