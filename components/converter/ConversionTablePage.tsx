@@ -44,7 +44,7 @@ export default function ConversionTablePage({
   const fontSize = multiplier >= 10000 ? "text-[10px]" : multiplier >= 100 ? "text-[12px]" : "text-[13px]";
 
   return (
-    <div className="h-full rounded-[4px] overflow-hidden border border-border-subtle flex flex-col">
+    <div className="rounded-[4px] overflow-hidden border border-border-subtle">
       {/* Header */}
       <div className="flex shrink-0">
         <div className="flex-1 bg-bg-surface py-1 flex items-center justify-center">
@@ -73,16 +73,16 @@ export default function ConversionTablePage({
         <button
           key={i}
           onClick={() => onRowTap?.(i)}
-          className="flex border-t border-border-subtle flex-1 min-h-0 haptic-tap active:bg-accent/5 transition-colors"
+          className="flex border-t border-border-subtle haptic-tap active:bg-accent/5 transition-colors"
         >
-          <div className={`flex-1 bg-bg-surface flex items-center justify-center ${evenTint}`}>
-            <span className={`font-sans text-text-primary ${fontSize} tabular-nums`}>
+          <div className={`flex-1 bg-bg-surface flex items-center justify-center py-[5px] ${evenTint}`}>
+            <span className={`font-sans text-text-primary ${fontSize} tabular-nums leading-none`}>
               {leftSymbol}{formatCompact(leftAmount)}
             </span>
           </div>
           <div className="w-px bg-border-subtle" />
-          <div className={`flex-1 bg-bg-raised flex items-center justify-center ${evenTint}`}>
-            <span className={`font-sans text-text-primary ${fontSize} tabular-nums`}>
+          <div className={`flex-1 bg-bg-raised flex items-center justify-center py-[5px] ${evenTint}`}>
+            <span className={`font-sans text-text-primary ${fontSize} tabular-nums leading-none`}>
               {rightSymbol}{formatCompact(rightAmount)}
             </span>
           </div>

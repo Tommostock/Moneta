@@ -1,5 +1,6 @@
 "use client";
 
+import { useRef, useState } from "react";
 import { CURRENCY_SYMBOLS } from "@/lib/constants/currencies";
 import { X } from "lucide-react";
 import CountryFlag from "@/components/shared/CountryFlag";
@@ -46,19 +47,49 @@ export default function ExpandedRowSheet({
     return { leftAmount, rightAmount };
   });
 
-  // Header text showing the range
   const rangeText = `${leftSymbol}${formatValue(baseStart)} - ${leftSymbol}${formatValue(baseEnd)}`;
+
+  // Pull-down to close
+  const [dragY, setDragY] = useState(0);
+  const startY = useRef(0);
+  const dragging = useRef(false);
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    startY.current = e.touches[0].clientY;
+    dragging.current = true;
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    if (!dragging.current) return;
+    const dy = e.touches[0].clientY - startY.current;
+    if (dy > 0) {
+      setDragY(dy);
+    }
+  };
+
+  const handleTouchEnd = () => {
+    dragging.current = false;
+    if (dragY > 80) {
+      onClose();
+    }
+    setDragY(0);
+  };
 
   return (
     <div className="fixed inset-0 z-50 flex flex-col justify-end" onClick={onClose}>
-      {/* Backdrop */}
       <div className="absolute inset-0 bg-black/50 animate-overlay" />
 
-      {/* Sheet */}
       <div
         className="relative bg-bg-primary rounded-t-[12px] animate-slide-up max-h-[85dvh] flex flex-col"
-        style={{ paddingBottom: "env(safe-area-inset-bottom, 8px)" }}
+        style={{
+          paddingBottom: "env(safe-area-inset-bottom, 8px)",
+          transform: dragY > 0 ? `translateY(${dragY}px)` : undefined,
+          transition: dragY === 0 ? "transform 200ms ease-out" : "none",
+        }}
         onClick={(e) => e.stopPropagation()}
+        onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={handleTouchEnd}
       >
         {/* Handle */}
         <div className="flex justify-center pt-2 pb-1">
@@ -95,22 +126,20 @@ export default function ExpandedRowSheet({
         {/* Table */}
         <div className="flex-1 overflow-y-auto px-4 pb-4">
           <div className="rounded-[4px] overflow-hidden border border-border-subtle">
-            {/* Column headers */}
             <div className="flex bg-bg-surface">
-              <div className="flex-1 py-2 flex items-center justify-center">
+              <div className="flex-1 py-1.5 flex items-center justify-center">
                 <span className="font-sans text-[10px] tracking-widest text-text-muted uppercase">
                   {leftCurrency}
                 </span>
               </div>
               <div className="w-px bg-border-subtle" />
-              <div className="flex-1 py-2 flex items-center justify-center">
+              <div className="flex-1 py-1.5 flex items-center justify-center">
                 <span className="font-sans text-[10px] tracking-widest text-text-muted uppercase">
                   {rightCurrency}
                 </span>
               </div>
             </div>
 
-            {/* Rows */}
             {subRows.map(({ leftAmount, rightAmount }, i) => {
               const isFirst = i === 0;
               const isLast = i === subRows.length - 1;
@@ -122,7 +151,7 @@ export default function ExpandedRowSheet({
                     highlight ? "bg-accent/5" : i % 2 === 0 ? "bg-bg-surface" : "bg-bg-raised"
                   }`}
                 >
-                  <div className="flex-1 py-3 flex items-center justify-center">
+                  <div className="flex-1 py-2.5 flex items-center justify-center">
                     <span className={`font-sans tabular-nums text-sm ${
                       highlight ? "text-accent font-medium" : "text-text-primary"
                     }`}>
@@ -130,7 +159,7 @@ export default function ExpandedRowSheet({
                     </span>
                   </div>
                   <div className="w-px bg-border-subtle" />
-                  <div className="flex-1 py-3 flex items-center justify-center">
+                  <div className="flex-1 py-2.5 flex items-center justify-center">
                     <span className={`font-sans tabular-nums text-sm ${
                       highlight ? "text-accent font-medium" : "text-text-primary"
                     }`}>

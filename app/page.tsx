@@ -216,8 +216,8 @@ export default function ConverterPage() {
       {/* Separator */}
       <div className="border-t border-border-subtle mb-0.5 shrink-0" />
 
-      {/* Conversion table — fills remaining space */}
-      <div className="flex-1 min-h-0 mb-0.5">
+      {/* Conversion table */}
+      <div className="shrink-0 mb-0.5">
         <ConversionTable
           baseCurrency={baseCurrency}
           quoteCurrency={quoteCurrency}

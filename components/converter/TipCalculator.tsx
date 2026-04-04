@@ -1,5 +1,6 @@
 "use client";
 
+import { useRef, useState } from "react";
 import { X } from "lucide-react";
 import { CURRENCY_SYMBOLS } from "@/lib/constants/currencies";
 
@@ -29,21 +30,49 @@ export default function TipCalculator({
   homeCurrency,
   rate,
 }: TipCalculatorProps) {
+  // Pull-down to close
+  const [dragY, setDragY] = useState(0);
+  const startY = useRef(0);
+  const isDragging = useRef(false);
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    startY.current = e.touches[0].clientY;
+    isDragging.current = true;
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    if (!isDragging.current) return;
+    const dy = e.touches[0].clientY - startY.current;
+    if (dy > 0) setDragY(dy);
+  };
+
+  const handleTouchEnd = () => {
+    isDragging.current = false;
+    if (dragY > 80) {
+      onClose();
+    }
+    setDragY(0);
+  };
+
   if (!isOpen || amount <= 0) return null;
 
   const quoteSymbol = CURRENCY_SYMBOLS[currency] || currency;
   const homeSymbol = CURRENCY_SYMBOLS[homeCurrency] || homeCurrency;
-  // rate converts baseCurrency -> quoteCurrency
-  // amount is in baseCurrency (the input currency)
-  // homeCurrency here is quoteCurrency (the converted side)
 
   return (
     <div className="fixed inset-0 z-50 flex flex-col justify-end" onClick={onClose}>
       <div className="absolute inset-0 bg-black/50 animate-overlay" />
       <div
         className="relative bg-bg-primary rounded-t-[12px] animate-slide-up"
-        style={{ paddingBottom: "env(safe-area-inset-bottom, 8px)" }}
+        style={{
+          paddingBottom: "env(safe-area-inset-bottom, 8px)",
+          transform: dragY > 0 ? `translateY(${dragY}px)` : undefined,
+          transition: dragY === 0 ? "transform 200ms ease-out" : "none",
+        }}
         onClick={(e) => e.stopPropagation()}
+        onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={handleTouchEnd}
       >
         <div className="flex justify-center pt-2 pb-1">
           <div className="w-8 h-1 rounded-full bg-border-subtle" />
@@ -64,7 +93,6 @@ export default function TipCalculator({
 
         <div className="px-4 pb-4">
           <div className="rounded-[4px] overflow-hidden border border-border-subtle">
-            {/* Header */}
             <div className="flex bg-bg-surface">
               <div className="w-16 py-2 flex items-center justify-center">
                 <span className="font-sans text-[10px] tracking-widest text-text-muted uppercase">Tip</span>
@@ -79,7 +107,6 @@ export default function TipCalculator({
               </div>
             </div>
 
-            {/* Rows */}
             {TIP_PERCENTAGES.map((pct, i) => {
               const tipAmount = amount * (pct / 100);
               const total = amount + tipAmount;
@@ -105,7 +132,6 @@ export default function TipCalculator({
             })}
           </div>
 
-          {/* Home currency equivalent note */}
           <p className="text-text-secondary text-[11px] font-sans mt-2 text-center">
             Total at 20% = ~{homeSymbol}{formatVal(amount * 1.2 * rate)} in {homeCurrency}
           </p>
