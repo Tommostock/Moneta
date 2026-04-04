@@ -43,24 +43,25 @@ export default function ConversionTablePage({
   return (
     <div className="rounded-[4px] overflow-hidden border border-border-subtle flex flex-col">
       {/* Header */}
-      <div className="flex shrink-0">
-        <div className="flex-1 bg-bg-surface py-1.5 flex items-center justify-center">
-          <span className="font-sans text-xs tracking-wider text-negative font-medium">
+      <div className="relative flex shrink-0">
+        <div className="flex-1 bg-bg-surface py-2.5 flex items-center justify-center">
+          <span className="font-sans text-sm tracking-wider text-negative font-medium">
             {baseCurrency}
+          </span>
+        </div>
+        <div className="w-px bg-border-subtle" />
+        <div className="flex-1 bg-bg-raised py-2.5 flex items-center justify-center">
+          <span className="font-sans text-sm tracking-wider text-accent font-medium">
+            {quoteCurrency}
           </span>
         </div>
         <button
           onClick={onToggleReverse}
-          className="flex items-center bg-border-subtle px-1.5 haptic-tap active:bg-accent/20 transition-colors"
+          className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-10 w-8 h-8 flex items-center justify-center bg-border-subtle rounded-[4px] haptic-tap active:bg-accent/20 transition-colors"
           aria-label="Reverse table direction"
         >
-          <ArrowLeftRight size={10} className="text-text-muted" />
+          <ArrowLeftRight size={14} className="text-text-muted" />
         </button>
-        <div className="flex-1 bg-bg-raised py-1.5 flex items-center justify-center">
-          <span className="font-sans text-xs tracking-wider text-accent font-medium">
-            {quoteCurrency}
-          </span>
-        </div>
       </div>
 
       {/* Rows */}
