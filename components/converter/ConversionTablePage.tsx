@@ -73,7 +73,7 @@ export default function ConversionTablePage({
         <button
           key={i}
           onClick={() => onRowTap?.(i)}
-          className="flex border-t border-border-subtle flex-1 haptic-tap active:bg-accent/5 transition-colors"
+          className="flex border-t border-border-subtle flex-1 min-h-0 haptic-tap active:bg-accent/5 transition-colors"
         >
           <div className={`flex-1 bg-bg-surface flex items-center justify-center ${evenTint}`}>
             <span className={`font-sans text-text-primary ${fontSize} tabular-nums`}>
