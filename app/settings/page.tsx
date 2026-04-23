@@ -76,10 +76,11 @@ export default function SettingsPage() {
   };
 
   return (
-    <div className="h-[100dvh] px-3 pt-2 flex flex-col" style={{ paddingBottom: "calc(env(safe-area-inset-bottom, 0px) + 56px)" }}>
+    <div className="page-viewport px-3 pt-2">
       <h1 className="text-text-muted text-xs font-sans tracking-widest uppercase mb-2 shrink-0">
         Settings
       </h1>
+      <div className="page-scrollable">
 
       {/* Appearance + Currency Preferences — combined */}
       <div className="bg-bg-surface rounded-[4px] border border-border-subtle divide-y divide-border-subtle mb-2 shrink-0">
@@ -200,6 +201,8 @@ export default function SettingsPage() {
         )}
       </div>
 
+      </div>
+
       {/* Currency Picker */}
       <CurrencySelector
         isOpen={pickerTarget !== null}
@@ -207,9 +210,6 @@ export default function SettingsPage() {
         onSelect={handleCurrencySelect}
         selectedCode={getPickerSelected()}
       />
-
-      {/* ATM Tip Bottom Sheet */}
-      {showAtmTip && false /* inline instead of sheet */}
     </div>
   );
 }

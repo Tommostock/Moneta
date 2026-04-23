@@ -66,7 +66,7 @@ export default function RootLayout({
         className={`${dmSans.variable} ${robotoMono.variable} ${inter.variable} font-sans bg-bg-primary text-text-primary antialiased`}
       >
         <ThemeProvider />
-        <main className="pb-16"><PageTransition>{children}</PageTransition></main>
+        <main><PageTransition>{children}</PageTransition></main>
         <BottomNav />
       </body>
     </html>

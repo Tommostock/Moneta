@@ -143,7 +143,7 @@ export default function ConverterPage() {
   );
 
   return (
-    <div className="h-[100dvh] px-3 pt-2 flex flex-col" style={{ paddingBottom: "calc(env(safe-area-inset-bottom, 0px) + 56px)" }}>
+    <div className="page-viewport px-3 pt-2">
       {/* Header + favourite star */}
       <div className="mb-2 flex items-center justify-between shrink-0">
         <h1 className="text-text-muted text-xs font-sans tracking-widest uppercase">
@@ -239,6 +239,9 @@ export default function ConverterPage() {
           flipRotation={flipRotation}
         />
       </div>
+
+      {/* Spacer pushes glance + actions to the bottom when there's room */}
+      <div className="flex-1 min-h-0" />
 
       {/* Quick glance currencies */}
       <div className="shrink-0 mb-2">

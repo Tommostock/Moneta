@@ -126,7 +126,8 @@ export default function RatesPage() {
   };
 
   return (
-    <div className="min-h-screen px-4 pt-4">
+    <div className="page-viewport">
+      <div className="page-scrollable px-4 pt-4">
       {/* Header */}
       <div className="mb-6 animate-fade-up stagger-1">
         <h1 className="text-text-muted text-xs font-sans tracking-widest uppercase mb-4">
@@ -261,6 +262,8 @@ export default function RatesPage() {
           <CurrencyLeagueTable base={homeCurrency} period={period} />
         </div>
       )}
+
+      </div>
 
       {/* Currency Picker */}
       <CurrencySelector

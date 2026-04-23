@@ -147,7 +147,24 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   min-height: 100dvh;
-  padding-top: env(safe-area-inset-top);
+  overflow-x: hidden;
+}
+
+/* Full-viewport page — handles Dynamic Island top inset + bottom nav */
+.page-viewport {
+  height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  padding-top: env(safe-area-inset-top, 0px);
+  padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 56px);
+}
+
+/* Page that allows scrolling (rates, settings) — scrollable inner area */
+.page-scrollable {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 /* Prevent iOS zoom on input focus + accent cursor */
