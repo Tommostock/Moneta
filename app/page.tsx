@@ -145,13 +145,13 @@ export default function ConverterPage() {
   return (
     <div className="page-viewport px-3 pt-2">
       {/* Header + favourite star */}
-      <div className="mb-2 flex items-center justify-between shrink-0">
+      <div className="mb-1.5 flex items-center justify-between shrink-0">
         <h1 className="text-text-muted text-xs font-sans tracking-widest uppercase">
           MONETA
         </h1>
         <button
           onClick={handleToggleFavourite}
-          className="min-w-[44px] min-h-[32px] flex items-center justify-center -mr-2 active:opacity-70 haptic-tap transition-opacity"
+          className="min-w-[44px] min-h-[28px] flex items-center justify-center -mr-2 active:opacity-70 haptic-tap transition-opacity"
           aria-label={isFavourite ? "Remove from favourites" : "Add to favourites"}
         >
           <Star
@@ -163,7 +163,7 @@ export default function ConverterPage() {
 
       {/* Favourite pairs */}
       {settings.favouritePairs.length > 0 && (
-        <div className="mb-2 shrink-0">
+        <div className="mb-1.5 shrink-0">
           <FavouritePairs
             pairs={settings.favouritePairs}
             currentBase={baseCurrency}
@@ -175,13 +175,13 @@ export default function ConverterPage() {
       )}
 
       {/* Converter — card with depth shadow */}
-      <div className="relative mb-2 shrink-0" style={{ boxShadow: "0 1px 3px var(--theme-flap-shadow)" }}>
+      <div className="relative mb-1.5 shrink-0" style={{ boxShadow: "0 1px 3px var(--theme-flap-shadow)" }}>
         {/* Source row */}
-        <div className="bg-bg-surface rounded-t-[4px] border border-border-subtle px-3 py-2">
+        <div className="bg-bg-surface rounded-t-[4px] border border-border-subtle px-3 py-1.5">
           <div className="flex items-center gap-2">
             <button
               onClick={() => setPickerTarget("base")}
-              className="flex items-center gap-1.5 min-h-[36px] px-1.5 -ml-1.5 active:bg-bg-raised rounded-[4px] haptic-tap transition-colors duration-100"
+              className="flex items-center gap-1.5 min-h-[32px] px-1.5 -ml-1.5 active:bg-bg-raised rounded-[4px] haptic-tap transition-colors duration-100"
             >
               <CountryFlag currencyCode={baseCurrency} />
               <span className="font-sans text-text-primary tracking-wider text-base font-medium">
@@ -195,11 +195,11 @@ export default function ConverterPage() {
         </div>
 
         {/* Target row */}
-        <div className="bg-bg-surface rounded-b-[4px] border border-t-0 border-border-subtle px-3 py-2">
+        <div className="bg-bg-surface rounded-b-[4px] border border-t-0 border-border-subtle px-3 py-1.5">
           <div className="flex items-center gap-2">
             <button
               onClick={() => setPickerTarget("quote")}
-              className="flex items-center gap-1.5 min-h-[36px] px-1.5 -ml-1.5 active:bg-bg-raised rounded-[4px] haptic-tap transition-colors duration-100"
+              className="flex items-center gap-1.5 min-h-[32px] px-1.5 -ml-1.5 active:bg-bg-raised rounded-[4px] haptic-tap transition-colors duration-100"
             >
               <CountryFlag currencyCode={quoteCurrency} />
               <span className="font-sans text-text-primary tracking-wider text-base font-medium">
@@ -212,10 +212,10 @@ export default function ConverterPage() {
                 className="flex items-center active:opacity-70 haptic-tap transition-opacity"
                 aria-label="Copy converted amount"
               >
-                <SegmentDisplay value={displayResult} size={28} flash />
+                <SegmentDisplay value={displayResult} size={26} flash />
               </button>
               {showCopied && (
-                <span className="absolute -bottom-5 right-0 text-xs text-accent font-sans animate-fade-in">
+                <span className="absolute -bottom-4 right-0 text-xs text-accent font-sans animate-fade-in">
                   Copied
                 </span>
               )}
@@ -230,7 +230,7 @@ export default function ConverterPage() {
       </div>
 
       {/* Conversion table */}
-      <div className="shrink-0 mb-2">
+      <div className="shrink-0 mb-1.5">
         <ConversionTable
           baseCurrency={baseCurrency}
           quoteCurrency={quoteCurrency}
@@ -244,7 +244,7 @@ export default function ConverterPage() {
       <div className="flex-1 min-h-0" />
 
       {/* Quick glance currencies */}
-      <div className="shrink-0 mb-2">
+      <div className="shrink-0 mb-1.5">
         <MultiCurrencyGlance
           base={settings.homeCurrency}
           amount={1}
@@ -258,7 +258,7 @@ export default function ConverterPage() {
         {numericValue > 0 && rate !== null && (
           <button
             onClick={() => setShowTip(true)}
-            className="flex-1 h-11 rounded-[4px] border border-border-subtle bg-bg-surface text-text-secondary font-sans text-sm tracking-wider active:bg-bg-raised haptic-tap transition-colors"
+            className="flex-1 h-9 rounded-[4px] border border-border-subtle bg-bg-surface text-text-secondary font-sans text-xs tracking-wider active:bg-bg-raised haptic-tap transition-colors"
           >
             Tip Calculator
           </button>
@@ -268,7 +268,7 @@ export default function ConverterPage() {
             setWallpaperMultiplier(10);
             setShowWallpaper(true);
           }}
-          className="flex-1 h-11 rounded-[4px] border border-border-subtle bg-bg-surface text-text-secondary font-sans text-sm tracking-wider active:bg-bg-raised haptic-tap transition-colors"
+          className="flex-1 h-9 rounded-[4px] border border-border-subtle bg-bg-surface text-text-secondary font-sans text-xs tracking-wider active:bg-bg-raised haptic-tap transition-colors"
         >
           Create Wallpaper
         </button>
