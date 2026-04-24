@@ -238,9 +238,6 @@ export default function ConverterPage() {
         />
       </div>
 
-      {/* Spacer pushes actions to the bottom when there's room */}
-      <div className="flex-1 min-h-0" />
-
       {/* Action buttons */}
       <div className="flex gap-2 shrink-0">
         {numericValue > 0 && rate !== null && (
