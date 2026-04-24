@@ -156,7 +156,7 @@ body {
   display: flex;
   flex-direction: column;
   padding-top: env(safe-area-inset-top, 0px);
-  padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 56px);
+  padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 72px);
 }
 
 /* Page that allows scrolling (rates, settings) — scrollable inner area */

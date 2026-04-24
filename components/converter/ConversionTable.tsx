@@ -96,13 +96,13 @@ export default function ConversionTable({
       </div>
 
       {/* Multiplier tabs */}
-      <div className="pt-1.5 shrink-0">
+      <div className="pt-2 shrink-0">
         <div className="flex rounded-[4px] border border-border-subtle overflow-hidden">
           {MULTIPLIER_LABELS.map((label, i) => (
             <button
               key={i}
               onClick={() => handleDotClick(i)}
-              className={`flex-1 py-1 font-sans text-xs tracking-wide transition-colors duration-200 haptic-tap ${
+              className={`flex-1 py-1.5 font-sans text-xs tracking-wide transition-colors duration-200 haptic-tap ${
                 i === activePage
                   ? "bg-accent text-bg-primary font-medium"
                   : "bg-bg-surface text-text-muted active:bg-bg-raised"
