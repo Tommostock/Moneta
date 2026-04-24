@@ -181,12 +181,12 @@ export default function WallpaperCreator({
         {/* Background colors */}
         <div>
           <p className="text-text-muted text-xs font-sans mb-1.5">Background</p>
-          <div className="flex gap-2 flex-wrap justify-center">
+          <div className="flex gap-1.5 justify-center">
             {BG_COLORS.map((color) => (
               <button
                 key={color.value}
                 onClick={() => setBgColor(color.value)}
-                className={`w-9 h-9 rounded-[4px] border-2 transition-colors shrink-0 ${
+                className={`w-8 h-8 rounded-[4px] border-2 transition-colors shrink-0 ${
                   bgColor === color.value
                     ? "border-accent"
                     : "border-border-subtle"
