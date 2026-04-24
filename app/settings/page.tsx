@@ -11,7 +11,7 @@ import type { AppSettings } from "@/types";
 export default function SettingsPage() {
   const [settings, setSettings] = useState<AppSettings | null>(null);
   const [pickerTarget, setPickerTarget] = useState<
-    "home" | "foreign" | "glance0" | "glance1" | "glance2" | null
+    "home" | "foreign" | null
   >(null);
   const [showClearConfirm, setShowClearConfirm] = useState(false);
   const [showAtmTip, setShowAtmTip] = useState(false);
@@ -44,11 +44,6 @@ export default function SettingsPage() {
       update({ homeCurrency: code });
     } else if (pickerTarget === "foreign") {
       update({ defaultForeignCurrency: code });
-    } else if (pickerTarget?.startsWith("glance")) {
-      const index = parseInt(pickerTarget.replace("glance", ""), 10);
-      const glance = [...(settings.glanceCurrencies || ["USD", "EUR", "JPY"])];
-      glance[index] = code;
-      update({ glanceCurrencies: glance });
     }
     setPickerTarget(null);
   };
@@ -62,16 +57,11 @@ export default function SettingsPage() {
     setShowClearConfirm(false);
   };
 
-  const glance = settings.glanceCurrencies || ["USD", "EUR", "JPY"];
   const isDark = settings.theme !== "light";
 
   const getPickerSelected = () => {
     if (pickerTarget === "home") return settings.homeCurrency;
     if (pickerTarget === "foreign") return settings.defaultForeignCurrency;
-    if (pickerTarget?.startsWith("glance")) {
-      const index = parseInt(pickerTarget.replace("glance", ""), 10);
-      return glance[index] || "USD";
-    }
     return settings.homeCurrency;
   };
 
@@ -112,27 +102,6 @@ export default function SettingsPage() {
             </span>
           </div>
         </SettingRow>
-      </div>
-
-      {/* Glance Currencies — compact */}
-      <div className="mb-2 shrink-0">
-        <p className="text-text-muted text-[10px] font-sans mb-1">Quick Glance Currencies</p>
-        <div className="bg-bg-surface rounded-[4px] border border-border-subtle divide-y divide-border-subtle">
-          {glance.map((code, i) => (
-            <SettingRow
-              key={i}
-              label={`Slot ${i + 1}`}
-              onClick={() => setPickerTarget(`glance${i}` as "glance0" | "glance1" | "glance2")}
-            >
-              <div className="flex items-center gap-1.5">
-                <CountryFlag currencyCode={code} />
-                <span className="font-sans text-text-primary tracking-wider font-medium text-xs">
-                  {code}
-                </span>
-              </div>
-            </SettingRow>
-          ))}
-        </div>
       </div>
 
       {/* ATM Travel Tip */}

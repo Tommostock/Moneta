@@ -6,7 +6,6 @@ import SegmentDisplay from "@/components/display/SegmentDisplay";
 import ConverterInput from "@/components/converter/ConverterInput";
 import FlipButton from "@/components/converter/FlipButton";
 import ConversionTable from "@/components/converter/ConversionTable";
-import MultiCurrencyGlance from "@/components/converter/MultiCurrencyGlance";
 import CurrencySelector from "@/components/converter/CurrencySelector";
 import FavouritePairs from "@/components/converter/FavouritePairs";
 import WallpaperCreator from "@/components/converter/WallpaperCreator";
@@ -22,7 +21,6 @@ export default function ConverterPage() {
     defaultForeignCurrency: "EUR",
     recentCurrencies: [] as string[],
     favouritePairs: [] as ReturnType<typeof getSettings>["favouritePairs"],
-    glanceCurrencies: ["USD", "EUR", "JPY"] as string[],
     theme: "dark" as "dark" | "light",
   }));
 
@@ -240,18 +238,8 @@ export default function ConverterPage() {
         />
       </div>
 
-      {/* Spacer pushes glance + actions to the bottom when there's room */}
+      {/* Spacer pushes actions to the bottom when there's room */}
       <div className="flex-1 min-h-0" />
-
-      {/* Quick glance currencies */}
-      <div className="shrink-0 mb-2">
-        <MultiCurrencyGlance
-          base={settings.homeCurrency}
-          amount={1}
-          excludeCurrency=""
-          currencies={settings.glanceCurrencies}
-        />
-      </div>
 
       {/* Action buttons */}
       <div className="flex gap-2 shrink-0">
